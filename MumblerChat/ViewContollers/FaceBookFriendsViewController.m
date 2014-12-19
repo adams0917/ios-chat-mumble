@@ -264,7 +264,7 @@
     NSLog(@"PROFILE ID %@", user.id);
     
     
-    NSString *userFbId = [[NSUserDefaults standardUserDefaults]
+    NSString *userFbId = [NSUserDefaults.standardUserDefaults
                           valueForKey:FB_USER_ID];
     
     NSLog(@"FB USER ID %@", userFbId);
@@ -350,7 +350,7 @@
         
         
     }
-    NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
+    NSUserDefaults *userDefault = NSUserDefaults.standardUserDefaults;
     NSString *mumblerUserId=[userDefault valueForKey:MUMBLER_USER_ID];
     FriendDao *friendDao=[[FriendDao alloc]init];
     NSArray *tmpAllFriends=[friendDao getFriendships:mumblerUserId ];

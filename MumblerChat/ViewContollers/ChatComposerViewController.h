@@ -19,9 +19,8 @@
 #import "ASExpandableTexView.h"
 #import "ASShrinkableView.h"
 
-@interface ChatComposerViewController : UIViewController<UIGestureRecognizerDelegate,UINavigationControllerDelegate,UITableViewDataSource,UITableViewDelegate,UIImagePickerControllerDelegate,NSFetchedResultsControllerDelegate,UITextFieldDelegate,UITextViewDelegate>{
-   
-    
+@interface ChatComposerViewController : UIViewController<UIGestureRecognizerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, NSFetchedResultsControllerDelegate, UITextFieldDelegate, UITextViewDelegate>
+{
 }
 
 @property (weak, nonatomic) IBOutlet UITextField *chatTextField;

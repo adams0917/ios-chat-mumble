@@ -114,6 +114,9 @@ static NSString * const FB_SESSION_NOT_ACTIVE = @"fb_session_not_active";
 static NSString * const FRIENDS_USING_MUMBLER_IN_CONTACTS = @"friends_using_mumbler_in_contacts";
 static NSString * const INVITE_FRIENDS_IN_CONTACTS = @"invite_friends_in_contacts";
 
+// XMPP
 
+static NSString * const kXMPPmyJID = @"kXMPPmyJID";
+static NSString * const kXMPPmyPassword = @"kXMPPmyPassword";
 
 #endif

@@ -11,14 +11,13 @@
 @interface ChatViewController ()
 {
     NSInteger remainingSecondsTrack;
-    
-
 }
+
 @end
 
 @implementation ChatViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -27,51 +26,29 @@
     return self;
 }
 
--(void) notifyCountDownTimerComplete {
+-(void) notifyCountDownTimerComplete
+{
     NSLog(@"notifyCountDownTimerComplete");
 }
 
--(void) tick :(NSString *) remainingSeconds {
-    
-    remainingSecondsTrack=[remainingSeconds intValue];
-    NSLog(@"remainingSecondsTrack remainingSeconds %@",remainingSeconds);
-   /// labelCount.text = remainingSeconds;
-    
-    
-    
+-(void) tick:(NSString *)remainingSeconds
+{
+    remainingSecondsTrack = [remainingSeconds intValue];
+    NSLog(@"remainingSecondsTrack remainingSeconds %@", remainingSeconds);
 }
 
-
-- (void)viewDidLoad
+-(void) viewDidLoad
 {
     [super viewDidLoad];
     
     self.controlView.hidden = YES;
     self.countDownView.hidden = YES;
     _countDownView.hidden = NO;
-    //[self.countDownProgress startCountDownFromSeconds:[@"18" intValue]/1000: 10];
-    
-    
-    
-    
-    // Do any additional setup after loading the view.
 }
 
-- (void)didReceiveMemoryWarning
+-(void) didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

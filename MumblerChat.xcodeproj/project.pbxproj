@@ -508,6 +508,8 @@
 		FA8993B41A446E83008ECDA5 /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = FA89916B1A446E82008ECDA5 /* DDXMLNode.m */; };
 		FA8993B51A446E83008ECDA5 /* build-libidn.sh in Resources */ = {isa = PBXBuildFile; fileRef = FA89916F1A446E82008ECDA5 /* build-libidn.sh */; };
 		FA8993B61A446E83008ECDA5 /* libidn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA8991711A446E82008ECDA5 /* libidn.a */; };
+		FA8994B31A44722C008ECDA5 /* NSDictionary+JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8994B21A44722C008ECDA5 /* NSDictionary+JSON.m */; };
+		FA8994B61A44891E008ECDA5 /* NSAlertView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8994B51A44891E008ECDA5 /* NSAlertView+Utils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1347,6 +1349,10 @@
 		FA8991701A446E82008ECDA5 /* idn-int.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "idn-int.h"; sourceTree = "<group>"; };
 		FA8991711A446E82008ECDA5 /* libidn.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libidn.a; sourceTree = "<group>"; };
 		FA8991721A446E82008ECDA5 /* stringprep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringprep.h; sourceTree = "<group>"; };
+		FA8994B11A44722C008ECDA5 /* NSDictionary+JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+JSON.h"; path = "MumblerChat/Categories/NSDictionary+JSON.h"; sourceTree = SOURCE_ROOT; };
+		FA8994B21A44722C008ECDA5 /* NSDictionary+JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+JSON.m"; path = "MumblerChat/Categories/NSDictionary+JSON.m"; sourceTree = SOURCE_ROOT; };
+		FA8994B41A44891E008ECDA5 /* NSAlertView+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAlertView+Utils.h"; path = "MumblerChat/Categories/NSAlertView+Utils.h"; sourceTree = SOURCE_ROOT; };
+		FA8994B51A44891E008ECDA5 /* NSAlertView+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAlertView+Utils.m"; path = "MumblerChat/Categories/NSAlertView+Utils.m"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2497,6 +2503,7 @@
 		F83A271A19336211002E5B63 /* MumblerChat */ = {
 			isa = PBXGroup;
 			children = (
+				FA8994B01A4471C9008ECDA5 /* Categories */,
 				12AE472F19D5B43C00A637B4 /* XMPP */,
 				121DA6B219D5B248005DAC4B /* ViewContollers */,
 				121DA6CF19D5B248005DAC4B /* ASAppDelegate.m */,
@@ -2507,8 +2514,6 @@
 				121DA6DC19D5B248005DAC4B /* TableViewCells */,
 				121DA6E319D5B248005DAC4B /* TakePhotoClasses */,
 				121DA70119D5B248005DAC4B /* Timer_View */,
-				121DA70C19D5B248005DAC4B /* UIView+MumblerUserInfo.h */,
-				121DA70D19D5B248005DAC4B /* UIView+MumblerUserInfo.m */,
 				121DA70E19D5B248005DAC4B /* MumblerChat-Prefix.pch */,
 				121DA70F19D5B248005DAC4B /* Customs */,
 				121DA86F19D5B249005DAC4B /* ASAppDelegate.h */,
@@ -2526,12 +2531,10 @@
 				121DA8DE19D5B249005DAC4B /* MumblerChat Constants */,
 				121DA8E419D5B249005DAC4B /* Classes */,
 				121DA90019D5B249005DAC4B /* iPhone-xibs */,
-				121DA90219D5B249005DAC4B /* NSData+Base64.m */,
 				121DAA6919D5B24A005DAC4B /* Main_iPhone_5s.storyboard */,
 				121DAA6A19D5B24A005DAC4B /* main.m */,
 				121DAA6B19D5B24B005DAC4B /* MHCustomTabBarController */,
 				121DAA7019D5B24B005DAC4B /* Models */,
-				121DAA7219D5B24B005DAC4B /* NSData+Base64.h */,
 			);
 			name = MumblerChat;
 			path = Zobi;
@@ -3402,6 +3405,21 @@
 			path = libidn;
 			sourceTree = "<group>";
 		};
+		FA8994B01A4471C9008ECDA5 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				FA8994B41A44891E008ECDA5 /* NSAlertView+Utils.h */,
+				FA8994B51A44891E008ECDA5 /* NSAlertView+Utils.m */,
+				FA8994B11A44722C008ECDA5 /* NSDictionary+JSON.h */,
+				FA8994B21A44722C008ECDA5 /* NSDictionary+JSON.m */,
+				121DA90219D5B249005DAC4B /* NSData+Base64.m */,
+				121DAA7219D5B24B005DAC4B /* NSData+Base64.h */,
+				121DA70C19D5B248005DAC4B /* UIView+MumblerUserInfo.h */,
+				121DA70D19D5B248005DAC4B /* UIView+MumblerUserInfo.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3779,6 +3797,7 @@
 				FA8993991A446E83008ECDA5 /* XMPPMessage+XEP_0224.m in Sources */,
 				121DABDC19D5B24B005DAC4B /* SBJsonStreamParserAccumulator.m in Sources */,
 				121DABB219D5B24B005DAC4B /* ASICloudFilesContainerRequest.m in Sources */,
+				FA8994B31A44722C008ECDA5 /* NSDictionary+JSON.m in Sources */,
 				121DAA9C19D5B24B005DAC4B /* ASSliderView.m in Sources */,
 				121DAA9B19D5B24B005DAC4B /* ASShrinkableView.m in Sources */,
 				121DAA7519D5B24B005DAC4B /* ContactsViewController.m in Sources */,
@@ -3805,6 +3824,7 @@
 				121DABC919D5B24B005DAC4B /* UIFont+AS.m in Sources */,
 				121DABCB19D5B24B005DAC4B /* SVProgressHUD.m in Sources */,
 				FA8993611A446E83008ECDA5 /* XMPPMessage+XEP0045.m in Sources */,
+				FA8994B61A44891E008ECDA5 /* NSAlertView+Utils.m in Sources */,
 				121DABB319D5B24B005DAC4B /* ASICloudFilesContainerXMLParserDelegate.m in Sources */,
 				121DABD119D5B24B005DAC4B /* AFURLConnectionOperation.m in Sources */,
 				FA8993791A446E83008ECDA5 /* NSDate+XMPPDateTimeProfiles.m in Sources */,

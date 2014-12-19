@@ -217,11 +217,11 @@
         if([status isEqualToString:@"success"])
         {
             
-            [[NSUserDefaults standardUserDefaults] setObject:SIGN_IN_TYPE_NORMAL forKey:SIGN_IN_TYPE];
-            [[NSUserDefaults standardUserDefaults] setObject:userNameTextField.text forKey:USERNAME];
-            [[NSUserDefaults standardUserDefaults] setObject:passwordTextField.text forKey:PASSWORD];
-            [[NSUserDefaults standardUserDefaults] setObject:IS_USED_BEFORE_YES forKey:IS_USED_BEFORE];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            [NSUserDefaults.standardUserDefaults setObject:SIGN_IN_TYPE_NORMAL forKey:SIGN_IN_TYPE];
+            [NSUserDefaults.standardUserDefaults setObject:userNameTextField.text forKey:USERNAME];
+            [NSUserDefaults.standardUserDefaults setObject:passwordTextField.text forKey:PASSWORD];
+            [NSUserDefaults.standardUserDefaults setObject:IS_USED_BEFORE_YES forKey:IS_USED_BEFORE];
+            [NSUserDefaults.standardUserDefaults synchronize];
             
             NSString *signInState = [responseObject valueForKey:@"sign_in_state"];
             
@@ -238,8 +238,8 @@
                 UserDao *userDao = [[UserDao alloc] init];
                 [userDao createUpdateUser:mumblerUserDictionary];
                 
-                [[NSUserDefaults standardUserDefaults] setObject:mumblerUserId forKey:MUMBLER_USER_ID];
-                [[NSUserDefaults standardUserDefaults] synchronize];
+                [NSUserDefaults.standardUserDefaults setObject:mumblerUserId forKey:MUMBLER_USER_ID];
+                [NSUserDefaults.standardUserDefaults synchronize];
                 
                 
                // NSError *error = nil;
@@ -298,8 +298,8 @@
                 if([internetConnectionStatus isEqualToString:INTERNET_CONNECTION_AVAILABLE]){
                     
                     //Add Friends Screen..CONTACTS HIGHLIGHTED
-                    [[NSUserDefaults standardUserDefaults] setObject:ADD_FRIEND_CONTACT_TAB forKey:ADD_FRIEND_TAB_TO_SELECTED];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    [NSUserDefaults.standardUserDefaults setObject:ADD_FRIEND_CONTACT_TAB forKey:ADD_FRIEND_TAB_TO_SELECTED];
+                    [NSUserDefaults.standardUserDefaults synchronize];
                     
                     
                 }

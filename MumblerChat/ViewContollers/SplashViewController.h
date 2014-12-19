@@ -10,4 +10,5 @@
 @interface SplashViewController : UIViewController<FBLoginViewDelegate>
 
 @property (weak, nonatomic) IBOutlet FBLoginView *loginView;
+
 @end

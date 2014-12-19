@@ -163,7 +163,7 @@
 //Contacts add friend icon
 -(IBAction)addBtnSelectedContactsFriendsWithMumbler:(id)sender{
     
-    NSString *count = [[NSUserDefaults standardUserDefaults]
+    NSString *count = [NSUserDefaults.standardUserDefaults
                        valueForKey:FRIENDS_USING_MUMBLER_IN_CONTACTS];
     
     NSInteger countIntValue = [count intValue];

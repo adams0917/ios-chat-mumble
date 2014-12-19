@@ -12,6 +12,4 @@
 
 @property(nonatomic,strong) id viewUserInfo;
 
-
-
 @end

@@ -444,7 +444,7 @@
         DDLogVerbose(@"%@: %@: Delete Button pressed", THIS_FILE, THIS_METHOD);
         //DB CALLS
         
-        NSString *meMumblerUserId= [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:MUMBLER_USER_ID]];
+        NSString *meMumblerUserId= [NSString stringWithFormat:@"%@",[NSUserDefaults.standardUserDefaults valueForKey:MUMBLER_USER_ID]];
         
         [chatMessageDao removeChatThreadForDeletedUser:mumblerFriendId myUserId:meMumblerUserId];
         [friendDao deleteFriendWithFriendship:mumblerFriendId];

@@ -110,7 +110,7 @@
             NSLog(@"MUMBLER CHAT updateMyDetails SUCCESS");
             
             
-            NSString *mumblerUserId = [[NSUserDefaults standardUserDefaults]
+            NSString *mumblerUserId = [NSUserDefaults.standardUserDefaults
                                            valueForKey:MUMBLER_USER_ID];
             
             ///////////////CHAT
@@ -142,8 +142,8 @@
             
             
             //Add Friends Screen..
-            [[NSUserDefaults standardUserDefaults] setObject:ADD_FRIEND_FACEBOOK_TAB forKey:ADD_FRIEND_TAB_TO_SELECTED];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            [NSUserDefaults.standardUserDefaults setObject:ADD_FRIEND_FACEBOOK_TAB forKey:ADD_FRIEND_TAB_TO_SELECTED];
+            [NSUserDefaults.standardUserDefaults synchronize];
                         
             /*UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main_iPhone_5s" bundle:nil];
             AddFriendsViewController *storyViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"AddFriendsViewController"];
@@ -277,7 +277,7 @@
             XMPPvCardTemp *newvCardTemp = [XMPPvCardTemp vCardTempFromElement:vCardXML];
             
             
-            NSString *fbId = [[NSUserDefaults standardUserDefaults]
+            NSString *fbId = [NSUserDefaults.standardUserDefaults
                               valueForKey:FB_USER_ID];
             
              NSString * imageUrlString = [NSString stringWithFormat:@"%@%@%@", @"http://graph.facebook.com/", fbId,@"/picture?type=large"];
@@ -300,8 +300,8 @@
         
         //if everything ok..add friends screen
         //Add Friends Screen..
-        [[NSUserDefaults standardUserDefaults] setObject:ADD_FRIEND_FACEBOOK_TAB forKey:ADD_FRIEND_TAB_TO_SELECTED];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [NSUserDefaults.standardUserDefaults setObject:ADD_FRIEND_FACEBOOK_TAB forKey:ADD_FRIEND_TAB_TO_SELECTED];
+        [NSUserDefaults.standardUserDefaults synchronize];
         
        /* UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main_iPhone_5s" bundle:nil];
         AddFriendsViewController *storyViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"AddFriendsViewController"];

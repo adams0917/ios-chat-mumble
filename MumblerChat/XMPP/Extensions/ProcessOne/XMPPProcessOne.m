@@ -42,20 +42,20 @@ NSString *const XMPPProcessOneSessionDate = @"XMPPProcessOneSessionDate";
 
 - (NSString *)savedSessionID
 {
-	return [[NSUserDefaults standardUserDefaults] stringForKey:XMPPProcessOneSessionID];
+	return [NSUserDefaults.standardUserDefaults stringForKey:XMPPProcessOneSessionID];
 }
 
 - (void)setSavedSessionID:(NSString *)savedSessionID
 {
 	if (savedSessionID)
-		[[NSUserDefaults standardUserDefaults] setObject:savedSessionID forKey:XMPPProcessOneSessionID];
+		[NSUserDefaults.standardUserDefaults setObject:savedSessionID forKey:XMPPProcessOneSessionID];
 	else
-		[[NSUserDefaults standardUserDefaults] removeObjectForKey:XMPPProcessOneSessionID];
+		[NSUserDefaults.standardUserDefaults removeObjectForKey:XMPPProcessOneSessionID];
 }
 
 - (XMPPJID *)savedSessionJID
 {
-	NSString *sessionJidStr = [[NSUserDefaults standardUserDefaults] stringForKey:XMPPProcessOneSessionJID];
+	NSString *sessionJidStr = [NSUserDefaults.standardUserDefaults stringForKey:XMPPProcessOneSessionJID];
 	
 	return [XMPPJID jidWithString:sessionJidStr];
 }
@@ -65,22 +65,22 @@ NSString *const XMPPProcessOneSessionDate = @"XMPPProcessOneSessionDate";
 	NSString *sessionJidStr = [savedSessionJID full];
 	
 	if (sessionJidStr)
-		[[NSUserDefaults standardUserDefaults] setObject:sessionJidStr forKey:XMPPProcessOneSessionJID];
+		[NSUserDefaults.standardUserDefaults setObject:sessionJidStr forKey:XMPPProcessOneSessionJID];
 	else
-		[[NSUserDefaults standardUserDefaults] removeObjectForKey:XMPPProcessOneSessionJID];
+		[NSUserDefaults.standardUserDefaults removeObjectForKey:XMPPProcessOneSessionJID];
 }
 
 - (NSDate *)savedSessionDate
 {
-	return [[NSUserDefaults standardUserDefaults] objectForKey:XMPPProcessOneSessionDate];
+	return [NSUserDefaults.standardUserDefaults objectForKey:XMPPProcessOneSessionDate];
 }
 
 - (void)setSavedSessionDate:(NSDate *)savedSessionDate
 {
 	if (savedSessionDate)
-		[[NSUserDefaults standardUserDefaults] setObject:savedSessionDate forKey:XMPPProcessOneSessionDate];
+		[NSUserDefaults.standardUserDefaults setObject:savedSessionDate forKey:XMPPProcessOneSessionDate];
 	else
-		[[NSUserDefaults standardUserDefaults] removeObjectForKey:XMPPProcessOneSessionDate];
+		[NSUserDefaults.standardUserDefaults removeObjectForKey:XMPPProcessOneSessionDate];
 }
 
 - (NSXMLElement *)pushConfiguration

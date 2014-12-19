@@ -469,7 +469,7 @@ static inline double radians (double degrees) {return degrees * M_PI/180;}
         } else {
             
             NSLog(@"chatcomps");
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            NSUserDefaults *userDefaults = NSUserDefaults.standardUserDefaults;
             [userDefaults removeObjectForKey:@"returning_from"];
             [userDefaults synchronize];
             
@@ -616,7 +616,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             NSData * videoData = [NSData dataWithContentsOfFile:moviePath];
             NSString * base64String = [videoData base64EncodedString];
             
-            NSUserDefaults *userDefaults= [NSUserDefaults standardUserDefaults];
+            NSUserDefaults *userDefaults= NSUserDefaults.standardUserDefaults;
             [userDefaults setValue:base64String forKey:@"msg_message"];
             [userDefaults synchronize];
             
@@ -690,7 +690,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         if (self.capturedPhoto !=nil) {
             
             self.capturedPhoto = [self generateThumbnailFromImage:self.capturedPhoto];
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            NSUserDefaults *userDefaults = NSUserDefaults.standardUserDefaults;
             
             NSData *imageData = UIImageJPEGRepresentation(self.capturedPhoto, 1.0);
             

@@ -307,7 +307,7 @@
     ASAppDelegate *appDelegate = (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
     
     
-    NSString *meMumblerUserId= [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:MUMBLER_USER_ID]];
+    NSString *meMumblerUserId= [NSString stringWithFormat:@"%@",[NSUserDefaults.standardUserDefaults valueForKey:MUMBLER_USER_ID]];
     
     User *userMe = [self getUserForId:meMumblerUserId];
     

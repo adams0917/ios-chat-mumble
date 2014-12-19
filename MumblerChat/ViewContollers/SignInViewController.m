@@ -148,11 +148,11 @@
         if([status isEqualToString:@"success"])
             
         {
-            [[NSUserDefaults standardUserDefaults] setObject:SIGN_IN_TYPE_NORMAL forKey:SIGN_IN_TYPE];
-            [[NSUserDefaults standardUserDefaults] setObject:userNameTextField.text forKey:USERNAME];
-            [[NSUserDefaults standardUserDefaults] setObject:passwordTextField.text forKey:PASSWORD];
-            [[NSUserDefaults standardUserDefaults] setObject:IS_USED_BEFORE_YES forKey:IS_USED_BEFORE];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            [NSUserDefaults.standardUserDefaults setObject:SIGN_IN_TYPE_NORMAL forKey:SIGN_IN_TYPE];
+            [NSUserDefaults.standardUserDefaults setObject:userNameTextField.text forKey:USERNAME];
+            [NSUserDefaults.standardUserDefaults setObject:passwordTextField.text forKey:PASSWORD];
+            [NSUserDefaults.standardUserDefaults setObject:IS_USED_BEFORE_YES forKey:IS_USED_BEFORE];
+            [NSUserDefaults.standardUserDefaults synchronize];
             
             NSString *signInState = [responseObject valueForKey:@"sign_in_state"];
             
@@ -165,25 +165,25 @@
                   NSString * mumblerUserId =[mumblerUserDictionary valueForKey:@"mumblerUserId"];
                   
                   NSData* mumblerUserSettingsData=[NSKeyedArchiver archivedDataWithRootObject:mumblerUserSettingDictionary];
-                  [[NSUserDefaults standardUserDefaults] setObject:mumblerUserSettingsData forKey:MUMBLER_CHAT_SETTINGS];
+                  [NSUserDefaults.standardUserDefaults setObject:mumblerUserSettingsData forKey:MUMBLER_CHAT_SETTINGS];
                   
                   NSData* mumblerUserData=[NSKeyedArchiver archivedDataWithRootObject:mumblerUserDictionary];
-                  [[NSUserDefaults standardUserDefaults] setObject:mumblerUserData forKey:MUMBLER_CHAT_USER_PROFILE];
+                  [NSUserDefaults.standardUserDefaults setObject:mumblerUserData forKey:MUMBLER_CHAT_USER_PROFILE];
                   
-                  [[NSUserDefaults standardUserDefaults] synchronize];
+                  [NSUserDefaults.standardUserDefaults synchronize];
                   
                   
                   DDLogVerbose(@"%@: %@: mumblerUserId=%@ ", THIS_FILE, THIS_METHOD,mumblerUserId);
                   
                   
-                [[NSUserDefaults standardUserDefaults] setObject:mumblerUserId forKey:MUMBLER_USER_ID];
+                [NSUserDefaults.standardUserDefaults setObject:mumblerUserId forKey:MUMBLER_USER_ID];
                   
                   mumblerUserId=[NSString stringWithFormat:@"%@%@",mumblerUserId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
                   ////////CHAT
                   
-                  [[NSUserDefaults standardUserDefaults] setObject:mumblerUserId forKey:@"kXMPPmyJID"];
-                  [[NSUserDefaults standardUserDefaults] setObject:@"1qaz2wsx" forKey:@"kXMPPmyPassword"];
-                   [[NSUserDefaults standardUserDefaults] synchronize];
+                  [NSUserDefaults.standardUserDefaults setObject:mumblerUserId forKey:@"kXMPPmyJID"];
+                  [NSUserDefaults.standardUserDefaults setObject:@"1qaz2wsx" forKey:kXMPPmyPassword];
+                   [NSUserDefaults.standardUserDefaults synchronize];
                   
                   UserDao *userDao = [[UserDao alloc] init];
                   [userDao createUpdateUser:mumblerUserDictionary];
@@ -200,7 +200,7 @@
                  }
                   
                   
-                  BOOL isFriendAdded = [[NSUserDefaults standardUserDefaults]
+                  BOOL isFriendAdded = [NSUserDefaults.standardUserDefaults
                                         valueForKey:IS_FRIENDS_ADDED];
                   //friends added
                   if(isFriendAdded){

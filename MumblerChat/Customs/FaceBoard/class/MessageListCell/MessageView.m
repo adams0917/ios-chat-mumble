@@ -38,7 +38,7 @@
 
 	if ( data ) {
 
-        NSDictionary *faceMap = [[NSUserDefaults standardUserDefaults] objectForKey:@"FaceMap"];
+        NSDictionary *faceMap = [NSUserDefaults.standardUserDefaults objectForKey:@"FaceMap"];
 
         UIFont *font = [UIFont systemFontOfSize:16.0f];
 

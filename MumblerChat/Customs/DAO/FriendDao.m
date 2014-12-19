@@ -61,7 +61,7 @@
     
     
     ASAppDelegate *appDelegate = (ASAppDelegate*)[[UIApplication sharedApplication] delegate];
-    NSString *mumblerUserId= [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:MUMBLER_USER_ID]];
+    NSString *mumblerUserId= [NSString stringWithFormat:@"%@",[NSUserDefaults.standardUserDefaults valueForKey:MUMBLER_USER_ID]];
     
     UserDao *userDao =[[UserDao alloc]init];
     
@@ -228,7 +228,7 @@
     
     if(friendship != nil){
         
-        NSString *mumblerUserId= [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:MUMBLER_USER_ID]];
+        NSString *mumblerUserId= [NSString stringWithFormat:@"%@",[NSUserDefaults.standardUserDefaults valueForKey:MUMBLER_USER_ID]];
         
         //delete friendship
         NSEntityDescription *entityDesc = [NSEntityDescription entityForName:@"MumblerFriendship" inManagedObjectContext:managedObjectContext];
@@ -289,7 +289,7 @@
 
 -(MumblerFriendship *) getFriendshipWith: (NSString *) friendMumblerUserId {
     
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSUserDefaults *userDefaults = NSUserDefaults.standardUserDefaults;
     NSString *mumblerUserId = [NSString stringWithFormat:@"%@", [userDefaults valueForKey:MUMBLER_USER_ID]];
     
     NSLog(@"getFriendshipWith %@, %@", friendMumblerUserId, mumblerUserId);
@@ -682,7 +682,7 @@
  
  -(Friendship *) getFriendshipWith: (NSString *) friendMumblerUserId {
  
- NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+ NSUserDefaults *userDefaults = NSUserDefaults.standardUserDefaults;
  NSString *mumblerUserId = [NSString stringWithFormat:@"%@", [userDefaults valueForKey:@"mumbler_user_id"]];
  
  NSLog(@"getFriendshipWith %@, %@", friendMumblerUserId, mumblerUserId);
@@ -735,7 +735,7 @@
  else
  {
  // Check my who can send me messages value
- NSUserDefaults *userDefalt=[NSUserDefaults standardUserDefaults];
+ NSUserDefaults *userDefalt=NSUserDefaults.standardUserDefaults;
  NSData *userSettingData = [userDefalt valueForKey:@"mumbler_user_setting_json"];
  NSDictionary *settingDictionary = [NSKeyedUnarchiver unarchiveObjectWithData:userSettingData];
  NSString *whoCanSendMeMessage=[settingDictionary valueForKey:@"whoCanSendMeMessage"];

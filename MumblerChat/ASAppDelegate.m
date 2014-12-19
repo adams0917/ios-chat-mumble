@@ -417,7 +417,7 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 	[[self xmppStream] sendElement:presence];
     //    XMPPRoom *xmppRoom=nil;
     //    NSMutableArray *tempArray= [[NSMutableArray alloc]init];
-    //    tempArray= [[NSUserDefaults standardUserDefaults] objectForKey:@"xmppGroupNamesArray"];
+    //    tempArray= [NSUserDefaults.standardUserDefaults objectForKey:@"xmppGroupNamesArray"];
     //
     //    for (NSString *groupName in tempArray ) {
     //        NSLog(@"didFinishLaunchingWithOptions testing group array ==== %@",groupName);
@@ -447,14 +447,13 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 
 - (BOOL)connect
 {
-	if (![xmppStream isDisconnected]) {
-        
-        
+	if (!xmppStream.isDisconnected)
+    {
 		return YES;
 	}
     
-	NSString *myJID = [[NSUserDefaults standardUserDefaults] stringForKey:@"kXMPPmyJID"];
-	NSString *myPassword = [[NSUserDefaults standardUserDefaults] stringForKey:@"kXMPPmyPassword"];
+	NSString *myJID = [NSUserDefaults.standardUserDefaults stringForKey:@"kXMPPmyJID"];
+	NSString *myPassword = [NSUserDefaults.standardUserDefaults stringForKey:kXMPPmyPassword];
     
 	//
 	// If you don't want to use the Settings view to set the JID,
@@ -1281,7 +1280,7 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 
 -(NSString *) generateThreadId {
     
-    NSUserDefaults *userDefaults=[NSUserDefaults standardUserDefaults];
+    NSUserDefaults *userDefaults=NSUserDefaults.standardUserDefaults;
     NSData *mumblerUserData = [userDefaults valueForKey:@"mumbler_user_json"];
     NSDictionary *mumblerUserDictionary = [NSKeyedUnarchiver unarchiveObjectWithData:mumblerUserData];
     NSString *mumblerUserId = [mumblerUserDictionary valueForKey:@"mumblerUserId"];
@@ -1310,8 +1309,8 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
     NSLog(@"xmppStreamDidRegister1 =%@",sender);
     NSLog(@"xmppStreamDidRegister2 =%@",sender.myJID);
     
-    [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%@",sender.myJID] forKey:@"kXMPPmyJID"];
-    [[NSUserDefaults standardUserDefaults] setObject:@"1qaz2wsx" forKey:@"kXMPPmyPassword"];
+    [NSUserDefaults.standardUserDefaults setObject:[NSString stringWithFormat:@"%@",sender.myJID] forKey:@"kXMPPmyJID"];
+    [NSUserDefaults.standardUserDefaults setObject:@"1qaz2wsx" forKey:kXMPPmyPassword];
     
     // [[NSNotificationCenter defaultCenter] postNotificationName:@"xmppStreamDidRegister" object:nil];
     

@@ -223,8 +223,8 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     
     
     //User logot from the app
-    /*[[NSUserDefaults standardUserDefaults] setObject:USER_LOG_OUT_YES forKey:USER_LOG_OUT];
-     [[NSUserDefaults standardUserDefaults] synchronize];*/
+    /*[NSUserDefaults.standardUserDefaults setObject:USER_LOG_OUT_YES forKey:USER_LOG_OUT];
+     [NSUserDefaults.standardUserDefaults synchronize];*/
     
 }
 
@@ -307,7 +307,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
         
         if (buttonIndex==0){
             
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            NSUserDefaults *userDefaults = NSUserDefaults.standardUserDefaults;
             NSDictionary * keys = [userDefaults dictionaryRepresentation];
             
             for (id key in keys) {
@@ -369,7 +369,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
 - (void)loadUserProfileWithSettings{
     
     
-//    NSUserDefaults *userDefaults=[NSUserDefaults standardUserDefaults];
+//    NSUserDefaults *userDefaults=NSUserDefaults.standardUserDefaults;
 //    NSData *userSettingData = [userDefaults valueForKey:MUMBLER_CHAT_SETTINGS];
 //    self.settingDictionary =  [NSKeyedUnarchiver unarchiveObjectWithData:userSettingData];
 //    
@@ -468,7 +468,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
         
         XMPPvCardTemp *myvCardTemp = [xmppvCardTempModule myvCardTemp];
         
-        NSString *username = [[NSUserDefaults standardUserDefaults]
+        NSString *username = [NSUserDefaults.standardUserDefaults
                               valueForKey:USERNAME];
         
         NSData *profileImageData = UIImageJPEGRepresentation(profileImage, 1.0);
@@ -672,7 +672,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
             [self.settingDictionary setValue:[NSString stringWithFormat:@"%ld", timerValue] forKey:@"chatTimeLimit"];
             
             NSData* mumblerUserSettingsData=[NSKeyedArchiver archivedDataWithRootObject:self.settingDictionary];
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            NSUserDefaults *userDefaults = NSUserDefaults.standardUserDefaults;
             [userDefaults setObject:mumblerUserSettingsData forKey:MUMBLER_CHAT_SETTINGS];
             [userDefaults synchronize];
             
@@ -777,9 +777,9 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     [self mergeFbMumblerUser:user.id];
     
 
-    [[NSUserDefaults standardUserDefaults] setObject:user.id forKey:FB_USER_ID];
+    [NSUserDefaults.standardUserDefaults setObject:user.id forKey:FB_USER_ID];
     
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    [NSUserDefaults.standardUserDefaults synchronize];
     
     //[self loadSignUpWithFB:user.id:user.name];
     
@@ -893,7 +893,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     rightSwipe.direction = (UISwipeGestureRecognizerDirectionRight);
     [self.view addGestureRecognizer:rightSwipe];
     
-    NSString *myId=[[NSUserDefaults standardUserDefaults] valueForKey:MUMBLER_USER_ID];
+    NSString *myId=[NSUserDefaults.standardUserDefaults valueForKey:MUMBLER_USER_ID];
     UserDao *userDao=[[UserDao alloc]init];
     userObject=[userDao getUserForId:myId];
   

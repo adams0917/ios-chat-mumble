@@ -64,16 +64,16 @@
               DDLogVerbose(@"%@: %@: EmptyArray with FBID", THIS_FILE, THIS_METHOD);
              if([appDelegate.friendsToBeAddedDictionary count]>0){
                  
-                 [[NSUserDefaults standardUserDefaults] setBool:true forKey:IS_FRIENDS_ADDED];
+                 [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
                  
-                 [[NSUserDefaults standardUserDefaults] synchronize];
+                 [NSUserDefaults.standardUserDefaults synchronize];
                  
                  /*[self performSelectorInBackground:@selector(updateAddedFriends:) withObject:self];*/
                  
                  
-                 [[NSUserDefaults standardUserDefaults] setBool:true forKey:IS_FRIENDS_ADDED];
+                 [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
                  
-                 [[NSUserDefaults standardUserDefaults] synchronize];
+                 [NSUserDefaults.standardUserDefaults synchronize];
                  
                  double delayInSeconds = 0.25;
                  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
@@ -132,9 +132,9 @@
     //Calling Friend Dao
     if([appDelegate.friendsToBeAddedDictionary count]>0){
         
-        [[NSUserDefaults standardUserDefaults] setBool:true forKey:IS_FRIENDS_ADDED];
+        [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
         
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [NSUserDefaults.standardUserDefaults synchronize];
         
        // [self performSelectorInBackground:@selector(updateAddedFriends:) withObject:self];
         
@@ -201,7 +201,7 @@
 {
     NSArray *selectedPhoneNumbers=[appDelegate.inviteFriendsInContactsDictionary allKeys];
     
-    NSString *alias = [[NSUserDefaults standardUserDefaults]
+    NSString *alias = [NSUserDefaults.standardUserDefaults
                           valueForKey:USERNAME];
     
     [self sendSMS:[NSString stringWithFormat:@"Add me on Mumbler Chat! Username %@ http://mumblerchat.com/", alias] recipientList:selectedPhoneNumbers];
@@ -231,9 +231,9 @@
             DDLogVerbose(@"%@: %@: START appDelegate.friendsToBeAddedDictionary count]>0", THIS_FILE, THIS_METHOD);
             
             
-            [[NSUserDefaults standardUserDefaults] setBool:true forKey:IS_FRIENDS_ADDED];
+            [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
             
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            [NSUserDefaults.standardUserDefaults synchronize];
             
             double delayInSeconds = 0.25;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);

@@ -18,6 +18,8 @@
 #import "UserDao.h"
 #import "NetworkUtil.h"
 
+#import "NSDictionary+JSON.h"
+
 @interface HomeViewController (){
     BOOL haveAddedFriends;
 }
@@ -48,7 +50,7 @@
     self.loginView.delegate = self;
     self.loginView.readPermissions = @[@"public_profile", @"email", @"user_friends"];
     // Do any additional setup after loading the view.
-
+    
     [self.navigationController setNavigationBarHidden:YES];
     // Do any additional setup after loading the view.
 }
@@ -69,7 +71,7 @@
             [loginButton setBackgroundImage:nil forState:UIControlStateHighlighted];
             [loginButton sizeToFit];
             loginButton.frame = CGRectMake(0, 0, 320, 70);
-
+            
         }
         if ([obj isKindOfClass:[UILabel class]])
         {
@@ -81,7 +83,7 @@
     }
     
     self.loginView.delegate = self;
-
+    
 }
 
 
@@ -92,12 +94,12 @@
     DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
     DDLogVerbose(@"%@: %@: FB PROFILE NAME= %@  PROFILE ID =%@", THIS_FILE, THIS_METHOD,user.name,user.id);
     
-    [[NSUserDefaults standardUserDefaults] setObject:user.id forKey:FB_USER_ID];
+    [NSUserDefaults.standardUserDefaults setObject:user.id forKey:FB_USER_ID];
     
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    [NSUserDefaults.standardUserDefaults synchronize];
     
     DDLogVerbose(@"%@: %@:END", THIS_FILE, THIS_METHOD);
-
+    
     
     [self loadSignUpWithFB:user.id:user.name];
     
@@ -106,13 +108,13 @@
 // Logged-in user experience
 - (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView {
     DDLogVerbose(@"%@: %@: ", THIS_FILE, THIS_METHOD);
-
+    
 }
 
 // Logged-out user experience
 - (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView {
     DDLogVerbose(@"%@: %@: ", THIS_FILE, THIS_METHOD);
-
+    
 }
 
 
@@ -120,7 +122,7 @@
 - (void)loginView:(FBLoginView *)loginView handleError:(NSError *)error {
     NSString *alertMessage, *alertTitle;
     DDLogVerbose(@"%@: %@: ", THIS_FILE, THIS_METHOD);
-
+    
     // If the user should perform an action outside of you app to recover,
     // the SDK will provide a message for the user, you just need to surface it.
     // This conveniently handles cases like Facebook password change or unverified Facebook accounts.
@@ -147,7 +149,7 @@
     } else {
         alertTitle  = @"Something went wrong";
         alertMessage = @"Please try again later.";
-           }
+    }
     
     if (alertMessage) {
         [[[UIAlertView alloc] initWithTitle:alertTitle
@@ -161,55 +163,31 @@
 
 //signUpFB
 -(void)loadSignUpWithFB:(NSString*)loggedInFacebookId :(NSString*)userName{
-   
     DDLogVerbose(@"%@: %@: START", THIS_FILE, THIS_METHOD);
-
     
-    NSUUID *UUID = [[ASIdentifierManager sharedManager] advertisingIdentifier];
-    NSString *udid = [UUID UUIDString];
-    
-    NSMutableString *userCredentials  = [[NSMutableString alloc] init];
-    
-    [userCredentials appendFormat:@"{"];
-    
-    [userCredentials appendFormat:@"\"user_name\":\"%@\",", userName];
-
-    [userCredentials appendFormat:@"\"phone_number\":\"%@\",", @""];
-    
-    NSString * userEmail = [NSString stringWithFormat:@"%@%@", userName, @"@mumblerchat.com"];
-
-    [userCredentials appendFormat:@"\"email\":\"%@\",", userEmail];
-    
-    [userCredentials appendFormat:@"\"device_type\":\"%@\",", @"iOS"];
-    
-    [userCredentials appendFormat:@"\"date_of_birth\":\"%@\",",@0];
-    
-    [userCredentials appendFormat:@"\"facebook_id\":\"%@\",",loggedInFacebookId];
-    
-    
-    [userCredentials appendFormat:@"\"device_id\":\"%@\"", udid];
-    
-    [userCredentials appendString:@"}"];
-    
+    NSUUID *UUID = ASIdentifierManager.sharedManager.advertisingIdentifier;
+    NSDictionary *userData = @{@"user_name": userName,
+                               @"phone_number": @"",
+                               @"email": [NSString stringWithFormat:@"%@%@", userName, @"@mumblerchat.com"],
+                               @"device_type": @"iOS",
+                               @"date_of_birth": @0,
+                               @"facebook_id": loggedInFacebookId,
+                               @"device_id": UUID.UUIDString};
+    NSString *userCredentials = [userData jsonStringWithPrettyPrint:YES];
     
     DDLogVerbose(@"%@: %@: USER CREDENTIALS %@", THIS_FILE, THIS_METHOD,userCredentials);
 
-    
     //FB SIGN UP call auto signIn
     [self loadSignInWithFB :userCredentials: loggedInFacebookId];
-
-    
 }
 
 
 //signInFB
 
--(void)loadSignInWithFB:(NSString*)userDetails :(NSString*)FaceBookId{
-    
-    
+-(void)loadSignInWithFB:(NSString*)userDetails :(NSString*)FaceBookId {
     DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
-
-
+    
+    
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     NSArray *keys = [[NSArray alloc] initWithObjects:@"jsonForFacebookLogin",nil];
@@ -230,21 +208,21 @@
         
         if([status isEqualToString:@"success"])
         {
-             DDLogVerbose(@"%@: %@: RESPONSE jsonForFacebookLogin success", THIS_FILE, THIS_METHOD);
+            DDLogVerbose(@"%@: %@: RESPONSE jsonForFacebookLogin success", THIS_FILE, THIS_METHOD);
             
-            [[NSUserDefaults standardUserDefaults] setObject:SIGN_IN_TYPE_FB forKey:SIGN_IN_TYPE];
-            [[NSUserDefaults standardUserDefaults] setObject:IS_USED_BEFORE_YES forKey:IS_USED_BEFORE];
+            [NSUserDefaults.standardUserDefaults setObject:SIGN_IN_TYPE_FB forKey:SIGN_IN_TYPE];
+            [NSUserDefaults.standardUserDefaults setObject:IS_USED_BEFORE_YES forKey:IS_USED_BEFORE];
             
-            [[NSUserDefaults standardUserDefaults] setObject:userDetails forKey:FB_USER_DETAILS];
+            [NSUserDefaults.standardUserDefaults setObject:userDetails forKey:FB_USER_DETAILS];
             
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            [NSUserDefaults.standardUserDefaults synchronize];
             
             
             NSString *signInState = [responseObject valueForKey:@"sign_in_state"];
-                        
+            
             NSDictionary *data = [responseObject valueForKey:@"data"];
             NSDictionary* mumblerUserSetting=[data valueForKey:@"mumbler_user_setting"];
-
+            
             NSDictionary *mumblerUserDictionary= [data valueForKey:@"mumbler_user"];
             
             NSString * mumblerUserId =[mumblerUserDictionary valueForKey:@"mumblerUserId"];
@@ -253,13 +231,13 @@
             
             DDLogVerbose(@"%@: %@: RESPONSE MUMBLER USER ID %@", THIS_FILE, THIS_METHOD,mumblerUserId);
             
-            UserDao *userDao = [[UserDao alloc] init];
+            UserDao *userDao = [UserDao new];
             [userDao createUpdateUser:mumblerUserDictionary];
-
-            [[NSUserDefaults standardUserDefaults] setObject:mumblerUserId forKey:MUMBLER_USER_ID];
-            [[NSUserDefaults standardUserDefaults] synchronize];
             
-                if ([signInState isEqualToString:@"complete"]) {
+            [NSUserDefaults.standardUserDefaults setObject:mumblerUserId forKey:MUMBLER_USER_ID];
+            [NSUserDefaults.standardUserDefaults synchronize];
+            
+            if ([signInState isEqualToString:@"complete"]) {
                 
                 NSMutableArray *friendshipArray=[data valueForKey:@"friendships"];
                 if ([friendshipArray count]>0) {
@@ -274,14 +252,14 @@
                 
                 if( [[[self appDelegate] xmppStream] isConnected]){
                     
-                   DDLogVerbose(@"%@: %@: connected with xmpp", THIS_FILE, THIS_METHOD);
+                    DDLogVerbose(@"%@: %@: connected with xmpp", THIS_FILE, THIS_METHOD);
                 }else{
-                   DDLogVerbose(@"%@: %@: not connected with xmpp", THIS_FILE, THIS_METHOD);
+                    DDLogVerbose(@"%@: %@: not connected with xmpp", THIS_FILE, THIS_METHOD);
                     
                     
                     NSString *ejjabberedUsername = [NSString stringWithFormat:@"%@%@",mumblerUserId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
                     
-                     DDLogVerbose(@"%@: %@: EJABBERED USERNAME %@", THIS_FILE, THIS_METHOD,ejjabberedUsername);
+                    DDLogVerbose(@"%@: %@: EJABBERED USERNAME %@", THIS_FILE, THIS_METHOD,ejjabberedUsername);
                     
                     [[[self appDelegate] xmppStream]setMyJID:[XMPPJID jidWithString:ejjabberedUsername]];
                     
@@ -293,8 +271,8 @@
                 
                 
             }else{
-                 DDLogVerbose(@"%@: %@: SIGNIN STATE NOT COMPLETE ", THIS_FILE, THIS_METHOD);
-               
+                DDLogVerbose(@"%@: %@: SIGNIN STATE NOT COMPLETE ", THIS_FILE, THIS_METHOD);
+                
                 //go to fb sign up
                 //xammpp register is there
                 UIStoryboard *mainStoryBoard = [UIStoryboard storyboardWithName:@"Main_iPhone_5s" bundle:nil];
@@ -302,8 +280,8 @@
                 [self presentViewController:storyViewController animated:YES completion:nil]; //  present it
                 
             }
-           
-          
+            
+            
         }else{
             
             [[[UIAlertView alloc] initWithTitle:@"Alert"
@@ -326,7 +304,7 @@
     
     
     DDLogVerbose(@"%@: %@: END ", THIS_FILE, THIS_METHOD);
-
+    
     
 }
 
@@ -339,7 +317,7 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-   
+    
 }
 
 
@@ -348,7 +326,7 @@
 
 - (ASAppDelegate *)appDelegate
 {
-	return (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
+    return (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 -(void)myMethodStreamDidRegister{
@@ -372,7 +350,7 @@
             XMPPvCardTemp *newvCardTemp = [XMPPvCardTemp vCardTempFromElement:vCardXML];
             
             
-            NSString *fbId = [[NSUserDefaults standardUserDefaults]
+            NSString *fbId = [NSUserDefaults.standardUserDefaults
                               valueForKey:FB_USER_ID];
             
             NSString * imageUrlString = [NSString stringWithFormat:@"%@%@%@", @"http://graph.facebook.com/", fbId,@"/picture?type=large"];
@@ -389,7 +367,7 @@
         }
         
     });
-
+    
     
     if ([[self appDelegate] connect])
     {
@@ -412,11 +390,11 @@
             if([internetConnectionStatus isEqualToString:INTERNET_CONNECTION_AVAILABLE]){
                 
                 //Add Friends Screen..CONTACTS HIGHLIGHTED
-                [[NSUserDefaults standardUserDefaults] setObject:ADD_FRIEND_FACEBOOK_TAB forKey:ADD_FRIEND_TAB_TO_SELECTED];
-                [[NSUserDefaults standardUserDefaults] synchronize];
+                [NSUserDefaults.standardUserDefaults setObject:ADD_FRIEND_FACEBOOK_TAB forKey:ADD_FRIEND_TAB_TO_SELECTED];
+                [NSUserDefaults.standardUserDefaults synchronize];
                 
                 [self performSegueWithIdentifier:@"Add_friends_Home" sender:self];
-
+                
                 
             }
             //Internet connection is not there
@@ -426,15 +404,15 @@
                 ChatThreadViewController *storyViewController = [mainStoryBoard instantiateViewControllerWithIdentifier:@"ChatThreadViewController"];
                 [self presentViewController:storyViewController animated:YES completion:nil]; //  present it
             }
-
+            
         }
         
-    
+        
         
     } else
     {
         DDLogVerbose(@"%@: %@: APP DELEGATE DID NOT CONNECT NO JID", THIS_FILE, THIS_METHOD);
-
+        
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert!" message:@"Unable to login to xmpp server as new user" delegate:self
                                               cancelButtonTitle:@"OK" otherButtonTitles: nil];
         
@@ -467,14 +445,14 @@
 
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+ {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

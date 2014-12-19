@@ -34,7 +34,7 @@
 
         self.backgroundColor = [UIColor colorWithRed:236.0/255.0 green:236.0/255.0 blue:236.0/255.0 alpha:1];
 
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
         NSArray *languages = [defaults objectForKey:@"AppleLanguages"];
         if ([[languages objectAtIndex:0] hasPrefix:@"zh"]) {
 
@@ -50,7 +50,7 @@
             NSLog([_faceMap description]);
         }
        
-        [[NSUserDefaults standardUserDefaults] setObject:_faceMap forKey:@"FaceMap"];
+        [NSUserDefaults.standardUserDefaults setObject:_faceMap forKey:@"FaceMap"];
 
         //表情盘
         faceView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, 320, 190)];

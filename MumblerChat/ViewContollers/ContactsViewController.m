@@ -320,7 +320,7 @@
     if ([friendsAllreadyInMumbler count]>0) {
         
         
-        NSString *mumblerUserId= [NSString stringWithFormat:@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:MUMBLER_USER_ID]];
+        NSString *mumblerUserId= [NSString stringWithFormat:@"%@",[NSUserDefaults.standardUserDefaults valueForKey:MUMBLER_USER_ID]];
         
         
         FriendDao *objFriendsDao=[[FriendDao alloc]init];
@@ -701,8 +701,8 @@
     if([sectionHeader isEqualToString:@"Friends Using Mumbler"]){
         
         tablecell.selectAllCheckboxImageView = selectAllImageViewFriendsWithMumbler;
-        [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%lu", (unsigned long)[sectionData count]] forKey:FRIENDS_USING_MUMBLER_IN_CONTACTS];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [NSUserDefaults.standardUserDefaults setObject:[NSString stringWithFormat:@"%lu", (unsigned long)[sectionData count]] forKey:FRIENDS_USING_MUMBLER_IN_CONTACTS];
+        [NSUserDefaults.standardUserDefaults synchronize];
 
         
         DDLogVerbose(@"%@: %@: Friends Using Mumbler ", THIS_FILE, THIS_METHOD);
@@ -748,8 +748,8 @@
     else if([sectionHeader isEqualToString:@"Invite Friends"]){
         
         tablecell.selectAllCheckboxImageView = selectAllImageViewInviteFriends;
-        [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%lu", (unsigned long)[sectionData count]] forKey:INVITE_FRIENDS_IN_CONTACTS];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [NSUserDefaults.standardUserDefaults setObject:[NSString stringWithFormat:@"%lu", (unsigned long)[sectionData count]] forKey:INVITE_FRIENDS_IN_CONTACTS];
+        [NSUserDefaults.standardUserDefaults synchronize];
         
         
         NSString *selectedMobile = [record valueForKey:@"phoneNumber"];

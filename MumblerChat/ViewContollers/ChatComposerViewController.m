@@ -12,23 +12,16 @@
 
 
 #import <CoreLocation/CoreLocation.h>
-//#import "ASBaseViewController.h"
 #import "ASAppDelegate.h"
-//#import "ASKeyboardHandlerView.h"
-//#import "ASExpandableTexView.h"
-//#import "ASProgressView.h"
 #import "ASSliderView.h"
-//#import "NSDate+Helpers.h"
 
 #import "MyChatTableViewCell.h"
-//#import "FriendChatTableViewCell.h"
 
 #import "ChatThread.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "FaceBoard.h"
-#//import "RecordView.h"
 #import "ChatThreadDao.h"
 #import "UserDao.h"
 #import "ChatMessage.h"
@@ -45,11 +38,12 @@
 #define CAMERA_TRANSFORM_X 2.0
 #define CAMERA_TRANSFORM_Y 2.0
 
-@interface ChatComposerViewController (){
-     float floor;
-     NSString *chatThreadId;
-     NSString *meEjabberdId;
-     NSString *friendEjabberdId;
+@interface ChatComposerViewController ()
+{
+    float floor;
+    NSString *chatThreadId;
+    NSString *meEjabberdId;
+    NSString *friendEjabberdId;
     UIButton *butonBackCam;
     UIButton *buttonSwitchCam;
     UILabel*labelCount;
@@ -82,7 +76,7 @@
     User *meUser;
     NSString *timeGivenToRespond;
     MyChatTableViewCell *globalCell;
-    //Boolean to figure out new record got inserted
+    // Boolean to figure out new record got inserted
     BOOL insertedNewRecordFromFriend;
     NSInteger remainingSecondsTrack;
     // Boolean to figure out whether we need to handle the timer
@@ -101,22 +95,12 @@
 @synthesize fetchedResultsController=_fetchedResultsController;
 @synthesize chatTextField;
 @synthesize chatThread;
-/*@synthesize butonBackCam;
-@synthesize buttonSwitchCam;
-@synthesize editModeCloseButton;
-@synthesize editmodeView;
-@synthesize labelCount;
-@synthesize uploadImageButton;
-
-@synthesize moviePlayer;
-@synthesize moviewHolderView;
-@synthesize playerController;*/
 @synthesize mumblerFriend;
 @synthesize actionType;
 @synthesize chatHeaderLabel;
 @synthesize sliderView;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -127,137 +111,118 @@
 
 ////////below 3 buttons
 
-- (IBAction)didTapOnViedioButton:(id)sender {
-     NSLog(@"didTapOnViedioButton----");
-        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        imagePicker.mediaTypes =[NSArray arrayWithObject:(NSString *)kUTTypeMovie];
-        imagePicker.videoQuality = UIImagePickerControllerQualityTypeMedium;
-        imagePicker.cameraCaptureMode=UIImagePickerControllerCameraCaptureModeVideo;
-        [imagePicker setVideoMaximumDuration:10];
-        [self presentViewController:imagePicker animated:YES completion:nil];
+- (IBAction) didTapOnViedioButton:(id)sender
+{
+    NSLog(@"didTapOnViedioButton----");
+    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    imagePicker.mediaTypes = @[(NSString *) kUTTypeMovie];
+    imagePicker.videoQuality = UIImagePickerControllerQualityTypeMedium;
+    imagePicker.cameraCaptureMode=UIImagePickerControllerCameraCaptureModeVideo;
+    [imagePicker setVideoMaximumDuration:10];
+    [self presentViewController:imagePicker animated:YES completion:nil];
 }
 
 
-- (IBAction)didTapOnImageButton:(id)sender {
-     NSLog(@"didTapOnImageButton----");
+- (IBAction) didTapOnImageButton:(id)sender
+{
+    NSLog(@"didTapOnImageButton----");
     
     [self showCameraMode:NO];
 }
 
-- (IBAction)didTapOnRandomQuestionButton:(id)sender {
-     NSLog(@"didTapOnRandomQuestionButton----");
+- (IBAction) didTapOnRandomQuestionButton:(id)sender
+{
+    NSLog(@"didTapOnRandomQuestionButton----");
 }
 
 
--(IBAction)cameraDismiss:(id)sender{
+-(IBAction) cameraDismiss:(id)sender
+{
     
     NSLog(@"cameraDismiss---");
     [self dismissViewControllerAnimated:YES completion:nil];
-    
 }
 
 
--(IBAction)capture:(id)sender{
-    
+-(IBAction) capture:(id)sender
+{
     NSLog(@"capture--------");
-  
+    
     NSLog(@"takepicture-----");
     [imagePicker takePicture];
     
     imagePicker.delegate=self;
-    
 }
 
 
--(IBAction)cameraSwitchMode:(id)sender{
+-(IBAction) cameraSwitchMode:(id)sender
+{
     NSLog(@"isFlipping,Capturing");
     
-    [UIView transitionWithView:imagePicker.view duration:1.0 options:UIViewAnimationOptionAllowAnimatedContent | UIViewAnimationOptionTransitionFlipFromLeft animations:^{
-        
-        if ([UIImagePickerController isCameraDeviceAvailable:[imagePicker cameraDevice]]) {
-            
-            
-            if([imagePicker cameraCaptureMode] == UIImagePickerControllerCameraCaptureModePhoto)
-            {
-                if([imagePicker cameraDevice] == UIImagePickerControllerCameraDeviceRear)
-                {
-                    imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-                }
-                else if( [imagePicker cameraDevice] == UIImagePickerControllerCameraDeviceFront)
-                {
-                    imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-                }
-            }
-            else if([imagePicker cameraCaptureMode] == UIImagePickerControllerCameraCaptureModeVideo)
-            {
-                if([imagePicker cameraDevice] == UIImagePickerControllerCameraDeviceRear)
-                {
-                    
-                    imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-                }
-                else if( [imagePicker cameraDevice] == UIImagePickerControllerCameraDeviceFront)
-                {
-                    imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-                }
-                
-            }
-            imagePicker.delegate=self;//
-        }
-        
-        
-    } completion:NULL];
-    
+    [UIView transitionWithView:imagePicker.view
+                      duration:1.0
+                       options:UIViewAnimationOptionAllowAnimatedContent | UIViewAnimationOptionTransitionFlipFromLeft
+                    animations:^{
+                        if ([UIImagePickerController isCameraDeviceAvailable:imagePicker.cameraDevice]) {
+                            if (imagePicker.cameraCaptureMode == UIImagePickerControllerCameraCaptureModePhoto) {
+                                if (imagePicker.cameraDevice == UIImagePickerControllerCameraDeviceRear) {
+                                    imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+                                } else if (imagePicker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+                                    imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+                                }
+                            } else if(imagePicker.cameraCaptureMode == UIImagePickerControllerCameraCaptureModeVideo) {
+                                if (imagePicker.cameraDevice == UIImagePickerControllerCameraDeviceRear) {
+                                    imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+                                } else if ( imagePicker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+                                    imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+                                }
+                                
+                            }
+                            
+                            imagePicker.delegate = self;
+                        }
+                    }
+                    completion:nil];
 }
 
--(IBAction)cameraFlash:(id)sender{
+-(IBAction) cameraFlash:(id)sender
+{
     
     NSLog(@"cameraFlash------");
     
     [self toggleTorch];
-    
-    
 }
 
-- (void) toggleTorch {
+- (void) toggleTorch
+{
     //flash on off
     
     device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
-    if ([device hasTorch] && [device hasFlash]){
+    if (device.hasTorch && device.hasFlash){
         
         
         NSLog(@"It's currently off.. turning on now.");
         if (device.torchMode == AVCaptureTorchModeOff) {
-            
             [buttonFlashCam setBackgroundImage:[UIImage imageNamed:@"flash_on_2"] forState:UIControlStateNormal];
-            flashInput = [AVCaptureDeviceInput deviceInputWithDevice:device error: nil];
-            output = [[AVCaptureVideoDataOutput alloc] init];
+            flashInput = [AVCaptureDeviceInput deviceInputWithDevice:device error:nil];
+            output = [AVCaptureVideoDataOutput new];
             [device lockForConfiguration:nil];
-            [device setTorchMode:AVCaptureTorchModeOn];
-            [device setFlashMode:AVCaptureFlashModeOn];
-            
-            
-            
-        }else{
-            
+            device.torchMode = AVCaptureTorchModeOn;
+            device.flashMode = AVCaptureFlashModeOn;
+        } else {
             [buttonFlashCam setBackgroundImage:[UIImage imageNamed:@"flash_off"] forState:UIControlStateNormal];
             [device lockForConfiguration:nil];
-            [device setTorchMode:AVCaptureTorchModeOff];
-            [device setFlashMode:AVCaptureFlashModeOff];
-            
-            
-            
+            device.torchMode = AVCaptureTorchModeOff;
+            device.flashMode = AVCaptureFlashModeOff;
         }
         
         [device unlockForConfiguration];
-        
-        
     }
-    
-    
 }
 
--(UIImage*)unrotateImage:(UIImage*)image {
+-(UIImage*) unrotateImage:(UIImage*)image
+{
     NSLog(@"unrotateImage");
     CGSize size = image.size;
     UIGraphicsBeginImageContext(size);
@@ -269,11 +234,11 @@
 }
 
 
--(void) imagePickerController: (UIImagePickerController *) picker
-didFinishPickingMediaWithInfo: (NSDictionary *) info {
+-(void) imagePickerController:(UIImagePickerController *) picker didFinishPickingMediaWithInfo:(NSDictionary *) info
+{
     
     NSLog(@"didFinishPickingMediaWithInfo info == %@",info);
-
+    
     if([[info objectForKey:@"UIImagePickerControllerMediaType"] isEqualToString:@"public.image"]){
         
         NSLog(@"UIImagePickerControllerMediaType image --- ");
@@ -285,10 +250,10 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         UIImage * imageToSave=[self unrotateImage:originalImage];
         NSData *imageData =UIImageJPEGRepresentation(imageToSave, 90);
         NSString *imagebase64String = [imageData base64EncodedString];
-       
+        
         [self dismissViewControllerAnimated:YES completion:nil];
         [SVProgressHUD showInView:self.view status:@"Uploading image"];
-         [self uploadImageFile:imageData:imagebase64String];
+        [self uploadImageFile:imageData:imagebase64String];
         
     }
     //viedio
@@ -309,43 +274,43 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         NSString *videoBase64String=[videoData base64EncodedString];
         
         [self uploadVideoFile :videoData:videoBase64String];
-
+        
         
         
         //////////////
         
         
-
-       /* NSString *mediaUrl=[info objectForKey:@"UIImagePickerControllerMediaURL"];
         
-        NSLog(@"moviePath %@",mediaUrl);
-        [SVProgressHUD showInView:self.view status:@"Uploading video"];
-        
-       
-      
-        
-        UIImage * originalImage;
-        originalImage = (UIImage *) [info objectForKey:
-                                     UIImagePickerControllerMediaURL];//image lies inside ths dictionary
-        
-        
-        
-        
-        
-       UIImage * imageToSave=[self unrotateImage:originalImage];
-        NSData *videoData =UIImageJPEGRepresentation(imageToSave, 90);
-        NSString *videoBase64String = [videoData base64EncodedString];
-
-        
+        /* NSString *mediaUrl=[info objectForKey:@"UIImagePickerControllerMediaURL"];
+         
+         NSLog(@"moviePath %@",mediaUrl);
+         [SVProgressHUD showInView:self.view status:@"Uploading video"];
+         
+         
+         
+         
+         UIImage * originalImage;
+         originalImage = (UIImage *) [info objectForKey:
+         UIImagePickerControllerMediaURL];//image lies inside ths dictionary
+         
+         
+         
+         
+         
+         UIImage * imageToSave=[self unrotateImage:originalImage];
+         NSData *videoData =UIImageJPEGRepresentation(imageToSave, 90);
+         NSString *videoBase64String = [videoData base64EncodedString];
+         
+         
          NSLog(@"moviePath videoBase64String %@",videoBase64String);
-        
-        [self uploadVideoFile :videoData:videoBase64String];*/
+         
+         [self uploadVideoFile :videoData:videoBase64String];*/
         
         [self dismissViewControllerAnimated:YES completion:nil];
         
     }
-
-   
+    
+    
 }
 
 -(void)uploadImageFile :(NSData *)imageToUpload :(NSString *) base64ImageString{
@@ -375,7 +340,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"Error: %@", error);
         
-         NSError *error1 = nil;
+        NSError *error1 = nil;
         [[self fetchedResultsController] performFetch:&error1];
         [chatComposerTableView reloadData];
         
@@ -455,7 +420,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
 -(void)sendFile :(NSString *) imageString : (NSString *) imageUrl :(NSString *) fileType{
     
     NSLog(@"sendFile");
-   // NSLog(@"sendFile imageString %@=",imageString);
+    // NSLog(@"sendFile imageString %@=",imageString);
     NSLog(@"sendFile imageUrl %@=",imageUrl);
     NSLog(@"sendFile fileType %@=",fileType);
     
@@ -471,74 +436,6 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     }else if([fileType isEqualToString:MESSAGE_MEDIUM_VIDEO]){
         fileType=MESSAGE_MEDIUM_VIDEO;
     }
-    
-    
-   /* if([actionType isEqualToString:ACTION_TYPE_WITH_FRIEND]){
-        
-        NSString *timeInMiliseconds = [ChatUtil getTimeInMiliSeconds:[NSDate date]];
-        
-        NSXMLElement *message = [NSXMLElement elementWithName:@"message"];
-        NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
-        NSXMLElement *received = [NSXMLElement elementWithName:@"request" URI:@"urn:xmpp:receipts"];
-        
-        NSXMLElement *extras=[NSXMLElement elementWithName:@"extras" URI:@"urn:xmpp:extras"];
-        
-        NSString *messageId=[NSString stringWithFormat:@"%@%@%@",@"ios_",timeInMiliseconds,meEjabberdId];
-        
-        
-        [body setStringValue:imageUrl];
-        [message addAttributeWithName:@"type" stringValue:@"chat"];
-        [message addAttributeWithName:@"id" stringValue:messageId];
-        [message addAttributeWithName:@"to" stringValue:friendEjabberdId];
-        
-        [extras addAttributeWithName:MESSAGE_MEDIUM stringValue:fileType];
-        [extras addAttributeWithName:THREAD_ID stringValue:chatThreadId];
-        
-        
-        [message addChild:extras ];
-        [message addChild:body];
-        [message addChild:received];
-        DDLogVerbose(@"%@: %@: messaged Typed =%@ ", THIS_FILE, THIS_METHOD,message);
-        
-        [appDelegate.xmppStream sendElement:message];
-        
-        DDLogVerbose(@"%@: %@: chatThreadId =%@ ", THIS_FILE, THIS_METHOD,chatThreadId);
-       
-        
-        NSString *messageDate= [ChatUtil getDate:timeInMiliseconds inFormat:dateFormat];
-        
-        ChatMessage *chatMessage = [chatMessageDao saveChatMessageWithThreadId:chatThreadId messageId:messageId senderEjabberdId:meEjabberdId recipientEjabberdId:friendEjabberdId messageMedium:fileType messageContent:imageUrl messageDateTime:timeInMiliseconds deliveredDateTime:messageDate messageDelivered:[NSNumber numberWithInt:1] imageEncodedString:imageString sentSeen:[NSNumber numberWithInt:2]threadLastMessage:imageUrl receiveType:RECEIVE_TYPE_OUTGOING timeGivenToRespond:[NSNumber numberWithInt:21] chatTextType:nil];
-        
-        
-        if(chatMessage){
-            
-            
-            DDLogVerbose(@"%@: %@: chatThreadId chatImage textMessage returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.textMessage);
-            
-            DDLogVerbose(@"%@: %@: chatThreadId chatImage threadId returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.threadId);
-            
-            DDLogVerbose(@"%@: %@: chatThreadId chatImage messageMediumType returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.messageMediumType);
-            
-            NSError *error = nil;
-            [[self fetchedResultsController] performFetch:&error];
-            
-            [chatComposerTableView reloadData];
-            
-            DDLogVerbose(@"%@: %@: chatThreadId chatImage messageMediumType end returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.messageMediumType);
-            
-            
-        }else{
-            DDLogVerbose(@"%@: %@: chatThreadId chatImage  not returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.textMessage);
-            
-            
-        }
-        
-        
-        
-        
-    }
-    //From chat composer icon
-    else */
     
     if([actionType isEqualToString:ACTION_TYPE_WITHOUT_FRIEND]){
         
@@ -572,7 +469,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             
             
         }
-
+        
         
         
     }
@@ -614,15 +511,15 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         NSString *messageDate= [ChatUtil getDate:timeInMiliseconds inFormat:dateFormat];
         
         
-       /* ChatMessage *chatMessage = [chatMessageDao saveChatMessageWithThreadId:chatThreadId messageId:messageId senderEjabberdId:meEjabberdId recipientEjabberdId:friendEjabberdId messageMedium:fileType messageContent:imageUrl messageDateTime:timeInMiliseconds deliveredDateTime:messageDate messageDelivered:[NSNumber numberWithInt:1] imageEncodedString:imageString sentSeen:[NSNumber numberWithInt:2]threadLastMessage:imageUrl receiveType:RECEIVE_TYPE_OUTGOING timeGivenToRespond:[NSNumber numberWithInt:21] chatTextType:nil];*/
+        /* ChatMessage *chatMessage = [chatMessageDao saveChatMessageWithThreadId:chatThreadId messageId:messageId senderEjabberdId:meEjabberdId recipientEjabberdId:friendEjabberdId messageMedium:fileType messageContent:imageUrl messageDateTime:timeInMiliseconds deliveredDateTime:messageDate messageDelivered:[NSNumber numberWithInt:1] imageEncodedString:imageString sentSeen:[NSNumber numberWithInt:2]threadLastMessage:imageUrl receiveType:RECEIVE_TYPE_OUTGOING timeGivenToRespond:[NSNumber numberWithInt:21] chatTextType:nil];*/
         
         
         ChatMessage *chatMessage;
         
         if([actionType isEqualToString:ACTION_TYPE_THREAD]){
             
-        chatMessage = [chatMessageDao saveChatMessageWithThreadId:chatThreadId messageId:messageId senderUser:chatThread.threadOwner recipient:chatThread.recipient messageMedium:fileType messageContent:imageUrl messageDateTime:timeInMiliseconds deliveredDateTime:messageDate messageDelivered:[NSNumber numberWithInt:1]  imageEncodedString:imageString sentSeen:[NSNumber numberWithInt:2] threadLastMessage:meEjabberdId receiveType:RECEIVE_TYPE_OUTGOING timeGivenToRespond:[NSNumber numberWithInt:timeToRespond] chatTextType:nil];
-        
+            chatMessage = [chatMessageDao saveChatMessageWithThreadId:chatThreadId messageId:messageId senderUser:chatThread.threadOwner recipient:chatThread.recipient messageMedium:fileType messageContent:imageUrl messageDateTime:timeInMiliseconds deliveredDateTime:messageDate messageDelivered:[NSNumber numberWithInt:1]  imageEncodedString:imageString sentSeen:[NSNumber numberWithInt:2] threadLastMessage:meEjabberdId receiveType:RECEIVE_TYPE_OUTGOING timeGivenToRespond:[NSNumber numberWithInt:timeToRespond] chatTextType:nil];
+            
         }else{
             
             chatMessage = [chatMessageDao saveChatMessageWithThreadId:chatThreadId messageId:messageId senderUser:meUser recipient:mumblerFriend messageMedium:fileType messageContent:imageUrl messageDateTime:timeInMiliseconds deliveredDateTime:messageDate messageDelivered:[NSNumber numberWithInt:1]  imageEncodedString:imageString sentSeen:[NSNumber numberWithInt:2] threadLastMessage:meEjabberdId receiveType:RECEIVE_TYPE_OUTGOING timeGivenToRespond:[NSNumber numberWithInt:timeToRespond] chatTextType:nil];
@@ -630,124 +527,28 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         }
         
         
-        if(chatMessage){
-            
+        if(chatMessage) {
             DDLogVerbose(@"%@: %@: chatThreadId chatImage textMessage returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.textMessage);
             
             DDLogVerbose(@"%@: %@: chatThreadId chatImage threadId returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.threadId);
             
-           NSError *error = nil;
-           [[self fetchedResultsController] performFetch:&error];
+            NSError *error = nil;
+            [self.fetchedResultsController performFetch:&error];
             
-           [chatComposerTableView reloadData];
+            [chatComposerTableView reloadData];
             
-            if([actionType isEqualToString:ACTION_TYPE_WITH_FRIEND]){
-                
+            if([actionType isEqualToString:ACTION_TYPE_WITH_FRIEND]) {
                 double delayInSeconds = 2.0;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                     // code to be executed on the main queue after delay
                     [self performSegueWithIdentifier:@"composedMsg_ChatThread" sender:self];
                 });
-                
-
             }
-            
-            
-           // [self controllerDidChangeContent:self.fetchedResultsController];
-            
-            
-        }else{
+        } else {
             DDLogVerbose(@"%@: %@: chatThreadId chatImage  not returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.textMessage);
-            
-            
         }
-        
-        
-        
     }
-    
-    
-   /* NSTimeInterval  timeInMillis = [[NSDate date] timeIntervalSince1970] * 1000;
-    long long integerMilliSeconds = timeInMillis;
-    NSString *timeInMillisStr = [NSString stringWithFormat:@"%lld", integerMilliSeconds];
-    ChatMessageDao *chatMessageDao2 = [[ChatMessageDao alloc] init];
-    
-   // NSString *threadId=@"";
-   // NSString *myJId=[[NSUserDefaults standardUserDefaults] objectForKey:@"kXMPPmyJID"];
-       if(chatThreadId==nil || [chatThreadId isEqual:@""]){
-            
-            threadId = [myJId stringByAppendingString:[NSString stringWithFormat:@"_%@",self.friendEjabbereId]];
-            selectedChatThreadId=threadId;
-            NSLog(@"123thread for db in send text selectedChatThreadId 1111==%@",selectedChatThreadId);
-            
-            _fetchedResultsController = nil;
-            NSError *error = nil;
-            [[self fetchedResultsController] performFetch:&error];
-        }else{
-            NSLog(@"123thread for db in send text selectedChatThreadId else==%@",selectedChatThreadId);
-            
-            threadId=selectedChatThreadId;
-        }
-        
-        // sending xmpp Message
-        
-        NSXMLElement *message = [NSXMLElement elementWithName:@"message"];
-        [message addAttributeWithName:@"to" stringValue:self.friendId];
-        [message addAttributeWithName:@"id" stringValue:[NSString stringWithFormat:@"%@%@",@"ios-",timeInMillisStr]];
-        [message addAttributeWithName:@"type" stringValue:@"chat"];
-        
-        NSXMLElement *body = [NSXMLElement elementWithName:@"body" stringValue:imageUrl];
-        
-        
-        [body addAttributeWithName:@"lang" stringValue:@"en"];
-        [message addChild:body];
-        
-        NSXMLElement *messagecontenttype=[NSXMLElement elementWithName:@"messagecontenttype" URI:@"urn:xmpp:messagetype"];
-        if([fileType isEqualToString:@"image"]){
-            [messagecontenttype addAttributeWithName:@"type" stringValue:@"1"];
-        }else if([fileType isEqualToString:@"video"]){
-            [messagecontenttype addAttributeWithName:@"type" stringValue:@"9"];
-        }else if([fileType isEqualToString:@"voice"]){
-            [messagecontenttype addAttributeWithName:@"type" stringValue:@"3"];
-        }
-        [messagecontenttype addAttributeWithName:@"desc" stringValue:@""];
-        [message addChild:messagecontenttype ];
-        
-        NSXMLElement *received = [NSXMLElement elementWithName:@"request" URI:@"urn:xmpp:receipts"];
-        [message addChild:received];
-        
-        
-        NSXMLElement *locationdetails=[NSXMLElement elementWithName:@"locationdetails" URI:@"urn:xmpp:location"];
-        [locationdetails addAttributeWithName:@"latitude" stringValue:@"1.0"];
-        [locationdetails addAttributeWithName:@"longitude" stringValue:@"1.0"];
-        [message addChild:locationdetails ];
-        
-        NSLog(@"test_____sendImage________message%@",message);
-        
-        [appDelegate.xmppStream sendElement:message];
-        
-        //saving to chat database
-        NSLog(@"123thread for db in send text final==%@",threadId);
-        long long timeInSeconds = [timeInMillisStr longLongValue]/1000;
-    
-    NSDate *tr = [NSDate dateWithTimeIntervalSince1970:timeInSeconds];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"EEEE, MMMM dd, yyyy"];
-    NSString *messageDate= [formatter stringFromDate:tr];
-    
-        ChatMessage *chatMessage = [chatMessageDao2 saveChatMessage:threadId :[NSString stringWithFormat:@"%@%@",@"ios-",timeInMillisStr] : myJId:self.friendId :[NSNumber numberWithInt:1] :imageUrl :nil :timeInMillisStr :messageDate :[NSNumber numberWithInt:1]:fileType:imageString:[NSNumber numberWithInt:2]:[NSString stringWithFormat:@"%@%@",@"Sent ",fileType]:@"outgoing":nil:nil];//[NSNumber numberWithInt:2] for groupChat
-        NSLog(@"saved to db wkcmdckmdkcmd");
-        
-        if(chatMessage){
-            [SVProgressHUD dismissWithSuccess:@"Sent"];
-            
-            NSLog(@"______________chatmessage returned in imageupload %@", chatMessage.textMessage);
-        }else{
-            NSLog(@"______________chatmessage not returned imageupload");
-            [SVProgressHUD dismissWithError:@"Failed to send"];
-        }*/
-    
 }
 
 
@@ -756,17 +557,8 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     
     NSLog(@"editModeViewSetHidden");
     
-    /*[self.buttonTwo setEnabled:YES];
-    [self.buttonTwo setHidden:NO];
-    [self.butonThree setEnabled:YES];
-    [self.butonThree setHidden:NO];
-    [self.buttonFour setEnabled:YES];
-    [self.buttonFour setHidden:NO];
-    [self.buttonCapture setEnabled:YES];
-    [self.buttonCapture setHidden:NO];*/
-    
     if ([(UIButton*)sender tag]==1) {
-         NSLog(@"editModeViewSetHidden tag1");
+        NSLog(@"editModeViewSetHidden tag1");
         [editmodeView setHidden:YES];
         [editModeCloseButton setEnabled:NO];
         [editModeCloseButton setHidden:YES];
@@ -776,7 +568,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         
     }else{
         
-          NSLog(@"editModeViewSetHidden tag2");
+        NSLog(@"editModeViewSetHidden tag2");
         [uploadImageButton setEnabled:NO];
         [uploadImageButton setHidden:YES];
         
@@ -786,8 +578,8 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
 }
 
 -(void)showCameraMode:(BOOL)video{
-
-   // shouldRemoveFetchDelegate = NO;
+    
+    // shouldRemoveFetchDelegate = NO;
     
     float screenWidth = [[UIScreen mainScreen] bounds].size.width;
     imagePicker=[[UIImagePickerController alloc] init];
@@ -965,7 +757,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
 
 - (ASAppDelegate *)appDelegate
 {
-	return (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
+    return (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 - (void)keyboardWillShow:(NSNotification *)notification {
@@ -1041,7 +833,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     
     
     
-   // DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
+    // DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
     NSLog(@"viewDidLoad chat composer");
     
     // DDLogVerbose(@"%@: %@: START viewWillAppear", THIS_FILE, THIS_METHOD);
@@ -1054,24 +846,24 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     chatImagesDictionary =[[NSMutableDictionary alloc]init];
     chatVideoThumbnailsDictionary=[[NSMutableDictionary alloc]init];
     
-    NSString *meMumblerUserId = [[NSUserDefaults standardUserDefaults]
+    NSString *meMumblerUserId = [NSUserDefaults.standardUserDefaults
                                  valueForKey:MUMBLER_USER_ID];
     self.sliderView.currentValue =21;
     
-
+    
     
     meUser =  [userDao getUserForId:meMumblerUserId];
     
     meEjabberdId=[NSString stringWithFormat:@"%@%@",meMumblerUserId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
     
-     dateFormat = @"EEEE, MMMM dd, yyyy";
-     timeFormat =@"hh:mm a";
+    dateFormat = @"EEEE, MMMM dd, yyyy";
+    timeFormat =@"hh:mm a";
     
     
     DDLogVerbose(@"%@: %@: meEjabberdId=%@ ", THIS_FILE, THIS_METHOD,meEjabberdId);
     
     
-   
+    
     //From selected friend
     if([actionType isEqualToString:ACTION_TYPE_WITH_FRIEND]){
         DDLogVerbose(@"%@: %@: ACTION_TYPE_WITH_FRIEND ", THIS_FILE, THIS_METHOD);
@@ -1148,10 +940,10 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         
         remainingSeconds= ([chatThread.timeGivenToRespond integerValue]*1000 - countDifference) ;
         
-       
-         int secondsRemaining = (int)remainingSeconds;
         
-         int timeGivenToRespondLastMsg = (int)[chatThread.timeGivenToRespond integerValue];
+        int secondsRemaining = (int)remainingSeconds;
+        
+        int timeGivenToRespondLastMsg = (int)[chatThread.timeGivenToRespond integerValue];
         
         
         
@@ -1159,7 +951,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         NSLog(@"timeGivenToRespondLastMsg %d",timeGivenToRespondLastMsg);
         
         
-       // int abc =[remaingTime]
+        // int abc =[remaingTime]
         
         [self.cdp startCountDownFromSeconds:timeGivenToRespondLastMsg:secondsRemaining/1000];
         
@@ -1176,7 +968,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         meEjabberdId=[NSString stringWithFormat:@"%@%@",chatThread.threadOwner.userId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
         
         
-       // meEjabberdId=chatThread.threadOwner;
+        // meEjabberdId=chatThread.threadOwner;
         
         DDLogVerbose(@"%@: %@: chatThread meEjabberdId=%@", THIS_FILE, THIS_METHOD,meEjabberdId);
         
@@ -1184,19 +976,15 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         friendEjabberdId=[NSString stringWithFormat:@"%@%@",chatThread.recipient.userId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
         
         
-      //  friendEjabberdId = chatThread.threadRecipient;
+        //  friendEjabberdId = chatThread.threadRecipient;
         
         DDLogVerbose(@"%@: %@: friendEjabberdId =%@ ", THIS_FILE, THIS_METHOD,friendEjabberdId);
         
         NSError *error = nil;
         [[self fetchedResultsController] performFetch:&error];
-
+        
         
     }
-    
-  //chatThreadId=@"45@ejabberd.server.mumblerchat_100@ejabberd.server.mumblerchat_1411127786867";
-    
-    
     
     floor=1000000.0;
     
@@ -1208,22 +996,14 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     rightSwipe.direction = (UISwipeGestureRecognizerDirectionRight);
     [self.view addGestureRecognizer:rightSwipe];
     
-    imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker = [UIImagePickerController new];
     imagePicker.delegate=self;
-    
-    
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
-//    
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
-    //DDLogVerbose(@"%@: %@: END ", THIS_FILE, THIS_METHOD);
     NSLog(@"viewWillAppear chat composer end");
-  
-
 }
 
 
@@ -1255,7 +1035,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         // Check whether the user already sent a reply, current respondent id
         // The user has already replied
         if(![chatThread.threadLastMessageOwnerId isEqualToString:meEjabberdId]){
-             // Go back to chat thread
+            // Go back to chat thread
             
             
             
@@ -1311,7 +1091,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     });
     
     
-   
+    
     
 }
 
@@ -1388,12 +1168,12 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
 }
 - (NSString *)tableView:(UITableView *)sender titleForHeaderInSection:(NSInteger)sectionIndex
 {
-	NSArray *sections = [[self fetchedResultsController] sections];
-	
-	if (sectionIndex < [sections count])
-	{
+    NSArray *sections = [[self fetchedResultsController] sections];
+    
+    if (sectionIndex < [sections count])
+    {
         NSLog(@"titleForHeaderInSection sectionIndex=== %ld",(long)sectionIndex);
-		id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:sectionIndex];
+        id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:sectionIndex];
         NSString *header=@"";
         for(ChatMessage *chat in [sectionInfo objects]){
             header=chat.messageDeliveredDateTime;
@@ -1401,8 +1181,8 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         return header;
         
     }
-	
-	return @"";
+    
+    return @"";
 }
 
 
@@ -1413,9 +1193,9 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     [self.messageTextView endEditing:YES];
     
     NSString *messageText = self.messageTextView.text;
-
+    
     messageText = [messageText stringByTrimmingCharactersInSet:
-     [NSCharacterSet whitespaceCharacterSet]];
+                   [NSCharacterSet whitespaceCharacterSet]];
     
     if(messageText.length >0){
         
@@ -1457,29 +1237,29 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             DDLogVerbose(@"%@: %@: messaged Typed =%@ ", THIS_FILE, THIS_METHOD,message);
             
             [appDelegate.xmppStream sendElement:message];
-
+            
             DDLogVerbose(@"%@: %@: chatThreadId =%@ ", THIS_FILE, THIS_METHOD,chatThreadId);
             DDLogVerbose(@"%@: %@: textType =%@ ", THIS_FILE, THIS_METHOD,textType);
             
             
             NSString *messageDate= [ChatUtil getDate:timeInMiliseconds inFormat:dateFormat];
-         
             
-             ChatMessage *chatMessage  = [chatMessageDao saveChatMessageWithThreadId:chatThreadId messageId:messageId senderUser:meUser recipient:mumblerFriend messageMedium:MESSAGE_MEDIUM_TEXT messageContent:messageText  messageDateTime:timeInMiliseconds deliveredDateTime:messageDate messageDelivered:[NSNumber numberWithInt:1]  imageEncodedString:nil sentSeen:[NSNumber numberWithInt:2] threadLastMessage:meEjabberdId receiveType:RECEIVE_TYPE_OUTGOING timeGivenToRespond:[NSNumber numberWithInt:timeToRespond] chatTextType:textType];
             
-
+            ChatMessage *chatMessage  = [chatMessageDao saveChatMessageWithThreadId:chatThreadId messageId:messageId senderUser:meUser recipient:mumblerFriend messageMedium:MESSAGE_MEDIUM_TEXT messageContent:messageText  messageDateTime:timeInMiliseconds deliveredDateTime:messageDate messageDelivered:[NSNumber numberWithInt:1]  imageEncodedString:nil sentSeen:[NSNumber numberWithInt:2] threadLastMessage:meEjabberdId receiveType:RECEIVE_TYPE_OUTGOING timeGivenToRespond:[NSNumber numberWithInt:timeToRespond] chatTextType:textType];
+            
+            
             
             
             
             if(chatMessage){
                 
-               
+                
                 DDLogVerbose(@"%@: %@: chatThreadId chatmessage textMessage returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.textMessage);
-               
+                
                 DDLogVerbose(@"%@: %@: chatThreadId chatmessage threadId returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.threadId);
                 
                 NSError *error = nil;
-               [[self fetchedResultsController] performFetch:&error];
+                [[self fetchedResultsController] performFetch:&error];
                 
                 [chatComposerTableView reloadData];
                 
@@ -1490,21 +1270,21 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
                     [self performSegueWithIdentifier:@"composedMsg_ChatThread" sender:self];
                 });
                 
-           
+                
                 
             }else{
                 DDLogVerbose(@"%@: %@: chatThreadId chatmessage  not returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.textMessage);
                 
                 
             }
-
+            
         }
         //From chat composer icon
         else if([actionType isEqualToString:ACTION_TYPE_WITHOUT_FRIEND]){
             
             DDLogVerbose(@"%@: %@: ACTION_TYPE_WITHOUT_FRIEND TYPED MSG %@=", THIS_FILE, THIS_METHOD,messageText);
             
-           
+            
             NSString *textType = [ChatUtil getTextType:messageText];
             
             NSString *timeInMiliseconds = [ChatUtil getTimeInMiliSeconds:[NSDate date]];
@@ -1613,10 +1393,10 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
                     });
                     
                 }
-
+                
                 
             }else{
-               DDLogVerbose(@"%@: %@: chatThreadId chatmessage  not returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.textMessage);
+                DDLogVerbose(@"%@: %@: chatThreadId chatmessage  not returned=%@ ", THIS_FILE, THIS_METHOD,chatMessage.textMessage);
                 
                 
             }
@@ -1642,10 +1422,10 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         if(composedMsg.length >0){
             
             
-        FriendsViewController *friendsViewController = (FriendsViewController *) [segue destinationViewController];
-        friendsViewController.actionType = ACTION_TYPE_FRIEND_TO_BE_SELECTED;
-        friendsViewController.messageNeedToBeSend=composedMsg;
-        friendsViewController.composedChatMsg=composedChatWithoutFriend;
+            FriendsViewController *friendsViewController = (FriendsViewController *) [segue destinationViewController];
+            friendsViewController.actionType = ACTION_TYPE_FRIEND_TO_BE_SELECTED;
+            friendsViewController.messageNeedToBeSend=composedMsg;
+            friendsViewController.composedChatMsg=composedChatWithoutFriend;
             
             
         }
@@ -1660,8 +1440,8 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     NSLog(@"textFieldShouldReturn==");
     [textField resignFirstResponder];
-   // [self viewDidLayoutSubviews];
-   // [self sendTextMessage:chatTextField.text];
+    // [self viewDidLayoutSubviews];
+    // [self sendTextMessage:chatTextField.text];
     return NO;
 }
 
@@ -1695,15 +1475,15 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     
     ChatMessage *chatMessage = [_fetchedResultsController objectAtIndexPath:indexPath];
     
-   
+    
     
     if (chatMessage.messageMediumType  == MESSAGE_MEDIUM_IMAGE || chatMessage.messageMediumType == MESSAGE_MEDIUM_VIDEO) {
-
+        
         return 130.0;
     } else {
         
         MyChatTableViewCell *cell = nil;
-     
+        
         cell = [self.chatComposerTableView dequeueReusableCellWithIdentifier:@"my_chat"];
         
         cell.messageLabel.text = chatMessage.textMessage;
@@ -1713,12 +1493,12 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         
         return size.height + 1;
         
-
         
-      
+        
+        
     }
     
-
+    
     
 }
 
@@ -1745,23 +1525,23 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     [self.cdp stopCountDown];
     
     [self.cdp startCountDownFromSeconds:timeGivenToRespondLastMsg:secondsRemaining/1000];
-   
+    
     //[self.cdp resetCountDownTimer:[timeGivenToRespondLastMsg:secondsRemaining/1000];
     
-
-
+    
+    
     
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-     NSLog(@"cellForRowAtIndexPath==");
+    NSLog(@"cellForRowAtIndexPath==");
     
     MyChatTableViewCell *cell =nil;
     ChatMessage *chatMessage = [_fetchedResultsController objectAtIndexPath:indexPath];
     
-    NSString *myJID=[[NSUserDefaults standardUserDefaults] objectForKey:@"kXMPPmyJID"];
+    NSString *myJID=[NSUserDefaults.standardUserDefaults objectForKey:@"kXMPPmyJID"];
     
     NSLog(@"myJID==%@",myJID);
     
@@ -1777,7 +1557,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     if(![chatThread.threadLastMessageOwnerId isEqualToString:meEjabberdId]){
         
         if(insertedNewRecordFromFriend){
-        
+            
             insertedNewRecordFromFriend=NO;
             
             NSString*lastOpenedTime =[ChatUtil getTimeInMiliSeconds:[NSDate date]];
@@ -1802,7 +1582,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             [self.cdp stopCountDown];
             
             [self.cdp startCountDownFromSeconds:timeGivenToRespondLastMsg:secondsRemaining/1000];
-
+            
             
             //[self updateCountDownTimer:chatMessage.timeGivenToRespond];
             
@@ -1815,7 +1595,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             insertedNewRecordFromFriend=NO;
         }
     }
-
+    
     
     if([chatMessage.messageMediumType isEqualToString:MESSAGE_MEDIUM_TEXT]){
         
@@ -1830,13 +1610,13 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             
             cell.selectionStyle=UITableViewCellSelectionStyleNone;
             
-    
+            
             NSString *messageDate= [ChatUtil getDate:chatMessage.messageDateTime  inFormat:timeFormat];
             
             cell.messageLabel.text= chatMessage.textMessage;
             cell.messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
             cell.messageLabel.numberOfLines = 0;
-
+            
             cell.dateTimeLabel.text= messageDate;
             //cell.profileImageView.image = [UIImage imageNamed:@"mumbler_profile_picture"];
             
@@ -1844,7 +1624,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             UIImage *image= [UIImage imageWithData:data];
             
             if(image){
-               cell.profileImageView.image=image;
+                cell.profileImageView.image=image;
                 
             }else{
                 cell.profileImageView.image=[UIImage imageNamed:@"mumbler_profile_picture"];
@@ -1853,7 +1633,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             cell.profileImageView.layer.cornerRadius = 20;
             cell.profileImageView.layer.masksToBounds = YES;
             
-
+            
             
             
             if(chatMessage.seenByUser==[NSNumber numberWithInt:1]){
@@ -1879,32 +1659,32 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             }
             //Orange Balloon my question
             else{
-                 cell.chatCellType=ChatCellTypeMyChat_Question;
+                cell.chatCellType=ChatCellTypeMyChat_Question;
             }
             
             
             /*if([chatMessage.messageDelivered intValue] == 2){
-                
-                NSLog(@"CHAT DELIVERED");
-                //cell.deliveryStatusImageView
-                cell.deliveryStatusImageView.image = [UIImage imageNamed:@"mumbler_deleverd_img"];
-                
-            }*/
-           
+             
+             NSLog(@"CHAT DELIVERED");
+             //cell.deliveryStatusImageView
+             cell.deliveryStatusImageView.image = [UIImage imageNamed:@"mumbler_deleverd_img"];
+             
+             }*/
             
-             return cell;
+            
+            return cell;
         }
         //friends Chat
         else{
             
-           
+            
             static NSString *tableIdentifier = @"friend_chat";
             cell = (MyChatTableViewCell *)[tableView dequeueReusableCellWithIdentifier:tableIdentifier];
             
             
             globalCell = cell;
             
-
+            
             cell.selectionStyle=UITableViewCellSelectionStyleNone;
             
             
@@ -1912,8 +1692,8 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             NSString *messageDate= [ChatUtil getDate:chatMessage.messageDateTime  inFormat:timeFormat];
             cell.messageLabel.text= chatMessage.textMessage;
             
-             cell.messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
-             cell.messageLabel.numberOfLines = 0;
+            cell.messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            cell.messageLabel.numberOfLines = 0;
             
             cell.dateTimeLabel.text= messageDate;
             //cell.profileImageView.image = [UIImage imageNamed:@"mumbler_profile_picture"];
@@ -1931,7 +1711,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             cell.profileImageView.layer.cornerRadius = 20;
             cell.profileImageView.layer.masksToBounds = YES;
             
-
+            
             
             
             if(chatMessage.seenByUser==[NSNumber numberWithInt:1]){
@@ -1945,15 +1725,15 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             } else {
                 cell.deliveryStatusImageView.hidden = YES;
             }
-
-           
+            
+            
             /*if([chatMessage.messageDelivered intValue] == 2){
-                
-                NSLog(@"CHAT DELIVERED ");
-                //cell.deliveryStatusImageView
-                cell.deliveryStatusImageView.image = [UIImage imageNamed:@"mumbler_deleverd_img"];
-                
-            }*/
+             
+             NSLog(@"CHAT DELIVERED ");
+             //cell.deliveryStatusImageView
+             cell.deliveryStatusImageView.image = [UIImage imageNamed:@"mumbler_deleverd_img"];
+             
+             }*/
             
             //Friend statement Blue Balloon
             if([chatMessage.textMessageType isEqualToString:TEXT_TYPE_STATEMENT]){
@@ -1975,346 +1755,346 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         
         if([chatMessage.messageMediumType isEqualToString:MESSAGE_MEDIUM_IMAGE] || [chatMessage.messageMediumType isEqualToString:MESSAGE_MEDIUM_VIDEO]){
             
-             //my chat image or viedio
-             if ([chatMessage.messageSender isEqual:myJID]) {
-                 
-                 
-                 static NSString *tableIdentifier = @"myChatOtherMessage";
-                 cell = (MyChatTableViewCell *)[tableView dequeueReusableCellWithIdentifier:tableIdentifier];
-                 
-                 globalCell = cell;
-                 
-                 cell.selectionStyle=UITableViewCellSelectionStyleNone;
+            //my chat image or viedio
+            if ([chatMessage.messageSender isEqual:myJID]) {
                 
-                 NSString *messageDate= [ChatUtil getDate:chatMessage.messageDateTime  inFormat:timeFormat];
-                 
-                 cell.dateTimeLabel.text= messageDate;
-                 //cell.profileImageView.image = [UIImage imageNamed:@"mumbler_profile_picture"];
-                 
-                 NSData *data = [NSData dataFromBase64String:chatThread.threadOwner.profileImageBytes];
-                 UIImage *image= [UIImage imageWithData:data];
-                 
-                 if(image){
-                     cell.profileImageView.image=image;
-                     
-                 }else{
-                     cell.profileImageView.image=[UIImage imageNamed:@"mumbler_profile_picture"];
-                     
-                 }
-                 cell.profileImageView.layer.cornerRadius = 20;
-                 cell.profileImageView.layer.masksToBounds = YES;
-                 
-
-                 
-                 
-                 if(chatMessage.seenByUser==[NSNumber numberWithInt:1]){
-                     NSLog(@"chat seen id  ------ %@",chatMessage.messageId);
-                     cell.chatSeenLabel.text = @"Seen";
-                 }else{
-                     NSLog(@"chat is not seen but sent ------ %@",chatMessage.messageId);
-                     cell.chatSeenLabel.text = @"Sent";
-                 }
-                 
-                 
-                 if ([chatMessage.messageDelivered isEqualToNumber:[NSNumber numberWithInt:2]]) {
-                     cell.deliveryStatusImageView.hidden = NO;
-                 } else {
-                     cell.deliveryStatusImageView.hidden = YES;
-                 }
-                 
-
-                 
-                 
-                 //message type Viedio
-                 if([chatMessage.messageMediumType isEqualToString:MESSAGE_MEDIUM_VIDEO]){
-                     NSLog(@"TESTING IMAGE SENDING  MY MESSAGE_MEDIUM_VIDEO");
-                     
-                     /////////new
-                     
-                     //its already there
-                     if([chatVideoThumbnailsDictionary objectForKey:chatMessage.messageId] != nil){
-                         
-                         //cell.bubbleImageView.image =[chatVideoThumbnailsDictionary objectForKey:chatMessage.messageId];
-                         
-                         
-                         cell.chatImage =[chatVideoThumbnailsDictionary objectForKey:chatMessage.messageId];
-                         cell.maskImage = [UIImage imageNamed:@"mask_img_right"];
-                         cell.chatCellType=ChatCellTypeMyChatOther;
-                         
-                         NSLog(@"thumbnail != nil its already there");
-                         
-                         
-                     }else{
+                
+                static NSString *tableIdentifier = @"myChatOtherMessage";
+                cell = (MyChatTableViewCell *)[tableView dequeueReusableCellWithIdentifier:tableIdentifier];
+                
+                globalCell = cell;
+                
+                cell.selectionStyle=UITableViewCellSelectionStyleNone;
+                
+                NSString *messageDate= [ChatUtil getDate:chatMessage.messageDateTime  inFormat:timeFormat];
+                
+                cell.dateTimeLabel.text= messageDate;
+                //cell.profileImageView.image = [UIImage imageNamed:@"mumbler_profile_picture"];
+                
+                NSData *data = [NSData dataFromBase64String:chatThread.threadOwner.profileImageBytes];
+                UIImage *image= [UIImage imageWithData:data];
+                
+                if(image){
+                    cell.profileImageView.image=image;
+                    
+                }else{
+                    cell.profileImageView.image=[UIImage imageNamed:@"mumbler_profile_picture"];
+                    
+                }
+                cell.profileImageView.layer.cornerRadius = 20;
+                cell.profileImageView.layer.masksToBounds = YES;
+                
+                
+                
+                
+                if(chatMessage.seenByUser==[NSNumber numberWithInt:1]){
+                    NSLog(@"chat seen id  ------ %@",chatMessage.messageId);
+                    cell.chatSeenLabel.text = @"Seen";
+                }else{
+                    NSLog(@"chat is not seen but sent ------ %@",chatMessage.messageId);
+                    cell.chatSeenLabel.text = @"Sent";
+                }
+                
+                
+                if ([chatMessage.messageDelivered isEqualToNumber:[NSNumber numberWithInt:2]]) {
+                    cell.deliveryStatusImageView.hidden = NO;
+                } else {
+                    cell.deliveryStatusImageView.hidden = YES;
+                }
+                
+                
+                
+                
+                //message type Viedio
+                if([chatMessage.messageMediumType isEqualToString:MESSAGE_MEDIUM_VIDEO]){
+                    NSLog(@"TESTING IMAGE SENDING  MY MESSAGE_MEDIUM_VIDEO");
+                    
+                    /////////new
+                    
+                    //its already there
+                    if([chatVideoThumbnailsDictionary objectForKey:chatMessage.messageId] != nil){
                         
-                         
+                        //cell.bubbleImageView.image =[chatVideoThumbnailsDictionary objectForKey:chatMessage.messageId];
+                        
+                        
+                        cell.chatImage =[chatVideoThumbnailsDictionary objectForKey:chatMessage.messageId];
+                        cell.maskImage = [UIImage imageNamed:@"mask_img_right"];
+                        cell.chatCellType=ChatCellTypeMyChatOther;
+                        
+                        NSLog(@"thumbnail != nil its already there");
+                        
+                        
+                    }else{
+                        
+                        
                         // NSString *viedioFullPath=[NSString stringWithFormat:@"%@%@",VIDEIO_PATH,chatMessage.textMessage];
-                         NSString *viedioFullPath= @"http://mumblerchat.com:1935/mumblerchat/mp4:1398780589751.mp4/playlist.m3u8";
-                         
-                         NSLog(@"viedioFullPath textMessage %@",viedioFullPath);
+                        NSString *viedioFullPath= @"http://mumblerchat.com:1935/mumblerchat/mp4:1398780589751.mp4/playlist.m3u8";
+                        
+                        NSLog(@"viedioFullPath textMessage %@",viedioFullPath);
                         NSURL *url = [NSURL URLWithString:viedioFullPath];
-                         
-                         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-                             
-                             AVAsset *asset = [AVAsset assetWithURL:url];
-                             
-                             //  Get thumbnail at the very start of the video
-                             
-                             CMTime thumbnailTime = [asset duration];
-                             //thumbnailTime.value = thumbnailTime.timescale * 1;
-                             thumbnailTime.value = 1;
-                             
+                        
+                        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+                            
+                            AVAsset *asset = [AVAsset assetWithURL:url];
+                            
+                            //  Get thumbnail at the very start of the video
+                            
+                            CMTime thumbnailTime = [asset duration];
+                            //thumbnailTime.value = thumbnailTime.timescale * 1;
+                            thumbnailTime.value = 1;
+                            
                             /* CMTime thumbnailTime = [asset duration];
                              thumbnailTime.value = 0;*/
-                             
-                             //  Get image from the video at the given time
-                             AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
-                             
-                             CGImageRef imageRef = [imageGenerator copyCGImageAtTime:thumbnailTime actualTime:NULL error:NULL];
-                             UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
-                             CGImageRelease(imageRef);
-
-                             
-                             if(thumbnail !=nil){
-                                 
-                                 NSLog(@"thumbnail != nil ");
-                                 
+                            
+                            //  Get image from the video at the given time
+                            AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
+                            
+                            CGImageRef imageRef = [imageGenerator copyCGImageAtTime:thumbnailTime actualTime:NULL error:NULL];
+                            UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
+                            CGImageRelease(imageRef);
+                            
+                            
+                            if(thumbnail !=nil){
+                                
+                                NSLog(@"thumbnail != nil ");
+                                
                                 // cell.bubbleImageView.image =thumbnail;
-                                 
+                                
                                 cell.chatImage =thumbnail;
                                 cell.maskImage = [UIImage imageNamed:@"mask_img_right"];
                                 cell.chatCellType=ChatCellTypeMyChatOther;
-                                 [chatVideoThumbnailsDictionary setObject:cell.chatImage forKey:chatMessage.messageId];
-                                 dispatch_sync(dispatch_get_main_queue(), ^{
-                                     NSLog(@"chatComposerTableView reloadInputViews my viedio before");
-                                     //[cell layoutIfNeeded];
-                                     cell.bubbleImageView.image =thumbnail;
-                                     
-                                     // [chatComposerTableView reloadInputViews];
-                                     NSLog(@"chatComposerTableView reloadInputViews my viedio after");
-                                     
-                                 });
-                             }else{
-                                 NSLog(@"thumbnail == nil ");
-                                 
-                             }
-                             
-                             
-                         });
-                         
-                         
-                         
-                  /*  dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-                             
-                             NSString *viedioFullPath=[NSString stringWithFormat:@"%@%@",VIDEIO_PATH,chatMessage.textMessage];
-                             
-                             NSLog(@"viedioFullPath %@",viedioFullPath);
-                             
-                             MPMoviePlayerController *player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:viedioFullPath]];
-                             
-                             UIImage *thumbnail = [player thumbnailImageAtTime:1.0 timeOption:MPMovieTimeOptionNearestKeyFrame];
-                             
-                             if(thumbnail !=nil){
-                                 
-                                 NSLog(@"thumbnail != nil ");
-                                 
-                                 cell.chatImage =thumbnail;
-                                 cell.maskImage = [UIImage imageNamed:@"mask_img_right"];
-                                 cell.chatCellType=ChatCellTypeMyChatOther;
-                                 [chatVideoThumbnailsDictionary setObject:cell.chatImage forKey:chatMessage.messageId];
-                                 dispatch_sync(dispatch_get_main_queue(), ^{
-                                     NSLog(@"chatComposerTableView reloadInputViews my viedio before");
-                                     //[cell layoutIfNeeded];
-                                     
-                                     // [chatComposerTableView reloadInputViews];
-                                     NSLog(@"chatComposerTableView reloadInputViews my viedio after");
-                                     
+                                [chatVideoThumbnailsDictionary setObject:cell.chatImage forKey:chatMessage.messageId];
+                                dispatch_sync(dispatch_get_main_queue(), ^{
+                                    NSLog(@"chatComposerTableView reloadInputViews my viedio before");
+                                    //[cell layoutIfNeeded];
+                                    cell.bubbleImageView.image =thumbnail;
+                                    
+                                    // [chatComposerTableView reloadInputViews];
+                                    NSLog(@"chatComposerTableView reloadInputViews my viedio after");
+                                    
                                 });
-                             }else{
-                                 NSLog(@"thumbnail == nil ");
-                                 
-                             }
-                             
+                            }else{
+                                NSLog(@"thumbnail == nil ");
+                                
+                            }
                             
-                       });*/
+                            
+                        });
+                        
+                        
+                        
+                        /*  dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
                          
+                         NSString *viedioFullPath=[NSString stringWithFormat:@"%@%@",VIDEIO_PATH,chatMessage.textMessage];
                          
-                     ///////////new over
-                     
-                     }
-                     
-                    }
-                 //message type Image
-                 else{
-                     NSLog(@"TESTING IMAGE SENDING  MY MESSAGE_MEDIUM_IMAGE");
-                     
-                     //its already there
-                     if([chatImagesDictionary objectForKey:chatMessage.messageId] != nil){
+                         NSLog(@"viedioFullPath %@",viedioFullPath);
                          
-                         cell.chatImage =[chatImagesDictionary objectForKey:chatMessage.messageId];
+                         MPMoviePlayerController *player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:viedioFullPath]];
+                         
+                         UIImage *thumbnail = [player thumbnailImageAtTime:1.0 timeOption:MPMovieTimeOptionNearestKeyFrame];
+                         
+                         if(thumbnail !=nil){
+                         
+                         NSLog(@"thumbnail != nil ");
+                         
+                         cell.chatImage =thumbnail;
                          cell.maskImage = [UIImage imageNamed:@"mask_img_right"];
                          cell.chatCellType=ChatCellTypeMyChatOther;
-
+                         [chatVideoThumbnailsDictionary setObject:cell.chatImage forKey:chatMessage.messageId];
+                         dispatch_sync(dispatch_get_main_queue(), ^{
+                         NSLog(@"chatComposerTableView reloadInputViews my viedio before");
+                         //[cell layoutIfNeeded];
                          
+                         // [chatComposerTableView reloadInputViews];
+                         NSLog(@"chatComposerTableView reloadInputViews my viedio after");
                          
-                         
-                     }else{
-                         
-                         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-                             NSURL *imageURL = [NSURL URLWithString:chatMessage.textMessage];
-                             
-                             NSData *thumbnailData = [NSData dataWithContentsOfURL:imageURL];
-                             
-                             
-                             if(thumbnailData!=nil){
-                                 cell.chatImage =[UIImage imageWithData:thumbnailData];
-                                 cell.maskImage = [UIImage imageNamed:@"mask_img_right"];
-                                 cell.chatCellType=ChatCellTypeMyChatOther;
-                                 [chatImagesDictionary setObject:cell.chatImage forKey:chatMessage.messageId];
-                                 
-                             }
-                             dispatch_sync(dispatch_get_main_queue(), ^{
-                                 NSLog(@"chatComposerTableView reloadInputViews before");
-                                 [cell layoutIfNeeded];
-                            
-                                // [chatComposerTableView reloadInputViews];
-                                 NSLog(@"chatComposerTableView reloadInputViews after");
-                                 
-                             });
                          });
+                         }else{
+                         NSLog(@"thumbnail == nil ");
+                         
+                         }
                          
                          
-                         
+                         });*/
+                        
+                        
+                        ///////////new over
+                        
+                    }
+                    
+                }
+                //message type Image
+                else{
+                    NSLog(@"TESTING IMAGE SENDING  MY MESSAGE_MEDIUM_IMAGE");
+                    
+                    //its already there
+                    if([chatImagesDictionary objectForKey:chatMessage.messageId] != nil){
+                        
+                        cell.chatImage =[chatImagesDictionary objectForKey:chatMessage.messageId];
+                        cell.maskImage = [UIImage imageNamed:@"mask_img_right"];
+                        cell.chatCellType=ChatCellTypeMyChatOther;
+                        
+                        
+                        
+                        
+                    }else{
+                        
+                        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+                            NSURL *imageURL = [NSURL URLWithString:chatMessage.textMessage];
+                            
+                            NSData *thumbnailData = [NSData dataWithContentsOfURL:imageURL];
+                            
+                            
+                            if(thumbnailData!=nil){
+                                cell.chatImage =[UIImage imageWithData:thumbnailData];
+                                cell.maskImage = [UIImage imageNamed:@"mask_img_right"];
+                                cell.chatCellType=ChatCellTypeMyChatOther;
+                                [chatImagesDictionary setObject:cell.chatImage forKey:chatMessage.messageId];
+                                
+                            }
+                            dispatch_sync(dispatch_get_main_queue(), ^{
+                                NSLog(@"chatComposerTableView reloadInputViews before");
+                                [cell layoutIfNeeded];
+                                
+                                // [chatComposerTableView reloadInputViews];
+                                NSLog(@"chatComposerTableView reloadInputViews after");
+                                
+                            });
+                        });
+                        
+                        
+                        
                         /* NSLog(@"chatMessage.threadState imageURL else %@",chatMessage.textMessage);
                          NSURL *imageURL = [NSURL URLWithString:chatMessage.textMessage];
                          
                          NSURLRequest *request = [[NSURLRequest alloc] initWithURL:imageURL];
                          AFHTTPRequestOperation *requestOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
                          
-                        
+                         
                          [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-                            
-                             cell.chatImage =[UIImage imageWithData:responseObject];
-                             cell.maskImage = [UIImage imageNamed:@"mask_img_right.png"];
-                             cell.chatCellType=ChatCellTypeMyChatOther;
-                             [chatImagesDictionary setObject:cell.chatImage forKey:chatMessage.messageId];
-                             
+                         
+                         cell.chatImage =[UIImage imageWithData:responseObject];
+                         cell.maskImage = [UIImage imageNamed:@"mask_img_right.png"];
+                         cell.chatCellType=ChatCellTypeMyChatOther;
+                         [chatImagesDictionary setObject:cell.chatImage forKey:chatMessage.messageId];
+                         
                          } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                             NSLog(@"Image error: %@", error);
+                         NSLog(@"Image error: %@", error);
                          }];
                          [requestOperation start];
                          
                          */
-                         
-                        }
-                     
-                 }
-                 
-             }
-             //friends image or viedio chat
-             else{
-                 
-                 NSLog(@"TESTING IMAGE SENDING TYPE IS NOT CHAT FRIEND CHAT");
-                 
-                 //friendChatOtherMessage
-                 static NSString *tableIdentifier = @"friendChatOtherMessage";
-                 cell = (MyChatTableViewCell *)[tableView dequeueReusableCellWithIdentifier:tableIdentifier];
-                 
-                 globalCell = cell;
-                 
-                 cell.selectionStyle=UITableViewCellSelectionStyleNone;
-                 
-                 
-                 //////////
-                 
-                 
-                 long long timeInSeconds = [chatMessage.messageDateTime longLongValue]/1000;
-                 NSDate *tr = [NSDate dateWithTimeIntervalSince1970:timeInSeconds];
-                 NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-                 [formatter setDateFormat:@"hh:mm a"];
-                 
-                 NSString *messageDate= [formatter stringFromDate:tr];
-                 
-                 cell.dateTimeLabel.text= messageDate;
+                        
+                    }
+                    
+                }
+                
+            }
+            //friends image or viedio chat
+            else{
+                
+                NSLog(@"TESTING IMAGE SENDING TYPE IS NOT CHAT FRIEND CHAT");
+                
+                //friendChatOtherMessage
+                static NSString *tableIdentifier = @"friendChatOtherMessage";
+                cell = (MyChatTableViewCell *)[tableView dequeueReusableCellWithIdentifier:tableIdentifier];
+                
+                globalCell = cell;
+                
+                cell.selectionStyle=UITableViewCellSelectionStyleNone;
+                
+                
+                //////////
+                
+                
+                long long timeInSeconds = [chatMessage.messageDateTime longLongValue]/1000;
+                NSDate *tr = [NSDate dateWithTimeIntervalSince1970:timeInSeconds];
+                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                [formatter setDateFormat:@"hh:mm a"];
+                
+                NSString *messageDate= [formatter stringFromDate:tr];
+                
+                cell.dateTimeLabel.text= messageDate;
                 // cell.profileImageView.image = [UIImage imageNamed:@"mumbler_profile_picture"];
-                 NSData *data = [NSData dataFromBase64String:chatThread.recipient.profileImageBytes];
-                 UIImage *image= [UIImage imageWithData:data];
-                 
-                 if(image){
-                     cell.profileImageView.image=image;
-                     
-                 }else{
-                     cell.profileImageView.image=[UIImage imageNamed:@"mumbler_profile_picture"];
-                     
-                 }
-                 
-                 cell.profileImageView.layer.cornerRadius = 20;
-                 cell.profileImageView.layer.masksToBounds = YES;
-                 
-                 
-                 
-                 //message type Viedio
-                 if([chatMessage.messageMediumType isEqualToString:@"video"]){
-                     
-                     /* cell.bubbleImageView.image=[UIImage imageNamed:@"popup_back.png"];*/
-                     
-                     NSString * url =@"http://mumblerchat.com:1935/mumblerchat/mp4:1398780589751.mp4/playlist.m3u8";
-                     
-                     MPMoviePlayerController *player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:url]];
-                     
-                     UIImage *thumbnail = [player thumbnailImageAtTime:1.0 timeOption:MPMovieTimeOptionNearestKeyFrame];
-                     NSData *imageData =UIImageJPEGRepresentation(thumbnail, 90);
-                     /*NSString *imagebase64String = [imageData base64EncodedString];
-                      [chatMsgDao updateMessageImageStringForMessageId:chat.messageId imageString:imagebase64String];
-                      */
-                     
-                     if(thumbnail!=nil){
-                         //cell.playButtonImageView.hidden=false;
-                         cell.bubbleImageView.image=thumbnail;
-                     }else{
-                         //cell.bubbleImageView.image=[UIImage imageNamed:@"popup_back.png"];
-                     }
-                     
-                     
-                     
-                 }
-                 //message type Friend Image
-                 else{
-                     
-                     NSLog(@"TESTING IMAGE SENDING FRIEND CHAT chatMessage.messageId %@=",chatMessage.messageId);
-                     
-                     
-                     //its already there
-                     if([chatImagesDictionary objectForKey:chatMessage.messageId] != nil){
-                         
-                         cell.chatImage =[chatImagesDictionary objectForKey:chatMessage.messageId];
-                         cell.maskImage = [UIImage imageNamed:@"mask_img"];
-                         cell.chatCellType=ChatCellTypeMyChatOther;
-                         
-                     }else{
-                         
-                         
-                         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-                             NSURL *imageURL = [NSURL URLWithString:chatMessage.textMessage];
-                             
-                             NSData *thumbnailData = [NSData dataWithContentsOfURL:imageURL];
-                             
-                             cell.chatImage =[UIImage imageWithData:thumbnailData];
-                             cell.maskImage = [UIImage imageNamed:@"mask_img"];
-                             cell.chatCellType=ChatCellTypeMyChatOther;
-                             [chatImagesDictionary setObject:cell.chatImage forKey:chatMessage.messageId];
-                             dispatch_sync(dispatch_get_main_queue(), ^{
-                                 NSLog(@"chatComposerTableView reloadInputViews before");
-                                 [cell layoutIfNeeded];
-                                 
-                                 // [chatComposerTableView reloadInputViews];
-                                 NSLog(@"chatComposerTableView reloadInputViews after");
-                                 
-                             });
-                         });
-                         
-                     }
-                               }
-             }
+                NSData *data = [NSData dataFromBase64String:chatThread.recipient.profileImageBytes];
+                UIImage *image= [UIImage imageWithData:data];
+                
+                if(image){
+                    cell.profileImageView.image=image;
+                    
+                }else{
+                    cell.profileImageView.image=[UIImage imageNamed:@"mumbler_profile_picture"];
+                    
+                }
+                
+                cell.profileImageView.layer.cornerRadius = 20;
+                cell.profileImageView.layer.masksToBounds = YES;
+                
+                
+                
+                //message type Viedio
+                if([chatMessage.messageMediumType isEqualToString:@"video"]){
+                    
+                    /* cell.bubbleImageView.image=[UIImage imageNamed:@"popup_back.png"];*/
+                    
+                    NSString * url =@"http://mumblerchat.com:1935/mumblerchat/mp4:1398780589751.mp4/playlist.m3u8";
+                    
+                    MPMoviePlayerController *player = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:url]];
+                    
+                    UIImage *thumbnail = [player thumbnailImageAtTime:1.0 timeOption:MPMovieTimeOptionNearestKeyFrame];
+                    NSData *imageData =UIImageJPEGRepresentation(thumbnail, 90);
+                    /*NSString *imagebase64String = [imageData base64EncodedString];
+                     [chatMsgDao updateMessageImageStringForMessageId:chat.messageId imageString:imagebase64String];
+                     */
+                    
+                    if(thumbnail!=nil){
+                        //cell.playButtonImageView.hidden=false;
+                        cell.bubbleImageView.image=thumbnail;
+                    }else{
+                        //cell.bubbleImageView.image=[UIImage imageNamed:@"popup_back.png"];
+                    }
+                    
+                    
+                    
+                }
+                //message type Friend Image
+                else{
+                    
+                    NSLog(@"TESTING IMAGE SENDING FRIEND CHAT chatMessage.messageId %@=",chatMessage.messageId);
+                    
+                    
+                    //its already there
+                    if([chatImagesDictionary objectForKey:chatMessage.messageId] != nil){
+                        
+                        cell.chatImage =[chatImagesDictionary objectForKey:chatMessage.messageId];
+                        cell.maskImage = [UIImage imageNamed:@"mask_img"];
+                        cell.chatCellType=ChatCellTypeMyChatOther;
+                        
+                    }else{
+                        
+                        
+                        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+                            NSURL *imageURL = [NSURL URLWithString:chatMessage.textMessage];
+                            
+                            NSData *thumbnailData = [NSData dataWithContentsOfURL:imageURL];
+                            
+                            cell.chatImage =[UIImage imageWithData:thumbnailData];
+                            cell.maskImage = [UIImage imageNamed:@"mask_img"];
+                            cell.chatCellType=ChatCellTypeMyChatOther;
+                            [chatImagesDictionary setObject:cell.chatImage forKey:chatMessage.messageId];
+                            dispatch_sync(dispatch_get_main_queue(), ^{
+                                NSLog(@"chatComposerTableView reloadInputViews before");
+                                [cell layoutIfNeeded];
+                                
+                                // [chatComposerTableView reloadInputViews];
+                                NSLog(@"chatComposerTableView reloadInputViews after");
+                                
+                            });
+                        });
+                        
+                    }
+                }
+            }
             
             return cell;
             
@@ -2339,12 +2119,12 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     ChatMessage *chatMessage = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSLog(@"Video essage clicked=== %@",chatMessage.textMessage);
     
-     NSString * url =@"http://54.198.191.57:8080/MumblerChatWeb/chatVideo/1410344099230.mp4";
+    NSString * url =@"http://54.198.191.57:8080/MumblerChatWeb/chatVideo/1410344099230.mp4";
     
-   [self openRecievedMovieAndPlay: url];
+    [self openRecievedMovieAndPlay: url];
     
     
-    }
+}
 
 - (void) moviePlayBackDidFinish:(NSNotification*)notification {
     
@@ -2361,7 +2141,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     {
         [player.view removeFromSuperview];
     }
-
+    
 }
 
 
@@ -2374,13 +2154,13 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     
     
     /*playerController = [[MPMoviePlayerViewController alloc]initWithContentURL:url];
-    [self presentMoviePlayerViewControllerAnimated:playerController];
-    [self.view insertSubview:playerController.view atIndex:0];
-    playerController.moviePlayer.movieSourceType = MPMovieSourceTypeFile;
-    playerController.moviePlayer.controlStyle = MPMovieControlStyleDefault;
-    playerController.moviePlayer.scalingMode = MPMovieScalingModeNone;
-    
-    [playerController.moviePlayer play];*/
+     [self presentMoviePlayerViewControllerAnimated:playerController];
+     [self.view insertSubview:playerController.view atIndex:0];
+     playerController.moviePlayer.movieSourceType = MPMovieSourceTypeFile;
+     playerController.moviePlayer.controlStyle = MPMovieControlStyleDefault;
+     playerController.moviePlayer.scalingMode = MPMovieScalingModeNone;
+     
+     [playerController.moviePlayer play];*/
     
     
     
@@ -2401,7 +2181,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     [self.view addSubview:moviePlayer.view];
     [moviePlayer setFullscreen:YES animated:YES];
     
-   }
+}
 
 
 
@@ -2412,11 +2192,11 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     NSLog(@"viewDidLayoutSubviews chat");
     
     NSInteger row=0;
-   /*for (id  sectionInfo in [[self fetchedResultsController] sections] ) {
-        
-        row=[sectionInfo numberOfObjects];
-        
-    }*/
+    /*for (id  sectionInfo in [[self fetchedResultsController] sections] ) {
+     
+     row=[sectionInfo numberOfObjects];
+     
+     }*/
     
     //  NSLog(@"row---------%li",(long)row);
     
@@ -2446,29 +2226,29 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
 
 - (NSFetchedResultsController *)fetchedResultsController
 {
-     NSLog(@"NSFetchedResultsController *)fetchedResultsController threadid %@",chatThreadId);
+    NSLog(@"NSFetchedResultsController *)fetchedResultsController threadid %@",chatThreadId);
     
-	if (_fetchedResultsController == nil)
-	{
+    if (_fetchedResultsController == nil)
+    {
         
         NSLog(@"_fetchedResultsController  *) NILLL fetchedResultsController threadid %@",chatThreadId);
         
         
-		NSManagedObjectContext *nsManagedObjectContext = [appDelegate managedObjectContext];
-		NSEntityDescription *entity = [NSEntityDescription entityForName:@"ChatMessage"
-		                                          inManagedObjectContext:nsManagedObjectContext];
+        NSManagedObjectContext *nsManagedObjectContext = [appDelegate managedObjectContext];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"ChatMessage"
+                                                  inManagedObjectContext:nsManagedObjectContext];
         
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(threadId = %@)", chatThreadId];
         
         NSSortDescriptor *sd1 = [[NSSortDescriptor alloc] initWithKey:@"messageDateTime" ascending:YES];
         NSArray *sortDescriptors = [NSArray arrayWithObjects:sd1, nil];
-		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         
         [fetchRequest setPredicate:predicate];
-		[fetchRequest setEntity:entity];
-		[fetchRequest setSortDescriptors:sortDescriptors];
-		[fetchRequest setFetchBatchSize:10];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setSortDescriptors:sortDescriptors];
+        [fetchRequest setFetchBatchSize:10];
         [fetchRequest setReturnsObjectsAsFaults:NO];
         NSFetchedResultsController *theFetchedResultsController =
         [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
@@ -2482,9 +2262,9 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
         _fetchedResultsController.delegate = self;
         
         return _fetchedResultsController;
-	}
+    }
     
-	return _fetchedResultsController;
+    return _fetchedResultsController;
     
 }
 
@@ -2518,10 +2298,10 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
     switch (type) {
         case NSFetchedResultsChangeInsert:
             
-             NSLog(@"NSFetchedResultsChangeInsert");
+            NSLog(@"NSFetchedResultsChangeInsert");
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             
-             insertedNewRecordFromFriend=YES;
+            insertedNewRecordFromFriend=YES;
             
             break;
         case NSFetchedResultsChangeDelete:
@@ -2529,12 +2309,12 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
             break;
             
         case NSFetchedResultsChangeUpdate:
-          
+            
             NSLog(@"NSFetchedResultsChangeUpdate");
             
             [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
-                                              withRowAnimation:UITableViewRowAnimationNone];
-        
+                             withRowAnimation:UITableViewRowAnimationNone];
+            
             
             break;
             
@@ -2551,39 +2331,26 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info {
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.chatComposerTableView endUpdates];
-   
+    
     NSLog(@"NS controllerDidChangeContent === =");
     [self.chatComposerTableView endUpdates];
     NSInteger row=0;
-    for (id  sectionInfo in [[self fetchedResultsController] sections] ) {
-        row=[sectionInfo numberOfObjects];
-        
+    for (id sectionInfo in [self.fetchedResultsController sections]) {
+        row = [sectionInfo numberOfObjects];
     }
     
     NSIndexPath *indexPath=[NSIndexPath indexPathForItem:(row-1) inSection:([[_fetchedResultsController sections] count]-1)];
     if(row>1){
         [self.chatComposerTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     }
-
-  
+    
+    
 }
 
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
- {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 @end

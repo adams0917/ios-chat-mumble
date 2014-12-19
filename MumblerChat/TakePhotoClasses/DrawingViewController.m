@@ -211,7 +211,7 @@ UIImageView * colorPalatte;
     }
     
     self.capturedPhoto = [self generateThumbnailFromImage:self.capturedPhoto];
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSUserDefaults *userDefaults = NSUserDefaults.standardUserDefaults;
     
     NSData *imageData = UIImageJPEGRepresentation(self.capturedPhoto, 1.0);
     
