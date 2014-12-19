@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="ChatMessage" representedClassName="ChatMessage" syncable="YES">
+        <attribute name="chat_opened_time" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="delivery_status" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="message_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="message_medium" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="message_time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="message_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mumbler_user_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="time_given_to_respond" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="chatThread" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ChatThread" syncable="YES"/>
+    </entity>
+    <entity name="ChatThread" representedClassName="ChatThread" syncable="YES">
+        <attribute name="chat_opened_time" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="current_respondent_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="last_updated_time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="message_medium" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="message_time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="message_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="message_type_to_be_used_to_determine_the_next_message_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="screenshot_take" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="thread_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thread_read_status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="thread_status" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="time_given_to_respond_to_the_last_message" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="mumblerUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MumblerUser" syncable="YES"/>
+        <relationship name="screanShotDetect" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ScreanShotDetect" syncable="YES"/>
+    </entity>
+    <entity name="ContactReceived" representedClassName="ContactReceived" syncable="YES">
+        <attribute name="alias" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="date_of_birth" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="device_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="device_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="facebook_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="forwarded_to" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="join_date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="mumbler_user_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="my_status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="online_status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phonenumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="profile_image_url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pushtoken" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recieved_from" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="mumblerUser" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="MumblerUser" syncable="YES"/>
+    </entity>
+    <entity name="Friendship" representedClassName="Friendship" syncable="YES">
+        <attribute name="alerts_from_me" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="alerts_to_me" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="blocked_by_friend" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="blocked_by_me" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="friendship_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="last_update_time" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="friendMumblerUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MumblerUser" syncable="YES"/>
+        <relationship name="mumblerUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MumblerUser" syncable="YES"/>
+    </entity>
+    <entity name="MumblerUser" representedClassName="MumblerUser" syncable="YES">
+        <attribute name="alias" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="chatTimeLimit" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="date_of_birth" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="device_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="facebook_id" optional="YES" attributeType="String" defaultValueString="null" syncable="YES"/>
+        <attribute name="join_date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="mumbler_user_id" optional="YES" attributeType="String" minValueString="0" syncable="YES"/>
+        <attribute name="my_status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="online_status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phonenumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="profile_image_url" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pushtoken" attributeType="String" defaultValueString="null" syncable="YES"/>
+        <attribute name="saveOutGoingMedia" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="section_text" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="ScreanShotDetect" representedClassName="ScreanShotDetect" syncable="YES">
+        <attribute name="mumblerUserId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="takenBy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="takenDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="threadId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ChatMessage" positionX="-396" positionY="-108" width="128" height="195"/>
+        <element name="ChatThread" positionX="-101" positionY="-345" width="128" height="255"/>
+        <element name="ContactReceived" positionX="394" positionY="9" width="128" height="270"/>
+        <element name="Friendship" positionX="-234" positionY="135" width="128" height="165"/>
+        <element name="MumblerUser" positionX="241" positionY="-504" width="128" height="268"/>
+        <element name="ScreanShotDetect" positionX="-207" positionY="-468" width="128" height="105"/>
+    </elements>
+</model>

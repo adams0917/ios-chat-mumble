@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>AA37B569-4B8D-4790-B32B-969F5895B0BB</string>
+	<key>IDESourceControlProjectName</key>
+	<string>MumblerChat</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>9B018904-D742-4610-9421-2151A38723F4</key>
+		<string>https://192.168.2.101/svn/MumbleriOSv2/trunk</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>MumblerChat.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>9B018904-D742-4610-9421-2151A38723F4</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectRepositoryRootDictionary</key>
+	<dict>
+		<key>9B018904-D742-4610-9421-2151A38723F4</key>
+		<string>https://192.168.2.101/svn/MumbleriOSv2</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://192.168.2.101/svn/MumbleriOSv2/trunk/MumblerChat.xcodeproj</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>9B018904-D742-4610-9421-2151A38723F4</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryBranchesRelativeLocationKey</key>
+			<string>branches</string>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlRepositoryTagsRelativeLocationKey</key>
+			<string>tags</string>
+			<key>IDESourceControlRepositoryTrunkRelativeLocationKey</key>
+			<string>trunk</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>9B018904-D742-4610-9421-2151A38723F4</string>
+			<key>IDESourceControlWCCName</key>
+			<string>MumblerChatiOSV2</string>
+		</dict>
+	</array>
+</dict>
+</plist>

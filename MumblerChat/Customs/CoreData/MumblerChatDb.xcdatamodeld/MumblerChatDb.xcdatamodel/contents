@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="ChatMessage" representedClassName="ChatMessage" syncable="YES">
+        <attribute name="blobMessage" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="messageContentType" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="messageDateTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageDelivered" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="messageDeliveredDateTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageMediumType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageRecipient" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageSender" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageType" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="offlineSent" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="packetId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="seenByUser" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="sentMessage" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="sentSeen" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="textMessage" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="textMessageType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="threadId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="threadState" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="timeGivenToRespond" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="chatThread" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ChatThread" syncable="YES"/>
+    </entity>
+    <entity name="ChatThread" representedClassName="ChatThread" syncable="YES">
+        <attribute name="isGroupChat" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastReceivedMessageOpenedTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastUpdatedDateTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="readStatus" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="threadId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="threadLastMessageMedium" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="threadLastMessageMediumTextType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="threadLastMessageOwnerId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="threadStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="timeGivenToRespond" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="unreadMessages" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="recipient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" syncable="YES"/>
+        <relationship name="threadOwner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="Favorite" representedClassName="Favorite" syncable="YES">
+        <attribute name="content" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="time" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="FriendGroup" representedClassName="FriendGroup" syncable="YES">
+        <attribute name="chatRoomName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="friendGroupId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="friendGroupName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recordOwnerId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="FriendGroupMember" representedClassName="FriendGroupMember" syncable="YES">
+        <attribute name="friendGroupId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="friendGroupMemberId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="friendId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Friendship" representedClassName="Friendship" syncable="YES">
+        <attribute name="blockedStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="doNotShareStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="friendId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="friendshipId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="friendshipStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hiddenStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="recordOwnerId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="MumblerFriendship" representedClassName="MumblerFriendship" syncable="YES">
+        <attribute name="friendshipStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isSyncWithEjabbered" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isSyncWithServer" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <relationship name="friendMumblerUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" syncable="YES"/>
+        <relationship name="mumblerUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="Post" representedClassName="Post" syncable="YES">
+        <attribute name="albumId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hasSent" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="postBy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postedDateTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="postedLocation" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="postText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="privacyStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="PostAlbum" representedClassName="PostAlbum" syncable="YES">
+        <attribute name="albumId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PostComment" representedClassName="PostComment" syncable="YES">
+        <attribute name="commentDateTime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="commentedBy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="commentedText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="commentId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="postId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PostDoNotShare" representedClassName="PostDoNotShare" syncable="YES">
+        <attribute name="doNotShareId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="postid" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PostImage" representedClassName="PostImage" syncable="YES">
+        <attribute name="albumId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageByte" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="imageId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PostLike" representedClassName="PostLike" syncable="YES">
+        <attribute name="likedBy" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="likeId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="postId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PostMention" representedClassName="PostMention" syncable="YES">
+        <attribute name="mentionId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="postId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PostPrivacyHistory" representedClassName="PostPrivacyHistory" syncable="YES">
+        <attribute name="changedDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="postId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="privacyHistoryId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="privacyStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="PostShareWith" representedClassName="PostShareWith" syncable="YES">
+        <attribute name="groupId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shareWithId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="RecommendedFriend" representedClassName="RecommendedFriend" syncable="YES">
+        <attribute name="onlineStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Smiley" representedClassName="Smiley" syncable="YES">
+        <attribute name="smileyIconByte" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="smileyId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="smileyKey" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="User" representedClassName="User" syncable="YES">
+        <attribute name="alertsStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="chatId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="contactType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="emailVerificationStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gender" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mobile" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="myStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="onlineStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="profileImageBytes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="profileImageUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="saveOutgoingMediaStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="timeGivenToRenspond" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userFBId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userId" attributeType="String" syncable="YES"/>
+        <attribute name="userProfileStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="whoCanSendMeMessages" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="chatThread" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ChatThread" syncable="YES"/>
+    </entity>
+    <entity name="UserNotification" representedClassName="UserNotification" syncable="YES">
+        <attribute name="messageAlertStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="notificationSound" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notificationTimingEnd" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notificationTimingStart" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="otherFutureAlertStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="soundAlertStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userNotificationId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="vibrateStatus" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ChatMessage" positionX="-468" positionY="-235" width="128" height="405"/>
+        <element name="ChatThread" positionX="-243" positionY="111" width="128" height="238"/>
+        <element name="Favorite" positionX="-56" positionY="153" width="128" height="118"/>
+        <element name="FriendGroup" positionX="-45" positionY="345" width="128" height="103"/>
+        <element name="FriendGroupMember" positionX="-128" positionY="497" width="128" height="88"/>
+        <element name="Friendship" positionX="115" positionY="374" width="128" height="148"/>
+        <element name="MumblerFriendship" positionX="-324" positionY="-207" width="128" height="120"/>
+        <element name="Post" positionX="97" positionY="27" width="128" height="178"/>
+        <element name="PostAlbum" positionX="61" positionY="593" width="128" height="73"/>
+        <element name="PostComment" positionX="288" positionY="530" width="128" height="118"/>
+        <element name="PostDoNotShare" positionX="277" positionY="369" width="128" height="88"/>
+        <element name="PostImage" positionX="268" positionY="252" width="128" height="88"/>
+        <element name="PostLike" positionX="-99" positionY="-108" width="128" height="88"/>
+        <element name="PostMention" positionX="-36" positionY="-241" width="128" height="88"/>
+        <element name="PostPrivacyHistory" positionX="61" positionY="-117" width="128" height="103"/>
+        <element name="PostShareWith" positionX="304" positionY="126" width="128" height="88"/>
+        <element name="RecommendedFriend" positionX="277" positionY="-36" width="128" height="103"/>
+        <element name="Smiley" positionX="153" positionY="-351" width="128" height="88"/>
+        <element name="User" positionX="-522" positionY="179" width="128" height="330"/>
+        <element name="UserNotification" positionX="295" positionY="-279" width="128" height="178"/>
+    </elements>
+</model>
