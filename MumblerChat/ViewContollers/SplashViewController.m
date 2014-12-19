@@ -25,7 +25,7 @@
 
 @interface SplashViewController ()
 {
-    BOOL showFindAddFriendsScreen;
+//    BOOL showFindAddFriendsScreen;
 }
 
 @end
@@ -262,7 +262,7 @@
                                          updateUserDefalts:YES
                                              continueToTab:ADD_FRIEND_CONTACT_TAB
                                      whenInternetAvailable:^{
-                                         showFindAddFriendsScreen = YES;
+                                         [self dispalyFindAndAddFriendsScreen];
                                      }];
                       } else {
                           DDLogVerbose(@"%@: %@: SUCCESS jsonForNormalLogin signInState not complete", THIS_FILE, THIS_METHOD);
@@ -401,9 +401,9 @@
 {
     DDLogVerbose(@"%@: %@: START", THIS_FILE, THIS_METHOD);
     
-    if (showFindAddFriendsScreen) {
-        [self dispalyFindAndAddFriendsScreen];
-    }
+//    if (showFindAddFriendsScreen) {
+//        [self dispalyFindAndAddFriendsScreen];
+//    }
     
     DDLogVerbose(@"%@: %@: END", THIS_FILE, THIS_METHOD);
 }
