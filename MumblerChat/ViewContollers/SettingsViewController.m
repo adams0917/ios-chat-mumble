@@ -557,7 +557,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
 
 - (void) viewDidAppear:(BOOL)animated
 {
-   // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(myMethodStreamDidAthenticate) name:@"xmppStreamDidAuthenticate" object:nil];
+   // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(myMethodStreamDidAthenticate) name:kXMPPStreamDidAuthenticate object:nil];
     
     
 }
@@ -565,7 +565,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
 {
     [super viewWillDisappear:animated];
     
-     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"xmppStreamDidAuthenticate" object:nil];
+     [[NSNotificationCenter defaultCenter] removeObserver:self name:kXMPPStreamDidAuthenticate object:nil];
     
     
 }

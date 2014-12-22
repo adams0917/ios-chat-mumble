@@ -42,7 +42,7 @@
 #import "FriendDao.h"
 #import "SBJson.h"
 
-
+#import "UIAlertView+Utils.h"
 
 // Log levels: off, error, warn, info, verbose
 
@@ -58,10 +58,9 @@ NSString * const OptionJID = @"...";
 NSString * const OptionAuthenticationMethod = @"Digest-MD5";
 NSString * const OptionPassword = @"...";
 
-@implementation ASAppDelegate{
-    
+@implementation ASAppDelegate
+{
     ChatMessageDao *chatMessageDao;
-    
 }
 
 @synthesize managedObjectContext;
@@ -82,10 +81,6 @@ NSString * const OptionPassword = @"...";
 @synthesize navigationController;
 @synthesize loginButton;
 @synthesize tempPresence;
-
-NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionStateChangedNotification";
-
-
 
 @synthesize addedFriendsInSearch;
 //@synthesize addedFriendsInContactsSelectedForSendingText;
@@ -108,30 +103,21 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
     [FBLoginView class];
     [FBProfilePictureView class];
     
-    //CHECK AND REMOVE
-    addedFriendsInFaceBook = [[NSMutableArray alloc]init];
-    addedFriendsInSearch = [[NSMutableArray alloc]init];
-    //no need later
-    //friendsToBeAdded = [[NSMutableArray alloc]init];
-    friendsWithMumblerInContacts = [[NSMutableArray alloc]init];
-    //addedFriendsInContactsSelectedForSendingText = [[NSMutableArray alloc]init];
-    
-    
+    addedFriendsInFaceBook = [NSMutableArray new];
+    addedFriendsInSearch = [NSMutableArray new];
+    friendsWithMumblerInContacts = [NSMutableArray new];
     //Dictionary to add friends from search and contact
-    friendsToBeAddedDictionary =[[NSMutableDictionary alloc]init];
+    friendsToBeAddedDictionary = [NSMutableDictionary new];
     //Dictionary to invite friends in contact
-    inviteFriendsInContactsDictionary=[[NSMutableDictionary alloc]init];
+    inviteFriendsInContactsDictionary = [NSMutableDictionary new];
     
-    friendsToBeAddedToComposeTheMessageDictionary= [[NSMutableDictionary alloc]init];
-    
+    friendsToBeAddedToComposeTheMessageDictionary = [NSMutableDictionary new];
     
     // Configure logging framework
-	[DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
+    [DDLog addLogger:DDTTYLogger.sharedInstance withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
     
     // Setup the XMPP stream
-    
-	[self setupStream];
-    
+    [self setupStream];
     
     return YES;
 }
@@ -139,14 +125,9 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation {
-    
-    // Call FBAppCall's handleOpenURL:sourceApplication to handle Facebook app responses
-    BOOL wasHandled = [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
-    
-    // You can add your app-specific url handling code here if needed
-    
-    return wasHandled;
+         annotation:(id)annotation
+{
+    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
 }
 
 
@@ -160,28 +141,28 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store
-	// enough application state information to restore your application to its current state in case
-	// it is terminated later.
-	//
-	// If your application supports background execution,
-	// called instead of applicationWillTerminate: when the user quits.
-	
-	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    // enough application state information to restore your application to its current state in case
+    // it is terminated later.
+    //
+    // If your application supports background execution,
+    // called instead of applicationWillTerminate: when the user quits.
+    
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
     
 #if TARGET_IPHONE_SIMULATOR
-	DDLogError(@"The iPhone simulator does not process background network traffic. "
-			   @"Inbound traffic is queued until the keepAliveTimeout:handler: fires.");
+    DDLogError(@"The iPhone simulator does not process background network traffic. "
+               @"Inbound traffic is queued until the keepAliveTimeout:handler: fires.");
 #endif
     
-	if ([application respondsToSelector:@selector(setKeepAliveTimeout:handler:)])
-	{
-		[application setKeepAliveTimeout:600 handler:^{
-			
-			DDLogVerbose(@"KeepAliveHandler");
-			
-			// Do other keep alive stuff here.
-		}];
-	}
+    if ([application respondsToSelector:@selector(setKeepAliveTimeout:handler:)])
+    {
+        [application setKeepAliveTimeout:600 handler:^{
+            
+            DDLogVerbose(@"KeepAliveHandler");
+            
+            // Do other keep alive stuff here.
+        }];
+    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -205,99 +186,99 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 
 - (NSManagedObjectContext *)managedObjectContext_roster
 {
-	return [xmppRosterStorage mainThreadManagedObjectContext];
+    return [xmppRosterStorage mainThreadManagedObjectContext];
 }
 
 - (NSManagedObjectContext *)managedObjectContext_capabilities
 {
-	return [xmppCapabilitiesStorage mainThreadManagedObjectContext];
+    return [xmppCapabilitiesStorage mainThreadManagedObjectContext];
 }
 #pragma mark Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)setupStream
 {
-	NSAssert(xmppStream == nil, @"Method setupStream invoked multiple times");
-	
-	// Setup xmpp stream
-	//
-	// The XMPPStream is the base class for all activity.
-	// Everything else plugs into the xmppStream, such as modules/extensions and delegates.
+    NSAssert(xmppStream == nil, @"Method setupStream invoked multiple times");
     
-	xmppStream = [[XMPPStream alloc] init];
+    // Setup xmpp stream
+    //
+    // The XMPPStream is the base class for all activity.
+    // Everything else plugs into the xmppStream, such as modules/extensions and delegates.
+    
+    xmppStream = [[XMPPStream alloc] init];
    	
 #if !TARGET_IPHONE_SIMULATOR
-	{
-		// Want xmpp to run in the background?
-		//
-		// P.S. - The simulator doesn't support backgrounding yet.
-		//        When you try to set the associated property on the simulator, it simply fails.
-		//        And when you background an app on the simulator,
-		//        it just queues network traffic til the app is foregrounded again.
-		//        We are patiently waiting for a fix from Apple.
-		//        If you do enableBackgroundingOnSocket on the simulator,
-		//        you will simply see an error message from the xmpp stack when it fails to set the property.
-		
-		xmppStream.enableBackgroundingOnSocket = YES;
-	}
+    {
+        // Want xmpp to run in the background?
+        //
+        // P.S. - The simulator doesn't support backgrounding yet.
+        //        When you try to set the associated property on the simulator, it simply fails.
+        //        And when you background an app on the simulator,
+        //        it just queues network traffic til the app is foregrounded again.
+        //        We are patiently waiting for a fix from Apple.
+        //        If you do enableBackgroundingOnSocket on the simulator,
+        //        you will simply see an error message from the xmpp stack when it fails to set the property.
+        
+        xmppStream.enableBackgroundingOnSocket = YES;
+    }
 #endif
-	
-	// Setup reconnect
-	//
-	// The XMPPReconnect module monitors for "accidental disconnections" and
-	// automatically reconnects the stream for you.
-	// There's a bunch more information in the XMPPReconnect header file.
-	
-	xmppReconnect = [[XMPPReconnect alloc] init];
-	
-	// Setup roster
-	//
-	// The XMPPRoster handles the xmpp protocol stuff related to the roster.
-	// The storage for the roster is abstracted.
-	// So you can use any storage mechanism you want.
-	// You can store it all in memory, or use core data and store it on disk, or use core data with an in-memory store,
-	// or setup your own using raw SQLite, or create your own storage mechanism.
-	// You can do it however you like! It's your application.
-	// But you do need to provide the roster with some storage facility.
-	
-	xmppRosterStorage = [[XMPPRosterCoreDataStorage alloc] init];
+    
+    // Setup reconnect
+    //
+    // The XMPPReconnect module monitors for "accidental disconnections" and
+    // automatically reconnects the stream for you.
+    // There's a bunch more information in the XMPPReconnect header file.
+    
+    xmppReconnect = [[XMPPReconnect alloc] init];
+    
+    // Setup roster
+    //
+    // The XMPPRoster handles the xmpp protocol stuff related to the roster.
+    // The storage for the roster is abstracted.
+    // So you can use any storage mechanism you want.
+    // You can store it all in memory, or use core data and store it on disk, or use core data with an in-memory store,
+    // or setup your own using raw SQLite, or create your own storage mechanism.
+    // You can do it however you like! It's your application.
+    // But you do need to provide the roster with some storage facility.
+    
+    xmppRosterStorage = [[XMPPRosterCoreDataStorage alloc] init];
     //	xmppRosterStorage = [[XMPPRosterCoreDataStorage alloc] initWithInMemoryStore];
-	
-	xmppRoster = [[XMPPRoster alloc] initWithRosterStorage:xmppRosterStorage];
-	
-	xmppRoster.autoFetchRoster = YES;
-	xmppRoster.autoAcceptKnownPresenceSubscriptionRequests = YES;
-	
-	// Setup vCard support
-	//
-	// The vCard Avatar module works in conjuction with the standard vCard Temp module to download user avatars.
-	// The XMPPRoster will automatically integrate with XMPPvCardAvatarModule to cache roster photos in the roster.
-	
-	xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
-	xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:xmppvCardStorage];
-	
-	xmppvCardAvatarModule = [[XMPPvCardAvatarModule alloc] initWithvCardTempModule:xmppvCardTempModule];
-	
-	// Setup capabilities
-	//
-	// The XMPPCapabilities module handles all the complex hashing of the caps protocol (XEP-0115).
-	// Basically, when other clients broadcast their presence on the network
-	// they include information about what capabilities their client supports (audio, video, file transfer, etc).
-	// But as you can imagine, this list starts to get pretty big.
-	// This is where the hashing stuff comes into play.
-	// Most people running the same version of the same client are going to have the same list of capabilities.
-	// So the protocol defines a standardized way to hash the list of capabilities.
-	// Clients then broadcast the tiny hash instead of the big list.
-	// The XMPPCapabilities protocol automatically handles figuring out what these hashes mean,
-	// and also persistently storing the hashes so lookups aren't needed in the future.
-	//
-	// Similarly to the roster, the storage of the module is abstracted.
-	// You are strongly encouraged to persist caps information across sessions.
-	//
-	// The XMPPCapabilitiesCoreDataStorage is an ideal solution.
-	// It can also be shared amongst multiple streams to further reduce hash lookups.
-	
-	xmppCapabilitiesStorage = [XMPPCapabilitiesCoreDataStorage sharedInstance];
+    
+    xmppRoster = [[XMPPRoster alloc] initWithRosterStorage:xmppRosterStorage];
+    
+    xmppRoster.autoFetchRoster = YES;
+    xmppRoster.autoAcceptKnownPresenceSubscriptionRequests = YES;
+    
+    // Setup vCard support
+    //
+    // The vCard Avatar module works in conjuction with the standard vCard Temp module to download user avatars.
+    // The XMPPRoster will automatically integrate with XMPPvCardAvatarModule to cache roster photos in the roster.
+    
+    xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
+    xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:xmppvCardStorage];
+    
+    xmppvCardAvatarModule = [[XMPPvCardAvatarModule alloc] initWithvCardTempModule:xmppvCardTempModule];
+    
+    // Setup capabilities
+    //
+    // The XMPPCapabilities module handles all the complex hashing of the caps protocol (XEP-0115).
+    // Basically, when other clients broadcast their presence on the network
+    // they include information about what capabilities their client supports (audio, video, file transfer, etc).
+    // But as you can imagine, this list starts to get pretty big.
+    // This is where the hashing stuff comes into play.
+    // Most people running the same version of the same client are going to have the same list of capabilities.
+    // So the protocol defines a standardized way to hash the list of capabilities.
+    // Clients then broadcast the tiny hash instead of the big list.
+    // The XMPPCapabilities protocol automatically handles figuring out what these hashes mean,
+    // and also persistently storing the hashes so lookups aren't needed in the future.
+    //
+    // Similarly to the roster, the storage of the module is abstracted.
+    // You are strongly encouraged to persist caps information across sessions.
+    //
+    // The XMPPCapabilitiesCoreDataStorage is an ideal solution.
+    // It can also be shared amongst multiple streams to further reduce hash lookups.
+    
+    xmppCapabilitiesStorage = [XMPPCapabilitiesCoreDataStorage sharedInstance];
     xmppCapabilities = [[XMPPCapabilities alloc] initWithCapabilitiesStorage:xmppCapabilitiesStorage];
     
     xmppCapabilities.autoFetchHashedCapabilities = YES;
@@ -317,13 +298,13 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
     
     
     
-	// Activate xmpp modules
+    // Activate xmpp modules
     
-	[xmppReconnect         activate:xmppStream];
-	[xmppRoster            activate:xmppStream];
-	[xmppvCardTempModule   activate:xmppStream];
-	[xmppvCardAvatarModule activate:xmppStream];
-	[xmppCapabilities      activate:xmppStream];
+    [xmppReconnect         activate:xmppStream];
+    [xmppRoster            activate:xmppStream];
+    [xmppvCardTempModule   activate:xmppStream];
+    [xmppvCardAvatarModule activate:xmppStream];
+    [xmppCapabilities      activate:xmppStream];
     [xmppStreamManagement activate:xmppStream];
     
     
@@ -331,56 +312,56 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
     // [xmppCapabilities      activate:xmppStream];
     
     
-	// Add ourself as a delegate to anything we may be interested in
+    // Add ourself as a delegate to anything we may be interested in
     
-	[xmppStream addDelegate:self delegateQueue:dispatch_get_main_queue()];
-	[xmppRoster addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    [xmppStream addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    [xmppRoster addDelegate:self delegateQueue:dispatch_get_main_queue()];
     [xmppStreamManagement addDelegate:self delegateQueue:dispatch_get_main_queue()];
     
     
-	// Optional:
-	//
-	// Replace me with the proper domain and port.
-	// The example below is setup for a typical google talk account.
-	//
-	// If you don't supply a hostName, then it will be automatically resolved using the JID (below).
-	// For example, if you supply a JID like 'user@quack.com/rsrc'
-	// then the xmpp framework will follow the xmpp specification, and do a SRV lookup for quack.com.
-	//
-	// If you don't specify a hostPort, then the default (5222) will be used.
-	
+    // Optional:
+    //
+    // Replace me with the proper domain and port.
+    // The example below is setup for a typical google talk account.
+    //
+    // If you don't supply a hostName, then it will be automatically resolved using the JID (below).
+    // For example, if you supply a JID like 'user@quack.com/rsrc'
+    // then the xmpp framework will follow the xmpp specification, and do a SRV lookup for quack.com.
+    //
+    // If you don't specify a hostPort, then the default (5222) will be used.
+    
     //54.198.191.57
-	[xmppStream setHostName:BASE_IP];
+    [xmppStream setHostName:BASE_IP];
     // [xmppStream setHostName:@"192.168.2.102"];
     
-	[xmppStream setHostPort:5222];
-	
+    [xmppStream setHostPort:5222];
     
-	// You may need to alter these settings depending on the server you're connecting to
-	customCertEvaluation = YES;
+    
+    // You may need to alter these settings depending on the server you're connecting to
+    customCertEvaluation = YES;
 }
 - (void)teardownStream
 {
-	[xmppStream removeDelegate:self];
-	[xmppRoster removeDelegate:self];
-	
-	[xmppReconnect         deactivate];
-	[xmppRoster            deactivate];
-	[xmppvCardTempModule   deactivate];
-	[xmppvCardAvatarModule deactivate];
-	[xmppCapabilities      deactivate];
-	
-	[xmppStream disconnect];
-	
-	xmppStream = nil;
-	xmppReconnect = nil;
+    [xmppStream removeDelegate:self];
+    [xmppRoster removeDelegate:self];
+    
+    [xmppReconnect         deactivate];
+    [xmppRoster            deactivate];
+    [xmppvCardTempModule   deactivate];
+    [xmppvCardAvatarModule deactivate];
+    [xmppCapabilities      deactivate];
+    
+    [xmppStream disconnect];
+    
+    xmppStream = nil;
+    xmppReconnect = nil;
     xmppRoster = nil;
-	xmppRosterStorage = nil;
-	xmppvCardStorage = nil;
+    xmppRosterStorage = nil;
+    xmppvCardStorage = nil;
     xmppvCardTempModule = nil;
-	xmppvCardAvatarModule = nil;
-	xmppCapabilities = nil;
-	xmppCapabilitiesStorage = nil;
+    xmppvCardAvatarModule = nil;
+    xmppCapabilities = nil;
+    xmppCapabilitiesStorage = nil;
 }
 
 // It's easy to create XML elments to send and to read received XML elements.
@@ -396,7 +377,7 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 
 - (void)goOnline
 {
-	XMPPPresence *presence = [XMPPPresence presence]; // type="available" is implicit
+    XMPPPresence *presence = [XMPPPresence presence]; // type="available" is implicit
     
     NSString *domain = [xmppStream.myJID domain];
     
@@ -407,14 +388,14 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
     //       || [domain isEqualToString:@"talk.google.com"])
     //    {
     NSXMLElement *priority = [NSXMLElement elementWithName:@"priority" stringValue:@"24"];
-     NSXMLElement *status = [NSXMLElement elementWithName:@"status" stringValue:@"Testing 2222"];
+    NSXMLElement *status = [NSXMLElement elementWithName:@"status" stringValue:@"Testing 2222"];
     
     [presence addChild:priority];
     [presence addChild:status];
     
     // }
-	
-	[[self xmppStream] sendElement:presence];
+    
+    [[self xmppStream] sendElement:presence];
     //    XMPPRoom *xmppRoom=nil;
     //    NSMutableArray *tempArray= [[NSMutableArray alloc]init];
     //    tempArray= [NSUserDefaults.standardUserDefaults objectForKey:@"xmppGroupNamesArray"];
@@ -438,64 +419,58 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 
 - (void)goOffline
 {
-	XMPPPresence *presence = [XMPPPresence presenceWithType:@"unavailable"];
-	NSLog(@"goOffline goOffline ");
-	[[self xmppStream] sendElement:presence];
+    XMPPPresence *presence = [XMPPPresence presenceWithType:@"unavailable"];
+    NSLog(@"goOffline goOffline ");
+    [[self xmppStream] sendElement:presence];
 }
 
 #pragma mark Connect/disconnect
 
 - (BOOL)connect
 {
-	if (!xmppStream.isDisconnected)
-    {
-		return YES;
-	}
+    if (!xmppStream.isDisconnected) {
+        return YES;
+    }
     
-	NSString *myJID = [NSUserDefaults.standardUserDefaults stringForKey:@"kXMPPmyJID"];
-	NSString *myPassword = [NSUserDefaults.standardUserDefaults stringForKey:kXMPPmyPassword];
+    NSString *myJID = [NSUserDefaults.standardUserDefaults stringForKey:@"kXMPPmyJID"];
+    NSString *myPassword = [NSUserDefaults.standardUserDefaults stringForKey:kXMPPmyPassword];
     
-	//
-	// If you don't want to use the Settings view to set the JID,
-	// uncomment the section below to hard code a JID and password.
-	//
-	// myJID = @"user@gmail.com/xmppframework";
-	// myPassword = @"";
-	
-	if (myJID == nil || myPassword == nil) {
-		return NO;
-	}
+    //
+    // If you don't want to use the Settings view to set the JID,
+    // uncomment the section below to hard code a JID and password.
+    //
+    // myJID = @"user@gmail.com/xmppframework";
+    // myPassword = @"";
     
-	[xmppStream setMyJID:[XMPPJID jidWithString:myJID]];
+    if (myJID == nil || myPassword == nil) {
+        return NO;
+    }
+    
+    [xmppStream setMyJID:[XMPPJID jidWithString:myJID]];
     
     NSLog(@"myjid=== %@",[xmppStream myJID]);
     
-	password = myPassword;
+    password = myPassword;
     
-	NSError *error = nil;
-	if (![xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:&error])
-	{
-		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error connecting"
-		                                                    message:@"See console for error details."
-		                                                   delegate:nil
-		                                          cancelButtonTitle:@"Ok"
-		                                          otherButtonTitles:nil];
-		[alertView show];
-        
-		DDLogError(@"Error connecting: %@", error);
-        
-		return NO;
-	}
+    NSError *error = nil;
+    if (![xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:&error])
+    {
+        [UIAlertView showWithTitle:@"Error connecting"
+                           message:@"See console for error details"
+                 cancelButtonTitle:@"Ok"];
+        DDLogError(@"Error connecting: %@", error);
+        return NO;
+    }
     
     
-	return YES;
+    return YES;
 }
 
 
 - (void)disconnect
 {
-	[self goOffline];
-	[xmppStream disconnect];
+    [self goOffline];
+    [xmppStream disconnect];
 }
 
 #pragma mark XMPPStream Delegate
@@ -503,62 +478,62 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 
 - (void)xmppStream:(XMPPStream *)sender socketDidConnect:(GCDAsyncSocket *)socket
 {
-	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
 }
 
 - (void)xmppStream:(XMPPStream *)sender willSecureWithSettings:(NSMutableDictionary *)settings
 {
-	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
-	
-	NSString *expectedCertName = [xmppStream.myJID domain];
-	if (expectedCertName)
-	{
-		[settings setObject:expectedCertName forKey:(NSString *)kCFStreamSSLPeerName];
-	}
-	
-	if (customCertEvaluation)
-	{
-		[settings setObject:@(YES) forKey:GCDAsyncSocketManuallyEvaluateTrust];
-	}
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    
+    NSString *expectedCertName = [xmppStream.myJID domain];
+    if (expectedCertName)
+    {
+        [settings setObject:expectedCertName forKey:(NSString *)kCFStreamSSLPeerName];
+    }
+    
+    if (customCertEvaluation)
+    {
+        [settings setObject:@(YES) forKey:GCDAsyncSocketManuallyEvaluateTrust];
+    }
 }
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveTrust:(SecTrustRef)trust
  completionHandler:(void (^)(BOOL shouldTrustPeer))completionHandler
 {
     NSLog(@"didReceiveTrust");
-	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
-	
-	// The delegate method should likely have code similar to this,
-	// but will presumably perform some extra security code stuff.
-	// For example, allowing a specific self-signed certificate that is known to the app.
-	
-	dispatch_queue_t bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-	dispatch_async(bgQueue, ^{
-		
-		SecTrustResultType result = kSecTrustResultDeny;
-		OSStatus status = SecTrustEvaluate(trust, &result);
-		
-		if (status == noErr && (result == kSecTrustResultProceed || result == kSecTrustResultUnspecified)) {
-			completionHandler(YES);
-		}
-		else {
-			completionHandler(NO);
-		}
-	});
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    
+    // The delegate method should likely have code similar to this,
+    // but will presumably perform some extra security code stuff.
+    // For example, allowing a specific self-signed certificate that is known to the app.
+    
+    dispatch_queue_t bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(bgQueue, ^{
+        
+        SecTrustResultType result = kSecTrustResultDeny;
+        OSStatus status = SecTrustEvaluate(trust, &result);
+        
+        if (status == noErr && (result == kSecTrustResultProceed || result == kSecTrustResultUnspecified)) {
+            completionHandler(YES);
+        }
+        else {
+            completionHandler(NO);
+        }
+    });
 }
 
 - (void)xmppStreamDidSecure:(XMPPStream *)sender
 {
     NSLog(@"xmppStreamDidSecure");
-	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
 }
 
 - (void)xmppStreamDidConnect:(XMPPStream *)sender
 {
     NSLog(@"xmppStreamDidConnect");
-	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
-	
-	isXmppConnected = YES;
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    
+    isXmppConnected = YES;
     
     
     NSError *error = nil;
@@ -601,12 +576,8 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender
 {
-    NSLog(@"xmppStreamDidAuthenticate");
-    
-    
-	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
-    
-    
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+
     /// Check to see we resumed a previous session
     NSArray *stanzaIds = nil;
     if ([xmppStreamManagement didResumeWithAckedStanzaIds:&stanzaIds serverResponse:NULL])
@@ -623,16 +594,14 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
         // [xmppStream sendElement:[XMPPPresence presence]]; // send available presence
         // [self goOnline];
         
-        if ([sender supportsStreamManagement]) {
+        if (sender.supportsStreamManagement) {
             [xmppStreamManagement enableStreamManagementWithResumption:YES maxTimeout:0];
         }
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"xmppStreamDidAuthenticate" object:nil];
+    [NSNotificationCenter.defaultCenter postNotificationName:kXMPPStreamDidAuthenticate object:nil];
     
     [self goOnline];
-    
-    
 }
 
 - (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(NSXMLElement *)error
@@ -643,7 +612,7 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 
 - (BOOL)xmppStream:(XMPPStream *)sender didReceiveIQ:(XMPPIQ *)iq
 {
-	//DDLogVerbose(@"didReceiveIQ === %@: %@", THIS_FILE, THIS_METHOD);
+    //DDLogVerbose(@"didReceiveIQ === %@: %@", THIS_FILE, THIS_METHOD);
     
     NSLog(@"didReceiveIQ === %@",iq);
     NSLog(@"didReceiveIQ  Type New=== %@", iq.type);
@@ -778,7 +747,7 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
         NSLog(@"11jabberId====== %@",jabberId);
         NSLog(@"11vCardPhotoElement====== %@",str);
         NSLog(@"11vCardPhotoElement vCardPhotoElement====== %@",vCardPhotoElement);
-
+        
         NSLog(@"11gender gender gender ==== %@",gender);
         NSString *stringTestTo=[NSString stringWithFormat:@"%@",iq.to];
         
@@ -815,18 +784,18 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
         
         
         
-	}
+    }
     
     
     
     
-	
-	return NO;
+    
+    return NO;
 }
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
 {
-	
+    
     if(chatMessageDao == nil){
         chatMessageDao = [[ChatMessageDao alloc] init];
     }
@@ -1017,159 +986,73 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 - (void)xmppStream:(XMPPStream *)sender didReceivePresence:(XMPPPresence *)presence
 {
     NSLog(@"didReceivePresence %@ ",presence);
-	DDLogVerbose(@"didReceivePresence === %@: %@ - %@", THIS_FILE, THIS_METHOD, [presence fromStr]);
+    DDLogVerbose(@"didReceivePresence === %@: %@ - %@", THIS_FILE, THIS_METHOD, [presence fromStr]);
     
+    NSString *presenceType = presence.type;
     
-    NSString *presenceType = [presence type];            // online/offline
-    NSString *myUsername = [[sender myJID] user];
-    NSString *presenceFromUser = [[presence from] user];
-    NSString *myStatus=[presence status];
-    
-    NSLog(@"didReceivePresence presenceType ==%@",presenceType);
-    NSLog(@"didReceivePresence myUsername ==%@",myUsername);
-    NSLog(@"didReceivePresence presenceFromUser ==%@",presenceFromUser);
-    NSLog(@"didReceivePresence mystatus ==%@",myStatus);
-    
-    
+    NSLog(@"didReceivePresence presenceType ==%@", presenceType);
+    NSLog(@"didReceivePresence myUsername ==%@", sender.myJID.user);
+    NSLog(@"didReceivePresence presenceFromUser ==%@", presence.from.user);
+    NSLog(@"didReceivePresence mystatus ==%@", presence.status);
     
     //new request from unknow user
-    if (![presenceFromUser isEqualToString:myUsername])
-    {
-        if  ([presenceType isEqualToString:@"subscribe"])
-        {
-            //[_chatDelegate newBuddyOnline:[NSString stringWithFormat:@"%@@%@", presenceFromUser, kHostName]];
-            NSLog(@"AddBuddy didReceivePresence presence user wants to subscribe %@",presenceFromUser);
-            tempPresence = [[XMPPPresence alloc] init];
+    if (![presence.from.user isEqualToString:sender.myJID.user]) {
+        if ([presenceType isEqualToString:@"subscribe"]) {
+            NSLog(@"AddBuddy didReceivePresence presence user wants to subscribe %@", presence.from.user);
+            tempPresence = [XMPPPresence new];
             tempPresence = presence;
-            //            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"New request From:" message:presenceFromUser delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
-            //            [alert show];
             
             //accept request
             //[xmppRoster subscribePresenceToUser:[tempPresence from]];
-            [xmppRoster acceptPresenceSubscriptionRequestFrom:[tempPresence from] andAddToRoster:NO];
-            
-        }else if([presenceType isEqualToString:@"available"]) {
-            
-            NSLog(@"YES %@ is online", presenceFromUser);
-            UserDao *userDao = [[UserDao alloc] init];
-            [userDao updateUserOnlineStatus :presenceFromUser:@"online":myStatus];
-            
-            
-            NSMutableDictionary *dict=[[NSMutableDictionary alloc]initWithDictionary:@{@"userId":presenceFromUser,@"state":@"online"}];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"userStateUpdated" object:dict];
-            
-            
+            [xmppRoster acceptPresenceSubscriptionRequestFrom:tempPresence.from andAddToRoster:NO];
+        } else if([presenceType isEqualToString:@"available"]) {
+            [self updateUser:presence.from.user isOnline:YES withStatus:presence.status];
         } else if ([presenceType isEqualToString:@"unavailable"]) {
-            
-            NSLog(@"YES %@ is offline", presenceFromUser);
-            
-            UserDao *userDao = [[UserDao alloc] init];
-            [userDao updateUserOnlineStatus:presenceFromUser :@"offline":myStatus];
-            
-            
-            NSMutableDictionary *dict=[[NSMutableDictionary alloc]initWithDictionary:@{@"userId":presenceFromUser,@"state":@"offline"}];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"userStateUpdated" object:dict];
-            
+            [self updateUser:presence.from.user isOnline:NO withStatus:presence.status];
         }
     }
-       /* xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
-        xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:xmppvCardStorage];
-    
-     //  dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
-     //   dispatch_async(queue, ^{
-    
-    [xmppvCardTempModule  activate:xmppStream];
-    
-    NSString *userId=[NSString stringWithFormat:@"%@%@",presenceFromUser,@"@ejabberd.server.mumblerchat"];
-    
-    NSLog(@"userId userId userId=== %@",userId);
-            XMPPJID *usertst=[XMPPJID jidWithString:userId];
-            XMPPvCardTemp *vCard = [xmppvCardTempModule vCardTempForJID:usertst shouldFetch:YES];
-            NSLog(@"Vcard === %@",vCard);
-            if(vCard!=nil){
-                NSLog(@"vcard requested from chats view=== %@",vCard.namespaces);
-                NSLog(@"vcard requested from chats view middleName=== %@",vCard.middleName);
-               // NSLog(@"vcard requested from chats view nickname=== %@",vCard.photo);
-                
-                UserDao *userDao = [[UserDao alloc] init];
-                User *user= [userDao getUserForId:presenceFromUser];
-                if(vCard.photo){
-                    NSLog(@"adding image profile bites to user presenceFromUser ==== %@",presenceFromUser);
-
-                    NSLog(@"adding image profile bites to user ==== %@",user.userId);
-                    user.profileImageBytes=[vCard.photo base64EncodedString];
-                }
-                if(user && vCard.middleName!=nil){
-                    NSLog(@"skckjdnjkcndcjdkcnkjsncjknjsdknc user==%@",user.name);
-                    
-                    NSError *error;
-                    NSData *data = [vCard.middleName dataUsingEncoding:NSUTF8StringEncoding];
-                    NSDictionary *jsonResponse = [NSJSONSerialization JSONObjectWithData:data
-                                                                                 options:kNilOptions
-                                                                                   error:&error];
-                    NSLog(@"phone numbers to server appdelegate-=== %@",jsonResponse);
-                    
-                    // NSLog(@"skckjdnjkcndcjdkcnkjsncjknjsdknc user==%@",obj);
-                    
-                    NSLog(@"usernam IDID %@",user.userId);
-                    user.alertsStatus=[NSString stringWithFormat:@"%@",[jsonResponse valueForKey:@"alerts"]];
-                    user.saveOutgoingMediaStatus=[NSString stringWithFormat:@"%@",[jsonResponse valueForKey:@"save_out_going_media"]];
-                    user.whoCanSendMeMessages=[NSString stringWithFormat:@"%@",[jsonResponse valueForKey:@"who_can_message"]];
-                    user.timeGivenToRenspond=[NSString stringWithFormat:@"%@",[jsonResponse valueForKey:@"global_timer"]];
-                    
-                }
-                
-                NSError *error = nil;
-                if([managedObjectContext save:&error] ) {
-                    NSLog(@"User updateUserOnlineStatus---------------- change");
-                } else {
-                    
-                    NSLog(@"User updateUserOnlineStatus--------- not change");
-                }
-
-                
-            }
-     //   });*/
-    
-    
 }
 
--(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+- (void)updateUser:(NSString *)user isOnline:(BOOL)online withStatus:(NSString *)status
+{
+    NSString *state = online ? @"online" : @"offline";
+    NSLog(@"user %@ is offline", user);
+    UserDao *userDao = [UserDao new];
+    [userDao updateUserOnlineStatus:user :@"offline":status];
+    [NSNotificationCenter.defaultCenter postNotificationName:kUserStateUpdated
+                                                      object:@{@"userId": user,
+                                                               @"state": state}];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     //accept request
-    if(buttonIndex==1){
+    if(buttonIndex==1) {
         [xmppRoster subscribePresenceToUser:[tempPresence from]];
     }
 }
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveError:(id)error
 {
-	DDLogVerbose(@"didReceiveError == %@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"didReceiveError == %@: %@", THIS_FILE, THIS_METHOD);
 }
 
 - (void)xmppStreamDidDisconnect:(XMPPStream *)sender withError:(NSError *)error
 {
-	DDLogVerbose(@"xmppStreamDidDisconnect  ===%@: %@", THIS_FILE, THIS_METHOD);
-	
-	if (!isXmppConnected)
-	{
-		DDLogError(@"Unable to connect to server. Check xmppStream.hostName");
-	}
+    DDLogVerbose(@"xmppStreamDidDisconnect  ===%@: %@", THIS_FILE, THIS_METHOD);
+    
+    if (!isXmppConnected) {
+        DDLogError(@"Unable to connect to server. Check xmppStream.hostName");
+    }
 }
 
-
-
-
-- (void)xmppStream:(XMPPStream *)sender didSendMessage:(XMPPMessage *)message {
-    
+- (void)xmppStream:(XMPPStream *)sender didSendMessage:(XMPPMessage *)message
+{
     NSLog(@"didSendMessage ");
-    
-    
 }
 
-- (void)xmppRoster:(XMPPRoster *)sender didRecieveRosterItem:(NSXMLElement *)item {
+- (void)xmppRoster:(XMPPRoster *)sender didRecieveRosterItem:(NSXMLElement *)item
+{
     NSLog(@"today item %@ ", item);
 }
 
@@ -1179,50 +1062,42 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
 
 - (void)xmppRoster:(XMPPRoster *)sender didReceiveBuddyRequest:(XMPPPresence *)presence
 {
-	DDLogVerbose(@"didReceiveBuddyRequest %@: %@", THIS_FILE, THIS_METHOD);
-	
-	XMPPUserCoreDataStorageObject *user = [xmppRosterStorage userForJID:[presence from]
-	                                                         xmppStream:xmppStream
-	                                               managedObjectContext:[self managedObjectContext_roster]];
-	//NSLog(@"User info===== %@",user);
-	NSString *displayName = [user displayName];
-	NSString *jidStrBare = [presence fromStr];
-	NSString *body = nil;
-	
-	if (![displayName isEqualToString:jidStrBare])
-	{
-		body = [NSString stringWithFormat:@"Buddy request from %@ <%@>", displayName, jidStrBare];
-	}
-	else
-	{
-		body = [NSString stringWithFormat:@"Buddy request from %@", displayName];
-	}
-	
+    DDLogVerbose(@"didReceiveBuddyRequest %@: %@", THIS_FILE, THIS_METHOD);
+    
+    XMPPUserCoreDataStorageObject *user = [xmppRosterStorage userForJID:[presence from]
+                                                             xmppStream:xmppStream
+                                                   managedObjectContext:[self managedObjectContext_roster]];
+    //NSLog(@"User info===== %@",user);
+    NSString *displayName = [user displayName];
+    NSString *jidStrBare = [presence fromStr];
+    NSString *body = nil;
+    
+    if (![displayName isEqualToString:jidStrBare])
+    {
+        body = [NSString stringWithFormat:@"Buddy request from %@ <%@>", displayName, jidStrBare];
+    }
+    else
+    {
+        body = [NSString stringWithFormat:@"Buddy request from %@", displayName];
+    }
+    
     NSLog(@"AddBuddy didReceiveBuddyRequest from === %@",body);
     
-	
-	if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
-	{
-		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:displayName
-		                                                    message:body
-		                                                   delegate:nil
-		                                          cancelButtonTitle:@"Not implemented"
-		                                          otherButtonTitles:nil];
-		[alertView show];
-	}
-	else
-	{
-		// We are not active, so use a local notification instead
-		UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-		localNotification.alertAction = @"Not implemented";
-		localNotification.alertBody = body;
-		
-		[[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-	}
-	
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateActive) {
+        [UIAlertView showWithTitle:displayName
+                           message:body
+                 cancelButtonTitle:@"Not implemented"];
+    } else {
+        // We are not active, so use a local notification instead
+        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+        localNotification.alertAction = @"Not implemented";
+        localNotification.alertBody = body;
+        
+        [UIApplication.sharedApplication presentLocalNotificationNow:localNotification];
+    }
 }
-#pragma mark - Core Data stack
 
+#pragma mark - Core Data stack
 
 - (NSManagedObjectContext *)managedObjectContext
 {
@@ -1230,11 +1105,11 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
         return managedObjectContext;
     }
     
-    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-    if (coordinator != nil) {
-        managedObjectContext = [[NSManagedObjectContext alloc] init];
-        [managedObjectContext setPersistentStoreCoordinator:coordinator];
+    if (self.persistentStoreCoordinator != nil) {
+        managedObjectContext = [NSManagedObjectContext new];
+        [managedObjectContext setPersistentStoreCoordinator:self.persistentStoreCoordinator];
     }
+    
     return managedObjectContext;
 }
 
@@ -1446,32 +1321,5 @@ NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionS
     
     [self.xmppStream sendElement:message];
 }
-
-/* if ([message isChatMessageWithBody])
- {
- 
- if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
- {
- UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:displayName
- message:body
- delegate:nil
- cancelButtonTitle:@"Ok"
- otherButtonTitles:nil];
- [alertView show];
- }
- else
- {
- // We are not active, so use a local notification instead
- UILocalNotification *localNotification = [[UILocalNotification alloc] init];
- localNotification.alertAction = @"Ok";
- localNotification.alertBody = [NSString stringWithFormat:@"From: %@\n\n%@",displayName,body];
- 
- [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
- }
- }*/
-
-
-
-
 
 @end

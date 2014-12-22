@@ -10,42 +10,31 @@
 	<string>MumblerChat</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>9B018904-D742-4610-9421-2151A38723F4</key>
-		<string>https://192.168.2.101/svn/MumbleriOSv2/trunk</string>
+		<key>3FE63C5A13E86414555F21FF5E1123E0DCA65271</key>
+		<string>https://bitbucket.org/zemariamm/mumblerchat.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>MumblerChat.xcodeproj/project.xcworkspace</string>
+	<string>MumblerChat.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>9B018904-D742-4610-9421-2151A38723F4</key>
+		<key>3FE63C5A13E86414555F21FF5E1123E0DCA65271</key>
 		<string>../..</string>
 	</dict>
-	<key>IDESourceControlProjectRepositoryRootDictionary</key>
-	<dict>
-		<key>9B018904-D742-4610-9421-2151A38723F4</key>
-		<string>https://192.168.2.101/svn/MumbleriOSv2</string>
-	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://192.168.2.101/svn/MumbleriOSv2/trunk/MumblerChat.xcodeproj</string>
+	<string>https://bitbucket.org/zemariamm/mumblerchat.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>9B018904-D742-4610-9421-2151A38723F4</string>
+	<string>3FE63C5A13E86414555F21FF5E1123E0DCA65271</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
-			<key>IDESourceControlRepositoryBranchesRelativeLocationKey</key>
-			<string>branches</string>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.subversion</string>
-			<key>IDESourceControlRepositoryTagsRelativeLocationKey</key>
-			<string>tags</string>
-			<key>IDESourceControlRepositoryTrunkRelativeLocationKey</key>
-			<string>trunk</string>
+			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>9B018904-D742-4610-9421-2151A38723F4</string>
+			<string>3FE63C5A13E86414555F21FF5E1123E0DCA65271</string>
 			<key>IDESourceControlWCCName</key>
-			<string>MumblerChatiOSV2</string>
+			<string>trunk</string>
 		</dict>
 	</array>
 </dict>

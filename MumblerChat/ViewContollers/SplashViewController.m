@@ -20,7 +20,7 @@
 #import "UserDao.h"
 #import "ChatThreadViewController.h"
 
-#import "NSAlertView+Utils.h"
+#import "UIAlertView+Utils.h"
 #import "NSDictionary+JSON.h"
 
 @interface SplashViewController ()
@@ -130,7 +130,7 @@
     [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     
-    [NSNotificationCenter.defaultCenter removeObserver:self name:@"xmppStreamDidAuthenticate" object:nil];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:kXMPPStreamDidAuthenticate object:nil];
 }
 
 -(void) viewWillAppear:(BOOL)animated
@@ -393,7 +393,7 @@
 {
     [NSNotificationCenter.defaultCenter addObserver:self
                                            selector:@selector(myMethodStreamDidAthenticate)
-                                               name:@"xmppStreamDidAuthenticate"
+                                               name:kXMPPStreamDidAuthenticate
                                              object:nil];
 }
 

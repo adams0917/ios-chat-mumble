@@ -509,7 +509,7 @@
 		FA8993B51A446E83008ECDA5 /* build-libidn.sh in Resources */ = {isa = PBXBuildFile; fileRef = FA89916F1A446E82008ECDA5 /* build-libidn.sh */; };
 		FA8993B61A446E83008ECDA5 /* libidn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA8991711A446E82008ECDA5 /* libidn.a */; };
 		FA8994B31A44722C008ECDA5 /* NSDictionary+JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8994B21A44722C008ECDA5 /* NSDictionary+JSON.m */; };
-		FA8994B61A44891E008ECDA5 /* NSAlertView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8994B51A44891E008ECDA5 /* NSAlertView+Utils.m */; };
+		FA8994B61A44891E008ECDA5 /* UIAlertView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8994B51A44891E008ECDA5 /* UIAlertView+Utils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1351,8 +1351,8 @@
 		FA8991721A446E82008ECDA5 /* stringprep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringprep.h; sourceTree = "<group>"; };
 		FA8994B11A44722C008ECDA5 /* NSDictionary+JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDictionary+JSON.h"; path = "MumblerChat/Categories/NSDictionary+JSON.h"; sourceTree = SOURCE_ROOT; };
 		FA8994B21A44722C008ECDA5 /* NSDictionary+JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+JSON.m"; path = "MumblerChat/Categories/NSDictionary+JSON.m"; sourceTree = SOURCE_ROOT; };
-		FA8994B41A44891E008ECDA5 /* NSAlertView+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAlertView+Utils.h"; path = "MumblerChat/Categories/NSAlertView+Utils.h"; sourceTree = SOURCE_ROOT; };
-		FA8994B51A44891E008ECDA5 /* NSAlertView+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSAlertView+Utils.m"; path = "MumblerChat/Categories/NSAlertView+Utils.m"; sourceTree = SOURCE_ROOT; };
+		FA8994B41A44891E008ECDA5 /* UIAlertView+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIAlertView+Utils.h"; path = "MumblerChat/Categories/UIAlertView+Utils.h"; sourceTree = SOURCE_ROOT; };
+		FA8994B51A44891E008ECDA5 /* UIAlertView+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIAlertView+Utils.m"; path = "MumblerChat/Categories/UIAlertView+Utils.m"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3408,8 +3408,8 @@
 		FA8994B01A4471C9008ECDA5 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				FA8994B41A44891E008ECDA5 /* NSAlertView+Utils.h */,
-				FA8994B51A44891E008ECDA5 /* NSAlertView+Utils.m */,
+				FA8994B41A44891E008ECDA5 /* UIAlertView+Utils.h */,
+				FA8994B51A44891E008ECDA5 /* UIAlertView+Utils.m */,
 				FA8994B11A44722C008ECDA5 /* NSDictionary+JSON.h */,
 				FA8994B21A44722C008ECDA5 /* NSDictionary+JSON.m */,
 				121DA90219D5B249005DAC4B /* NSData+Base64.m */,
@@ -3824,7 +3824,7 @@
 				121DABC919D5B24B005DAC4B /* UIFont+AS.m in Sources */,
 				121DABCB19D5B24B005DAC4B /* SVProgressHUD.m in Sources */,
 				FA8993611A446E83008ECDA5 /* XMPPMessage+XEP0045.m in Sources */,
-				FA8994B61A44891E008ECDA5 /* NSAlertView+Utils.m in Sources */,
+				FA8994B61A44891E008ECDA5 /* UIAlertView+Utils.m in Sources */,
 				121DABB319D5B24B005DAC4B /* ASICloudFilesContainerXMLParserDelegate.m in Sources */,
 				121DABD119D5B24B005DAC4B /* AFURLConnectionOperation.m in Sources */,
 				FA8993791A446E83008ECDA5 /* NSDate+XMPPDateTimeProfiles.m in Sources */,

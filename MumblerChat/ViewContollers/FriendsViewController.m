@@ -26,7 +26,7 @@
     ChatMessageDao *chatMessageDao;
     FriendDao *friendDao;
     NSString *mumblerFriendId;
-
+    
 }
 
 @end
@@ -39,7 +39,7 @@
 @synthesize composedChatMsg;
 
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -48,36 +48,10 @@
     return self;
 }
 
-
-
-
-
--(IBAction)swipeLeft:(id)sender{
-      DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
-    
-     [self performSegueWithIdentifier:@"leftChatThreadScreen" sender:self];
-    //chat thread
-   //friendsToBeAddedToComposeTheMessage
-    if([appDelegate.friendsToBeAddedToComposeTheMessageDictionary count] > 0){
-        
-        ChatMessageDao *chatMessageDao = [[ChatMessageDao alloc] init];
-        [chatMessageDao saveComposedChatMessageWithFriends:composedChatMsg];
-       
-        
-    }
-    
-}
-
--(IBAction)swipeRight:(id)sender{
-    DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
-    [self.navigationController popViewControllerAnimated:YES];
-
-
-}
-
-- (ASAppDelegate *)appDelegate
+- (void)viewDidLoad
 {
-	return (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [super viewDidLoad];
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -92,8 +66,8 @@
 }
 
 
--(void)viewWillAppear:(BOOL)animated{
-    
+- (void)viewWillAppear:(BOOL)animated
+{
     DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
     
     appDelegate = (ASAppDelegate *)[UIApplication sharedApplication].delegate;
@@ -117,31 +91,26 @@
         NSLog(@" viewWillAppear message need to be send= %@",messageNeedToBeSend);
         NSLog(@" viewWillAppear composed message = %@",composedChatMsg);
         
-    }else{
+    } else {
         //nomal way
         NSLog(@" viewWillAppear normal way ");
-        
     }
     
-    
     NSError *error;
-	if (![[self fetchedResultsController] performFetch:&error]) {
-		// Update to handle the error appropriately.
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		//exit(-1);  // Fail
-	}
+    if (![[self fetchedResultsController] performFetch:&error]) {
+        // Update to handle the error appropriately.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        //exit(-1);  // Fail
+    }
     [self loadXmppContacts];
-    
 }
 
-
-- (void)viewDidLoad
+- (ASAppDelegate *)appDelegate
 {
-    [super viewDidLoad];
-    [DDLog addLogger:[DDTTYLogger sharedInstance]];
-    
-    
+    return (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
 }
+
+#pragma mark - UITableViewDelegate
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
@@ -152,7 +121,6 @@
 
 - (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    
     NSString *sectionTitle = [self tableView:tableView titleForHeaderInSection:section];
     if (sectionTitle == nil) {
         return nil;
@@ -174,88 +142,76 @@
     [headerView addSubview:label];
     
     return headerView;
-    
 }
 
-
-
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    
-    return [[_fetchedResultsController sections] count];
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return _fetchedResultsController.sections.count;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView
- numberOfRowsInSection:(NSInteger)section {
-    
-    id  sectionInfo =
-    [[_fetchedResultsController sections] objectAtIndex:section];
-    
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    id sectionInfo = _fetchedResultsController.sections[section];
     return [sectionInfo numberOfObjects];
 }
 
 - (NSString *)tableView:(UITableView *)sender titleForHeaderInSection:(NSInteger)sectionIndex
 {
-	   
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:sectionIndex];
     NSString *section= [sectionInfo name];
     
-    
     NSString *sectionTitle =nil;
-	switch ([section intValue]) {
+    switch (section.intValue) {
         case 1:
             sectionTitle=@"Best Friends";
             break;
-            
         case 2:
             sectionTitle=@"Friends";
             break;
-            
         case 3:
             sectionTitle=@"Blocked Friends";
             break;
-            
-            default:
+        default:
             sectionTitle=@"";
             break;
-
+            
     }
-  
-	
-	return sectionTitle;
+    
+    return sectionTitle;
 }
 
 
-- (NSFetchedResultsController *)fetchedResultsController {
-    
+- (NSFetchedResultsController *)fetchedResultsController
+{
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
     
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSFetchRequest *fetchRequest = [NSFetchRequest new];
     NSManagedObjectContext *managedObjectContext = [appDelegate managedObjectContext];
-    NSEntityDescription *entity = [NSEntityDescription
-                                   entityForName:@"MumblerFriendship" inManagedObjectContext:managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"MumblerFriendship"
+                                              inManagedObjectContext:managedObjectContext];
     [fetchRequest setEntity:entity];
     
-    NSSortDescriptor *sort = [[NSSortDescriptor alloc]
-                              initWithKey:@"friendshipStatus" ascending:YES];
+    NSSortDescriptor *sort = [[NSSortDescriptor alloc] initWithKey:@"friendshipStatus"
+                                                         ascending:YES];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObject:sort]];
     
     [fetchRequest setFetchBatchSize:10];
     
     NSFetchedResultsController *theFetchedResultsController =
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                        managedObjectContext:managedObjectContext sectionNameKeyPath:@"friendshipStatus"
+                                        managedObjectContext:managedObjectContext
+                                          sectionNameKeyPath:@"friendshipStatus"
                                                    cacheName:nil];
     self.fetchedResultsController = theFetchedResultsController;
     _fetchedResultsController.delegate = self;
     
     return _fetchedResultsController;
-    
 }
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
     MumblerFriendship *friendship = [_fetchedResultsController objectAtIndexPath:indexPath];
     
     FriendTableViewCell *tablecell = (FriendTableViewCell *)cell;
@@ -268,22 +224,22 @@
     
     if(image){
         tablecell.profileImageView.image=image;
-
+        
     }else{
         tablecell.profileImageView.image=[UIImage imageNamed:@"mumbler_profile_picture"];
-
+        
     }
     
-  //  NSLog(@"friendship.friendMumblerUser.profileImageBytes === %@",friendship.friendMumblerUser.profileImageBytes);
-
+    //  NSLog(@"friendship.friendMumblerUser.profileImageBytes === %@",friendship.friendMumblerUser.profileImageBytes);
+    
     
     //friend or friends need to be selected
     if([actionType isEqualToString:ACTION_TYPE_FRIEND_TO_BE_SELECTED]){
         
         NSLog(@"message need to be send= %@",messageNeedToBeSend);
-          tablecell.friendCellType = FriendCellTypeFriendsToBeSelectedToSendMsgs;
-          tablecell.friendUser = friendship.friendMumblerUser;
-
+        tablecell.friendCellType = FriendCellTypeFriendsToBeSelectedToSendMsgs;
+        tablecell.friendUser = friendship.friendMumblerUser;
+        
         
     }else{
         //nomal way
@@ -294,13 +250,13 @@
             tablecell.friendCellType = FriendCellTypeFriendsOnline;
         }else{
             
-           // tablecell.displayNameTwo.text = @"offline";
+            // tablecell.displayNameTwo.text = @"offline";
             
             tablecell.friendCellType = FriendCellTypeFriendsOffline;
         }
-
+        
     }
-
+    
     
 }
 
@@ -314,14 +270,14 @@
     
     
     //friend or friends need to be selected
-       //gesture
-        
-        UITapGestureRecognizer *singleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
-        singleTapGestureRecognizer.numberOfTapsRequired = 1;
-        singleTapGestureRecognizer.numberOfTouchesRequired = 1;
-        tablecell.tag = indexPath.row;
-        [tablecell addGestureRecognizer:singleTapGestureRecognizer];
-        
+    //gesture
+    
+    UITapGestureRecognizer *singleTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
+    singleTapGestureRecognizer.numberOfTapsRequired = 1;
+    singleTapGestureRecognizer.numberOfTouchesRequired = 1;
+    tablecell.tag = indexPath.row;
+    [tablecell addGestureRecognizer:singleTapGestureRecognizer];
+    
     if(![actionType isEqualToString:ACTION_TYPE_FRIEND_TO_BE_SELECTED]){
         
         UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc]
@@ -336,46 +292,62 @@
     //gesture
     [self configureCell:tablecell atIndexPath:indexPath];
     return tablecell;
-
-    
 }
+
+# pragma mark - Gesture recognizers
 
 -(void)handleLongPress:(UILongPressGestureRecognizer *)longPress
 {
-    if(!recognizeLongPressGesture){
-        
-    if (longPress.state == UIGestureRecognizerStateEnded) {
-        
-        recognizeLongPressGesture=true;
-         //DDLogVerbose(@"%@: %@: UIGestureRecognizerStateEnded", THIS_FILE, THIS_METHOD);
-        NSLog(@"UIGestureRecognizerStateEnded");
-        
-        CGPoint p = [longPress locationInView:self.friendsTableView];
-        
-        NSIndexPath *indexPath = [self.friendsTableView indexPathForRowAtPoint:p];
-       
-        MumblerFriendship *friendship = [_fetchedResultsController objectAtIndexPath:indexPath];
-        
-        mumblerUserFriend=friendship.friendMumblerUser;
-        
-       // DDLogVerbose(@"%@: %@: selected friendMumblerUser handleLongPress= %@ ", THIS_FILE, THIS_METHOD,mumblerUserFriend);
-        NSLog(@"selected friendMumblerUser handleLongPress");
-        
-       
+    if(!recognizeLongPressGesture) {
+        if (longPress.state == UIGestureRecognizerStateEnded) {
+            recognizeLongPressGesture=true;
+            //DDLogVerbose(@"%@: %@: UIGestureRecognizerStateEnded", THIS_FILE, THIS_METHOD);
+            NSLog(@"UIGestureRecognizerStateEnded");
+            
+            CGPoint p = [longPress locationInView:self.friendsTableView];
+            
+            NSIndexPath *indexPath = [self.friendsTableView indexPathForRowAtPoint:p];
+            
+            MumblerFriendship *friendship = [_fetchedResultsController objectAtIndexPath:indexPath];
+            
+            mumblerUserFriend=friendship.friendMumblerUser;
+            
+            // DDLogVerbose(@"%@: %@: selected friendMumblerUser handleLongPress= %@ ", THIS_FILE, THIS_METHOD,mumblerUserFriend);
+            NSLog(@"selected friendMumblerUser handleLongPress");
+            
+            
             [self performSegueWithIdentifier:@"selectedFriend_ChatComposer" sender:self];
-       
-       
-        
-    } }
-    
-    
+            
+        }
+    }
 }
+
+- (IBAction)swipeLeft:(id)sender
+{
+    DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
+    
+    [self performSegueWithIdentifier:@"leftChatThreadScreen" sender:self];
+    //chat thread
+    //friendsToBeAddedToComposeTheMessage
+    if([appDelegate.friendsToBeAddedToComposeTheMessageDictionary count] > 0){
+        ChatMessageDao *chatMessageDao = [[ChatMessageDao alloc] init];
+        [chatMessageDao saveComposedChatMessageWithFriends:composedChatMsg];
+    }
+}
+
+- (IBAction)swipeRight:(id)sender
+{
+    DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"selectedFriend_ChatComposer"]) {
         NSLog(@"start selectedFriend_ChatComposer prepareForSegue");
-
+        
         ChatComposerViewController *chatComposerViewController = (ChatComposerViewController *) [segue destinationViewController];
         chatComposerViewController.actionType = ACTION_TYPE_WITH_FRIEND;
         chatComposerViewController.mumblerFriend=mumblerUserFriend;
@@ -398,40 +370,40 @@
 
 -(void)cellTapped:(UITapGestureRecognizer*)tap
 {
-       if (tap.state == UIGestureRecognizerStateEnded) {
+    if (tap.state == UIGestureRecognizerStateEnded) {
         NSLog(@"cellTapped UIGestureRecognizerStateEnded");
         
         CGPoint p = [tap locationInView:self.friendsTableView];
         NSIndexPath *indexPath = [self.friendsTableView indexPathForRowAtPoint:p];
         MumblerFriendship *friendship = [_fetchedResultsController objectAtIndexPath:indexPath];
-           mumblerFriendId = friendship.friendMumblerUser.userId;
-           
-           DDLogVerbose(@"%@: %@: selected friend mumblerId= %@ ", THIS_FILE, THIS_METHOD,mumblerFriendId);
-           
-           
-           
-           if(![actionType isEqualToString:ACTION_TYPE_FRIEND_TO_BE_SELECTED]){
-               UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Alert" message:nil delegate:self cancelButtonTitle:@"Delete" otherButtonTitles:@"Block",@"Cancel",nil];
-               [alert show];
-               
-
-           }else{
-               
-               
-               if([appDelegate.friendsToBeAddedToComposeTheMessageDictionary objectForKey:mumblerFriendId] == nil){
-                   
+        mumblerFriendId = friendship.friendMumblerUser.userId;
+        
+        DDLogVerbose(@"%@: %@: selected friend mumblerId= %@ ", THIS_FILE, THIS_METHOD,mumblerFriendId);
+        
+        
+        
+        if(![actionType isEqualToString:ACTION_TYPE_FRIEND_TO_BE_SELECTED]){
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Alert" message:nil delegate:self cancelButtonTitle:@"Delete" otherButtonTitles:@"Block",@"Cancel",nil];
+            [alert show];
+            
+            
+        }else{
+            
+            
+            if([appDelegate.friendsToBeAddedToComposeTheMessageDictionary objectForKey:mumblerFriendId] == nil){
+                
                 [appDelegate.friendsToBeAddedDictionary setObject:friendship.friendMumblerUser forKey:mumblerFriendId];
-                   
-               }else{
-                   
-                   [appDelegate.friendsToBeAddedToComposeTheMessageDictionary removeObjectForKey:mumblerFriendId];
-                   
-                   
-                   
-               }
-               }
-           
-           
+                
+            }else{
+                
+                [appDelegate.friendsToBeAddedToComposeTheMessageDictionary removeObjectForKey:mumblerFriendId];
+                
+                
+                
+            }
+        }
+        
+        
     }
 }
 
@@ -451,9 +423,9 @@
         
         NSString *selectedFriendUserId=[NSString stringWithFormat:@"%@%@",mumblerFriendId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
         
-         XMPPJID *removeBuddy = [XMPPJID jidWithString:selectedFriendUserId];
+        XMPPJID *removeBuddy = [XMPPJID jidWithString:selectedFriendUserId];
         
-         [[[self appDelegate] xmppRoster] removeUser:removeBuddy];
+        [[[self appDelegate] xmppRoster] removeUser:removeBuddy];
         
     }
     else if (buttonIndex == 1)
@@ -517,14 +489,12 @@
 }
 
 
-- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id )sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-    
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id )sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
     switch(type) {
-            
         case NSFetchedResultsChangeInsert:
             [self.friendsTableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
-            
         case NSFetchedResultsChangeDelete:
             [self.friendsTableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
@@ -545,7 +515,8 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)loadXmppContacts{
+-(void)loadXmppContacts
+{
     NSArray *xmppContactsArray = [[NSArray alloc]init];
     
     xmppContactsArray=[self getEntities:@"XMPPUserCoreDataStorageObject"];
@@ -554,52 +525,52 @@
     for (XMPPUserCoreDataStorageObject *user in xmppContactsArray) {
         
         NSLog(@"allContactsArray displayName =%@",user.displayName);
-            NSLog(@"allContactsArray jidStr =%@",user.displayName);
-            NSLog(@"allContactsArray nickname==%@",user.nickname);
+        NSLog(@"allContactsArray jidStr =%@",user.displayName);
+        NSLog(@"allContactsArray nickname==%@",user.nickname);
         
-            NSLog(@"allContactsArray user.photo==%@",user.photo);
-            NSLog(@"allContactsArray user==%@",user);
+        NSLog(@"allContactsArray user.photo==%@",user.photo);
+        NSLog(@"allContactsArray user==%@",user);
         
         NSArray* tempArray = [user.jidStr componentsSeparatedByString: @"@"];
         NSString *userId = [tempArray objectAtIndex: 0];
-    
+        
         FriendDao *friednDao=[[FriendDao alloc] init];
         [friednDao addFriendshipsForNewFriend:userId:user.displayName :@""];
         XMPPvCardCoreDataStorage *xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
-            XMPPvCardTempModule *xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:xmppvCardStorage];
+        XMPPvCardTempModule *xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:xmppvCardStorage];
+        
+        //            dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
+        //            dispatch_async(queue, ^{
+        [xmppvCardTempModule  activate:[[self appDelegate] xmppStream]];
+        
+        XMPPJID *usertst=[XMPPJID jidWithString:user.jidStr];
+        XMPPvCardTemp *vCard = [xmppvCardTempModule vCardTempForJID:usertst shouldFetch:YES];
+        // NSLog(@"vcard requested from chats view=== %@",vCard.givenName);
+        if(vCard!=nil){
+            NSLog(@"vcard requested from Friends view view=== %@",vCard.jid);
+            // NSLog(@"vcard requested from Friends view view=== %@",vCard.photo);
+            //[vCard.photo base64EncodedString]givenName
             
-//            dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
-//            dispatch_async(queue, ^{
-                [xmppvCardTempModule  activate:[[self appDelegate] xmppStream]];
+            if(vCard.photo){
+                NSLog(@"UPDATING PHOTO FOR vCard.jid= %@",vCard.jid);
+                NSLog(@"UPDATING PHOTO FOR givenName= %@",vCard.formattedName);
                 
-                XMPPJID *usertst=[XMPPJID jidWithString:user.jidStr];
-                XMPPvCardTemp *vCard = [xmppvCardTempModule vCardTempForJID:usertst shouldFetch:YES];
-               // NSLog(@"vcard requested from chats view=== %@",vCard.givenName);
-                if(vCard!=nil){
-                     NSLog(@"vcard requested from Friends view view=== %@",vCard.jid);
-                   // NSLog(@"vcard requested from Friends view view=== %@",vCard.photo);
-                    //[vCard.photo base64EncodedString]givenName
-                   
-                    if(vCard.photo){
-                        NSLog(@"UPDATING PHOTO FOR vCard.jid= %@",vCard.jid);
-                        NSLog(@"UPDATING PHOTO FOR givenName= %@",vCard.formattedName);
-                        
-                        UserDao *userDao = [[UserDao alloc] init];
-                        [userDao updateUserByVcard:userId :[vCard.photo base64EncodedString]:vCard.givenName];
-                        [self.friendsTableView reloadData];
-
-                    }
-                    
-                }
-         //   });
+                UserDao *userDao = [[UserDao alloc] init];
+                [userDao updateUserByVcard:userId :[vCard.photo base64EncodedString]:vCard.givenName];
+                [self.friendsTableView reloadData];
+                
+            }
+            
+        }
+        //   });
         
     }
     [self.friendsTableView reloadData];
-
+    
 }
--(NSArray *) getEntities : (NSString *) entityName {
-    
-    
+
+- (NSArray *)getEntities:(NSString *)entityName
+{
     NSManagedObjectContext *managedObjectContext = [[self appDelegate] managedObjectContext_roster];
     
     NSEntityDescription *entityDesc = [NSEntityDescription entityForName:entityName inManagedObjectContext:managedObjectContext];
@@ -611,28 +582,10 @@
     NSArray *objects = [managedObjectContext executeFetchRequest:request error:&error];
     
     if (objects != nil) {
-        
-        
         return objects;
-        
     } else {
         return nil;
     }
-    
 }
-
-
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

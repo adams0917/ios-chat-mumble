@@ -452,7 +452,7 @@
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(myMethodDidNotRegister) name:@"didNotRegister" object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(myMethodStreamDidRegisterAndAuthenticate) name:@"xmppStreamDidAuthenticate" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(myMethodStreamDidRegisterAndAuthenticate) name:kXMPPStreamDidAuthenticate object:nil];
 
     
     
@@ -466,7 +466,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"didNotRegister" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"xmppStreamDidAuthenticate" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kXMPPStreamDidAuthenticate object:nil];
     
 }
 
