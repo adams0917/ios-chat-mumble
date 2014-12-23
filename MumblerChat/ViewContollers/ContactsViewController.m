@@ -56,8 +56,6 @@
 @implementation ContactsViewController
 
 @synthesize addressBookTableView,searchAddressBook;
-//@synthesize sections;
-//@synthesize sectionWiseData;
 @synthesize addedFriendsBackgroundView;
 @synthesize addedFriendsLabel;
 
@@ -186,12 +184,10 @@
     DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
     
     UITouch *touch = [[event allTouches] anyObject];
-    if ([addressBookTableView isFirstResponder] && [touch view] != addressBookTableView)
-    {
+    if ([addressBookTableView isFirstResponder] && [touch view] != addressBookTableView) {
         [addressBookTableView resignFirstResponder];
     }
-    if ([searchAddressBook isFirstResponder] && [touch view] != searchAddressBook)
-    {
+    if ([searchAddressBook isFirstResponder] && [touch view] != searchAddressBook) {
         [searchAddressBook resignFirstResponder];
     }
 }
@@ -204,10 +200,8 @@
     
 }
 
-
-
-
--(void)sendContactsToTheServer{
+- (void)sendContactsToTheServer
+{
     DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
     
     [SVProgressHUD show];
@@ -286,7 +280,7 @@
 {
     for (NSDictionary *friend in friendsToAdd) {
         NSString *alias = friend[@"alias"];
-        NSString *sectionTitle = [alias substringToIndex:1];
+        NSString *sectionTitle = [[alias substringToIndex:1] uppercaseString];
         if (friends[sectionTitle] == nil) {
             friends[sectionTitle] = [NSMutableArray new];
             [friendSectionTitle addObject:sectionTitle];
@@ -459,15 +453,11 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    //    return self.sections.count;
     return friendSectionTitle.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    //    NSString *sectionHeader = self.sections[section];
-    //    return [self.sectionWiseData[sectionHeader] count];
-    //    return friendsList.count;
     NSString *sectionTitle = friendSectionTitle[section];
     return [friends[sectionTitle] count];
 }
@@ -549,7 +539,6 @@
     }
     return 55;
 }
-
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {

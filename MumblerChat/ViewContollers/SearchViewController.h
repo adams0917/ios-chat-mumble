@@ -13,8 +13,8 @@
 
 - (IBAction)didTapOnSearchButton:(id)sender;
 
-@property(nonatomic,strong)NSMutableArray*sections;
-@property(nonatomic,strong)NSMutableDictionary*sectionWiseData;
+//@property(nonatomic,strong)NSMutableArray*sections;
+//@property(nonatomic,strong)NSMutableDictionary*sectionWiseData;
 @property(nonatomic,strong)NSMutableArray* allData;
 @property (weak, nonatomic) IBOutlet UIView *addedFriendsBackgroundView;
 @property (weak, nonatomic) IBOutlet UILabel *addedFriendsLabel;
