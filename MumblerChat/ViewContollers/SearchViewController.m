@@ -161,47 +161,6 @@
     return [friends[sectionTitle] count];
 }
 
-//- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-//{
-//    
-//    NSString *sectionTitle = [self tableView:tableView titleForHeaderInSection:section];
-//    if (sectionTitle == nil) {
-//        return nil;
-//    }
-//    NSInteger integer=0;
-//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-//        
-//        integer=42;
-//        
-//    }else{
-//        
-//        integer=36.5;
-//        
-//    }
-//    
-//    UILabel *label = [[UILabel alloc] init];
-//    label.frame = CGRectMake(integer,3, 320, 18);
-//    label.backgroundColor = [UIColor clearColor];
-//    label.textColor = [UIColor whiteColor];
-//    label.shadowColor = [UIColor grayColor];
-//    label.shadowOffset = CGSizeMake(-1.0, 1.0);
-//    label.font = [UIFont boldSystemFontOfSize:16];
-//    label.text = sectionTitle;
-//    
-//    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 25)];
-//    [headerView setBackgroundColor:colorTheme];
-//    
-//    [headerView addSubview:label];
-//    
-//    return headerView;
-//}
-//
-//- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-//{
-//    UIView *view = [UIView new];
-//    return view;
-//}
-
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     return [friendSectionTitle objectAtIndex:section];
