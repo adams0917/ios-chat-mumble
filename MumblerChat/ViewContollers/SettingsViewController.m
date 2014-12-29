@@ -27,18 +27,19 @@
 #import "SBJson.h"
 #import "ChatMessageDao.h"
 
-@interface SettingsViewController (){
+@interface SettingsViewController ()
+{
     UIImage *profileImage;
     NSString *alerts;
     NSString *whoCanMsgMe;
     NSString *saveOutgoingMedia;
     User *userObject;
-    
 }
 
 @end
 
 @implementation SettingsViewController
+
 @synthesize statusTextField;
 @synthesize nameLabel;
 @synthesize mobileLabel;
@@ -59,7 +60,6 @@
 - (void)updateSliderPopoverText
 {
     self.slider.popover.textLabel.text = [NSString stringWithFormat:@"%.0f", self.slider.value];
-    
 }
 
 ////////////////////Slide over
@@ -142,12 +142,12 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     
     
     if (originalImage) {
-         profileImage=originalImage;
+        profileImage=originalImage;
         [picker dismissViewControllerAnimated:YES completion:nil];
         [profileButton setBackgroundImage:originalImage forState:UIControlStateNormal];
         self.profileButton.layer.cornerRadius = 20.0;
         self.profileButton.layer.masksToBounds = YES;
-
+        
     }
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
@@ -201,31 +201,16 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     actionSheetType=@"mumbler_chat_logout";
     NSLog(@"didTapOnMumblerChatLogoutButton");
     
-    
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        UIActionSheet* actionSheet=[[UIActionSheet alloc] init];
-        [actionSheet setActionSheetStyle:UIActionSheetStyleBlackOpaque];
-        [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
-        [actionSheet addButtonWithTitle:@"LOGOUT"];
-        [actionSheet addButtonWithTitle:@"CANCEL"];
-        actionSheet.delegate=self;
-        [actionSheet showFromRect:CGRectMake(100, 100, 320, 300) inView:self.view animated:YES];
-        
-    }else{
-        UIActionSheet* actionSheet=[[UIActionSheet alloc] init];
-        [actionSheet setActionSheetStyle:UIActionSheetStyleBlackOpaque];
-        [actionSheet addButtonWithTitle:@"LOGOUT"];
-        [actionSheet addButtonWithTitle:@"CANCEL"];
-        actionSheet.delegate=self;
-        [actionSheet showFromRect:CGRectMake(220, 250, 320, 300) inView:self.view animated:YES];
-        
-    }
-    
+    UIActionSheet* actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:@"Logout"
+                                                    otherButtonTitles:nil];
+    [actionSheet showInView:self.view];
     
     //User logot from the app
     /*[NSUserDefaults.standardUserDefaults setObject:USER_LOG_OUT_YES forKey:USER_LOG_OUT];
      [NSUserDefaults.standardUserDefaults synchronize];*/
-    
 }
 
 
@@ -303,7 +288,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     
     if([actionSheetType isEqualToString:@"mumbler_chat_logout"]){
         
-      ///////////////Log out
+        ///////////////Log out
         
         if (buttonIndex==0){
             
@@ -322,15 +307,15 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
             [self performSegueWithIdentifier:@"backToHome" sender:self];
             
             
-
+            
             
         }else{
-             NSLog(@"LOGOT CANCELED");
+            NSLog(@"LOGOT CANCELED");
         }
         
-       
-     /////////////////LOG OUT
-    
+        
+        /////////////////LOG OUT
+        
     }
     
     //////////////Clear History//28
@@ -339,9 +324,9 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
         if(buttonIndex==0){
             ChatMessageDao *cmd=[[ChatMessageDao alloc] init];
             [cmd clearHistory];
-           NSLog(@"History cleared");            
+            NSLog(@"History cleared");
         }else{
-             NSLog(@"History not cleared");
+            NSLog(@"History not cleared");
         }
         
         
@@ -357,7 +342,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
         else if (buttonIndex==1) {
             [self.whoCanMsgMeButton setTitle:@"FRIENDS" forState:UIControlStateNormal];
             // [self btnUpdateMySettings:actionSheet];
-             whoCanMsgMe=@"2";
+            whoCanMsgMe=@"2";
         }
         
         
@@ -369,17 +354,17 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
 - (void)loadUserProfileWithSettings{
     
     
-//    NSUserDefaults *userDefaults=NSUserDefaults.standardUserDefaults;
-//    NSData *userSettingData = [userDefaults valueForKey:MUMBLER_CHAT_SETTINGS];
-//    self.settingDictionary =  [NSKeyedUnarchiver unarchiveObjectWithData:userSettingData];
-//    
-//    NSData *profileSettingData = [userDefaults valueForKey:MUMBLER_CHAT_USER_PROFILE];
-//    self.profileDictionary =  [NSKeyedUnarchiver unarchiveObjectWithData:profileSettingData];
-//    
-//    
-//    NSLog(@"settingDictionary %@ ", settingDictionary);
-//    
-//    NSLog(@"profileDictionary %@ ", profileDictionary);
+    //    NSUserDefaults *userDefaults=NSUserDefaults.standardUserDefaults;
+    //    NSData *userSettingData = [userDefaults valueForKey:MUMBLER_CHAT_SETTINGS];
+    //    self.settingDictionary =  [NSKeyedUnarchiver unarchiveObjectWithData:userSettingData];
+    //
+    //    NSData *profileSettingData = [userDefaults valueForKey:MUMBLER_CHAT_USER_PROFILE];
+    //    self.profileDictionary =  [NSKeyedUnarchiver unarchiveObjectWithData:profileSettingData];
+    //
+    //
+    //    NSLog(@"settingDictionary %@ ", settingDictionary);
+    //
+    //    NSLog(@"profileDictionary %@ ", profileDictionary);
     
     
     [[UISwitch appearance] setOnTintColor:[UIColor orangeColor]];
@@ -395,7 +380,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     
     [[UISwitch appearance] setThumbTintColor:[UIColor whiteColor]];
     [switchSaveMedia addTarget:self action:@selector(switchSaveMediaValueChanged:) forControlEvents:UIControlEventValueChanged];
-   
+    
     
     
     int currentValue = [[self.settingDictionary valueForKey:@"chatTimeLimit"] integerValue]/1000;
@@ -435,19 +420,19 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
         
         NSLog(@"User updateUserOnlineStatus--------- not change");
     }
-
+    
     
     
     //sending status update
-   XMPPPresence *presence = [XMPPPresence presence];
-   if(userObject.userProfileStatus!=nil){
+    XMPPPresence *presence = [XMPPPresence presence];
+    if(userObject.userProfileStatus!=nil){
         NSXMLElement *status = [NSXMLElement elementWithName:@"status" stringValue:userObject.userProfileStatus];
         [presence addChild:status];
-
+        
     }else{
         NSXMLElement *status = [NSXMLElement elementWithName:@"status" stringValue:@"Available"];
         [presence addChild:status];
-
+        
     }
     [[appDelegate xmppStream] sendElement:presence];
     
@@ -506,7 +491,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
                                 whoCanMsgMe, @"who_can_message",
                                 nil];
             NSLog(@"phone numbers to server -=== %@",[o2 JSONRepresentation]);
-
+            
             [myvCardTemp setMiddleName:[o2 JSONRepresentation]];
             [myvCardTemp setPhoto:profileImageData];
             
@@ -532,12 +517,12 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
         whoCanMsgMe=@"1";
     }else{
         whoCanMsgMe=@"2";
-
+        
     }
     [self updateMyProfile];
     [self updateVcardDetails];
-
-
+    
+    
     
     if (([[self.settingDictionary valueForKey:@"chatTimeLimit"] intValue]/1000)!=[self.sliderView currentValue]) {
         NSLog(@"not equal------");
@@ -551,13 +536,13 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
 
 - (ASAppDelegate *)appDelegate
 {
-	return (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
+    return (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 
 - (void) viewDidAppear:(BOOL)animated
 {
-   // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(myMethodStreamDidAthenticate) name:kXMPPStreamDidAuthenticate object:nil];
+    // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(myMethodStreamDidAthenticate) name:kXMPPStreamDidAuthenticate object:nil];
     
     
 }
@@ -565,7 +550,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
 {
     [super viewWillDisappear:animated];
     
-     [[NSNotificationCenter defaultCenter] removeObserver:self name:kXMPPStreamDidAuthenticate object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kXMPPStreamDidAuthenticate object:nil];
     
     
 }
@@ -588,7 +573,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     
     NSLog(@"slider----------%i",[self.sliderView currentValue]);
     
-   
+    
     NSMutableString *jsonString  = [[NSMutableString alloc] init];
     [jsonString appendFormat:@"{"];
     NSInteger timerValue = [[NSNumber numberWithFloat:[self.sliderView currentValue] * 1000] integerValue];
@@ -677,7 +662,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
             [userDefaults synchronize];
             
             NSLog(@"mumbleruserJson------%@",self.settingDictionary);
-
+            
             
             
             
@@ -776,7 +761,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     
     [self mergeFbMumblerUser:user.id];
     
-
+    
     [NSUserDefaults.standardUserDefaults setObject:user.id forKey:FB_USER_ID];
     
     [NSUserDefaults.standardUserDefaults synchronize];
@@ -787,13 +772,13 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
 
 // Logged-in user experience
 - (void)loginViewShowingLoggedInUser:(FBLoginView *)loginView {
-      NSLog(@"loginViewShowingLoggedInUser----");
+    NSLog(@"loginViewShowingLoggedInUser----");
     //self.statusLabel.text = @"You're logged in as";
 }
 
 // Logged-out user experience
 - (void)loginViewShowingLoggedOutUser:(FBLoginView *)loginView {
-     NSLog(@"loginViewShowingLoggedOutUser----");
+    NSLog(@"loginViewShowingLoggedOutUser----");
     // self.profilePictureView.profileID = nil;
     // self.nameLabel.text = @"";
     // self.statusLabel.text= @"You're not logged in!";
@@ -851,29 +836,29 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     [super viewDidLoad];
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
     
-
     
     
-//    XMPPvCardCoreDataStorage *xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
-//    XMPPvCardTempModule *xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:xmppvCardStorage];
-//    
-//    dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
-//    dispatch_async(queue, ^{
-//        [xmppvCardTempModule  activate:[[self appDelegate] xmppStream]];
-//        
-//        XMPPJID *usertst=[XMPPJID jidWithString:@"54@ejabberd.server.mumblerchat"];
-//        XMPPvCardTemp *vCard = [xmppvCardTempModule vCardTempForJID:usertst shouldFetch:YES];
-//        NSLog(@"Vcard === %@",vCard.middleName);
-//        if(vCard!=nil){
-//            NSLog(@"vcard requested from chats view=== %@",vCard.namespaces);
-//            NSLog(@"vcard requested from chats view=== %@",vCard.middleName);
-//            NSLog(@"vcard requested from chats view=== %@",vCard.nickname);
-//
-//
-//            
-//        }
-//    });
-//    
+    
+    //    XMPPvCardCoreDataStorage *xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
+    //    XMPPvCardTempModule *xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:xmppvCardStorage];
+    //
+    //    dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_PRIORITY_DEFAULT);
+    //    dispatch_async(queue, ^{
+    //        [xmppvCardTempModule  activate:[[self appDelegate] xmppStream]];
+    //
+    //        XMPPJID *usertst=[XMPPJID jidWithString:@"54@ejabberd.server.mumblerchat"];
+    //        XMPPvCardTemp *vCard = [xmppvCardTempModule vCardTempForJID:usertst shouldFetch:YES];
+    //        NSLog(@"Vcard === %@",vCard.middleName);
+    //        if(vCard!=nil){
+    //            NSLog(@"vcard requested from chats view=== %@",vCard.namespaces);
+    //            NSLog(@"vcard requested from chats view=== %@",vCard.middleName);
+    //            NSLog(@"vcard requested from chats view=== %@",vCard.nickname);
+    //
+    //
+    //
+    //        }
+    //    });
+    //
     // Do any additional setup after loading the view.
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -896,15 +881,15 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     NSString *myId=[NSUserDefaults.standardUserDefaults valueForKey:MUMBLER_USER_ID];
     UserDao *userDao=[[UserDao alloc]init];
     userObject=[userDao getUserForId:myId];
-  
+    
     NSLog(@"my user myId== == %@",myId);
     NSLog(@"my user == == %@",userObject.userProfileStatus);
     NSLog(@"my user ==alertsStatus == %@",userObject.alertsStatus);
     NSLog(@"my user ==saveOutgoingMediaStatus == %@",userObject.saveOutgoingMediaStatus);
     NSLog(@"my user ==whoCanSendMeMessages == %@",userObject.whoCanSendMeMessages);
     NSLog(@"my user ==whoCanSendMeMessages == %@",userObject.timeGivenToRenspond);
-
-
+    
+    
     [self loadUserProfileWithSettings];
     
     self.statusTextField.text=userObject.userProfileStatus;
@@ -929,10 +914,10 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
         [self.whoCanMsgMeButton setTitle:@"EVERYONE" forState:UIControlStateNormal];
     }else{
         [self.whoCanMsgMeButton setTitle:@"FRIENDS" forState:UIControlStateNormal];
-
+        
     }
     self.whoCanMsgMeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-
+    
     mobileLabel.text = userObject.mobile;
     usernameLabel.text = userObject.name;
     nameLabel.text = userObject.name;
@@ -942,13 +927,13 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     NSData *data = [NSData dataFromBase64String:userObject.profileImageBytes];
     UIImage *image= [UIImage imageWithData:data];
     if(image){
-    [profileButton setBackgroundImage:image forState:UIControlStateNormal];
-    profileButton.layer.cornerRadius = 20.0;
-    profileButton.layer.masksToBounds = YES;
+        [profileButton setBackgroundImage:image forState:UIControlStateNormal];
+        profileButton.layer.cornerRadius = 20.0;
+        profileButton.layer.masksToBounds = YES;
     }
-
-
-
+    
+    
+    
 }
 
 - (void)didReceiveMemoryWarning
