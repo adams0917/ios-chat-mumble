@@ -116,7 +116,7 @@
     NSLog(@"didTapOnViedioButton----");
     imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
     imagePicker.mediaTypes = @[(NSString *) kUTTypeMovie];
-    imagePicker.videoQuality = UIImagePickerControllerQualityTypeMedium;
+    imagePicker.videoQuality = UIImagePickerControllerQualityTypeHigh;
     imagePicker.cameraCaptureMode=UIImagePickerControllerCameraCaptureModeVideo;
     [imagePicker setVideoMaximumDuration:10];
     [self presentViewController:imagePicker animated:YES completion:nil];
@@ -603,7 +603,7 @@
         //isRecordingOn=YES;
         imagePicker.mediaTypes =
         [NSArray arrayWithObject:(NSString *)kUTTypeMovie];
-        imagePicker.videoQuality = UIImagePickerControllerQualityTypeMedium;
+        imagePicker.videoQuality = UIImagePickerControllerQualityTypeHigh;
         imagePicker.cameraCaptureMode=UIImagePickerControllerCameraCaptureModeVideo;
         [imagePicker setVideoMaximumDuration:10];
         
@@ -816,10 +816,6 @@
     
     
 }
-
-
-
-
 
 - (void)viewDidLoad
 {

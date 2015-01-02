@@ -14,7 +14,6 @@
 
 
 -(void)addFriendships{
-    
     NSLog(@"updateAddedFriends----");
     
     ASAppDelegate *appDelegate = (ASAppDelegate*)[[UIApplication sharedApplication] delegate];
@@ -43,13 +42,10 @@
         [self addFriendshipsForNewFriend:selectedFriendUserId :selectedFriendAlias :selectedFriendStatus];
         
         
-         }
+    }
     
-        [appDelegate.friendsToBeAddedDictionary removeAllObjects];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"addedFriendsLabelUpdate" object:appDelegate.friendsToBeAddedDictionary];
-
-    
-    
+    [appDelegate.friendsToBeAddedDictionary removeAllObjects];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"addedFriendsLabelUpdate" object:appDelegate.friendsToBeAddedDictionary];
 }
 
 -(void)addFriendshipsForNewFriend: (NSString *) friendMumblerUserId : (NSString *) friendMumblerUserName : (NSString *) friendMumblerUserProfileStatus{
@@ -156,9 +152,9 @@
     
     if(friendship != nil){
         friendship.friendshipStatus=BLOCKED_FRIEND;
-          NSLog(@"====friendship.friendshipStatus=BLOCKED_FRIEND");
-       
-
+        NSLog(@"====friendship.friendshipStatus=BLOCKED_FRIEND");
+        
+        
     }
     
     NSError *error;
@@ -171,9 +167,9 @@
         
     }
     
-
-   
-
+    
+    
+    
 }
 
 
@@ -213,7 +209,7 @@
 
 //Delete Friend
 -(void) deleteFriendWithFriendship:(NSString *) friendId{
-
+    
     NSLog(@"deleteFriendWithFriendship friendId %@",friendId);
     
     
@@ -224,7 +220,7 @@
     
     ASAppDelegate *appDelegate = (ASAppDelegate*)[[UIApplication sharedApplication] delegate];
     NSManagedObjectContext *managedObjectContext = [appDelegate managedObjectContext];
-     NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
     
     if(friendship != nil){
         
@@ -232,7 +228,7 @@
         
         //delete friendship
         NSEntityDescription *entityDesc = [NSEntityDescription entityForName:@"MumblerFriendship" inManagedObjectContext:managedObjectContext];
-       
+        
         [request setEntity:entityDesc];
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(mumblerUser.userId = %@) AND (friendMumblerUser.userId = %@)", mumblerUserId, friendId];
         [request setPredicate:predicate];
@@ -242,7 +238,7 @@
         
         for(MumblerFriendship *ct in objects){
             [managedObjectContext deleteObject:ct];
-             NSLog(@"DELETE MumblerFriendship OBJECT");
+            NSLog(@"DELETE MumblerFriendship OBJECT");
         }
         
         
@@ -273,9 +269,9 @@
     }
     
     NSError *error;
-
+    
     if([managedObjectContext save:&error] ) {
-         NSLog(@"DELETE MumblerFriendship  Mumbler Friend SAVED");
+        NSLog(@"DELETE MumblerFriendship  Mumbler Friend SAVED");
     } else {
         
         NSLog(@"DELETE MumblerFriendship  Mumbler Friend NOT SAVED");

@@ -45,32 +45,27 @@
 
 
 ///////////////////////////////////////FRIENDS SCREEEN CHAT COMPOSER
--(IBAction)composeBtnSelected:(id)sender{
+- (IBAction)composeBtnSelected:(id)sender
+{
     NSLog(@"picked composeBtnSelected ");
-   
-    NSLog(@"_mumblerFRIEND %@",_friendUser);
     
-    ASAppDelegate *appDelegate = (ASAppDelegate *)[[UIApplication sharedApplication]delegate];
-
-    if([appDelegate.friendsToBeAddedToComposeTheMessageDictionary objectForKey:_friendUser.userId] == nil){
-        
+    NSLog(@"_mumblerFRIEND %@", _friendUser);
+    
+    ASAppDelegate *appDelegate = (ASAppDelegate *) UIApplication.sharedApplication.delegate;
+    
+    if(appDelegate.friendsToBeAddedToComposeTheMessageDictionary[_friendUser.userId] == nil) {
         NSLog(@"picked selectedUserId is there %@",_friendUser.userId);
         UIImage *imageIcon = [UIImage imageNamed:@"check_tick"];
         [self.rowButton setBackgroundImage:imageIcon forState:UIControlStateNormal];
-        
-         [appDelegate.friendsToBeAddedToComposeTheMessageDictionary setObject:_friendUser forKey:_friendUser.userId];
-        
-    }else{
+        [appDelegate.friendsToBeAddedToComposeTheMessageDictionary setObject:_friendUser forKey:_friendUser.userId];
+        [self.delegate friendCellWithUser:_friendUser changedState:YES];
+    } else {
         UIImage *imageIcon = [UIImage imageNamed:@"uncheck"];
         [self.rowButton setBackgroundImage:imageIcon forState:UIControlStateNormal];
         [appDelegate.friendsToBeAddedToComposeTheMessageDictionary removeObjectForKey:_friendUser.userId];
-        
-        
-        
+        [self.delegate friendCellWithUser:_friendUser changedState:NO];
     }
     NSLog(@"picked friendsToBeAddedToComposeTheMessage %@",appDelegate.friendsToBeAddedToComposeTheMessageDictionary);
-    
-
 }
 
 ///////////////////////////////////////FRIENDS SCREEEN CHAT COMPOSER
@@ -85,7 +80,7 @@
     
     NSLog(@"picked selectedUserId %@",selectedUserId);
     
-   
+    
     ASAppDelegate *appDelegate = (ASAppDelegate *)[[UIApplication sharedApplication]delegate];
     NSLog(@"_mumblerUser %@",_mumblerUser);
     
@@ -95,10 +90,10 @@
         
         UIImage *imageIcon = [UIImage imageNamed:@"add_before"];
         [self.rowButton setBackgroundImage:imageIcon forState:UIControlStateNormal];
-       
+        
         [appDelegate.friendsToBeAddedDictionary removeObjectForKey:selectedUserId];
         
-       
+        
         
     }else{
         NSLog(@"picked selectedUserId is not there %@",selectedUserId);
@@ -143,7 +138,7 @@
     }else{
         
         //remove
-         NSLog(@"appDelegate.addedFriendsInFaceBook has the fb id");
+        NSLog(@"appDelegate.addedFriendsInFaceBook has the fb id");
         UIImage *imageIcon = [UIImage imageNamed:@"friends_before"];
         [self.rowButton setBackgroundImage:imageIcon forState:UIControlStateNormal];
         [appDelegate.addedFriendsInFaceBook removeObject:selectedFBUserId];
@@ -151,7 +146,7 @@
     }
     
     NSLog(@"appDelegate.addedFriendsInFaceBook %@",appDelegate.addedFriendsInFaceBook);
-    }
+}
 
 
 ////////////////////////////////////////FACEBOOK OVER............
@@ -185,7 +180,7 @@
         [self.rowButton setBackgroundImage:imageIcon forState:UIControlStateNormal];
         
         [appDelegate.friendsToBeAddedDictionary removeObjectForKey:selectedUserId];
-      
+        
         
     }else{
         NSLog(@"picked selectedUserId is not there CONTACTS %@",selectedUserId);
@@ -193,7 +188,7 @@
         UIImage *imageIcon = [UIImage imageNamed:@"add"];
         [self.rowButton setBackgroundImage:imageIcon forState:UIControlStateNormal];
         [appDelegate.friendsToBeAddedDictionary setObject:_mumblerUser forKey:selectedUserId];
-      
+        
         
     }
     
@@ -202,8 +197,8 @@
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"addedFriendsLabelUpdate" object:appDelegate.friendsToBeAddedDictionary];
     
-
-
+    
+    
     
 }
 
@@ -226,7 +221,7 @@
     }else{
         UIImage *imageIcon = [UIImage imageNamed:@"message_before"];
         [self.rowButton setBackgroundImage:imageIcon forState:UIControlStateNormal];
-
+        
         [appDelegate.inviteFriendsInContactsDictionary removeObjectForKey:selectedContactNum];
     }
     
@@ -303,9 +298,9 @@
     UIImage *imageIcon;
     
     switch (_friendCellType) {
-           
-           //FACEBOOK START
-          //Face Book Add Button
+            
+            //FACEBOOK START
+            //Face Book Add Button
             
         case FriendCellTypeFBFriendsWithMumbler:
             imageIcon = [UIImage imageNamed:@"friends_before"];
@@ -333,7 +328,7 @@
             
             
             
-           
+            
             //CONTACTS
             //contacts friens with mumbler..Ash
         case FriendCellTypeContactsFriendsWithMumbler:
@@ -375,7 +370,7 @@
             
             break;
             
-           ///////////////CONTACTS
+            ///////////////CONTACTS
             
             
             

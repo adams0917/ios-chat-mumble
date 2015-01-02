@@ -40,7 +40,14 @@ typedef NS_ENUM(NSUInteger, FriendCellType) {
     
 };
 
+@protocol FriendTableViewCellDelegate <NSObject>
+
+- (void)friendCellWithUser:(User *)user changedState:(BOOL)selected;
+
+@end
+
 @interface FriendTableViewCell : UITableViewCell
+
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 @property (weak, nonatomic) IBOutlet UILabel *displayNameOne;
 @property (weak, nonatomic) IBOutlet UILabel *displayNameTwo;
@@ -53,6 +60,6 @@ typedef NS_ENUM(NSUInteger, FriendCellType) {
 
 @property (strong, nonatomic) IBOutlet UIImageView *selectAllCheckboxImageView;
 
-
+@property (weak, nonatomic) id<FriendTableViewCellDelegate> delegate;
 
 @end

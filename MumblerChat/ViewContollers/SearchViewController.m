@@ -45,6 +45,7 @@
 
 - (IBAction)didTapSwipeButton:(id)sender
 {
+    NSLog(@"here");
 }
 
 - (void)viewDidLoad

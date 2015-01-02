@@ -5,7 +5,6 @@
 
 
 #import "FriendsViewController.h"
-#import "FriendTableViewCell.h"
 #import "ASAppDelegate.h"
 #import "User.h"
 #import "ChatMessageDao.h"
@@ -27,6 +26,11 @@
     FriendDao *friendDao;
     NSString *mumblerFriendId;
     
+    int selectedFriendsCount;
+    
+    __weak IBOutlet UILabel *sendMessageInfoLabel;
+    __weak IBOutlet UIButton *sendMessageButton;
+    __weak IBOutlet UIView *sendMessageView;
 }
 
 @end
@@ -74,9 +78,8 @@
     self.friendsTableView.dataSource=self;
     self.friendsTableView.delegate=self;
     
-    chatMessageDao = [[ChatMessageDao alloc] init];
-    friendDao = [[FriendDao alloc] init];
-    
+    chatMessageDao = [ChatMessageDao new];
+    friendDao = [FriendDao new];
     
     UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft:)];
     leftSwipe.direction = (UISwipeGestureRecognizerDirectionLeft);
@@ -97,29 +100,36 @@
     }
     
     NSError *error;
-    if (![[self fetchedResultsController] performFetch:&error]) {
+    if (![self.fetchedResultsController performFetch:&error]) {
         // Update to handle the error appropriately.
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         //exit(-1);  // Fail
     }
     [self loadXmppContacts];
+    
+    sendMessageView.hidden = YES;
+    selectedFriendsCount = 0;
 }
 
 - (ASAppDelegate *)appDelegate
 {
-    return (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
+    return (ASAppDelegate *) UIApplication.sharedApplication.delegate;
 }
 
 #pragma mark - UITableViewDelegate
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
-    UIView *view = [[UIView alloc] init];
-    
-    return view;
+    return [UIView new];
 }
 
-- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 40.0f;
+}
+
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     NSString *sectionTitle = [self tableView:tableView titleForHeaderInSection:section];
     if (sectionTitle == nil) {
@@ -180,7 +190,6 @@
     return sectionTitle;
 }
 
-
 - (NSFetchedResultsController *)fetchedResultsController
 {
     if (_fetchedResultsController != nil) {
@@ -218,6 +227,7 @@
     tablecell.selectionStyle=UITableViewCellSelectionStyleNone;
     tablecell.displayNameOne.text = friendship.friendMumblerUser.name;
     tablecell.displayNameTwo.text = friendship.friendMumblerUser.userProfileStatus;
+    tablecell.delegate = self;
     
     NSData *data = [NSData dataFromBase64String:friendship.friendMumblerUser.profileImageBytes];
     UIImage *image= [UIImage imageWithData:data];
@@ -330,7 +340,7 @@
     //chat thread
     //friendsToBeAddedToComposeTheMessage
     if([appDelegate.friendsToBeAddedToComposeTheMessageDictionary count] > 0){
-        ChatMessageDao *chatMessageDao = [[ChatMessageDao alloc] init];
+        ChatMessageDao *chatMessageDao = [ChatMessageDao new];
         [chatMessageDao saveComposedChatMessageWithFriends:composedChatMsg];
     }
 }
@@ -380,30 +390,18 @@
         
         DDLogVerbose(@"%@: %@: selected friend mumblerId= %@ ", THIS_FILE, THIS_METHOD,mumblerFriendId);
         
-        
-        
         if(![actionType isEqualToString:ACTION_TYPE_FRIEND_TO_BE_SELECTED]){
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Alert" message:nil delegate:self cancelButtonTitle:@"Delete" otherButtonTitles:@"Block",@"Cancel",nil];
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Alert" message:nil delegate:self cancelButtonTitle:@"Delete" otherButtonTitles:@"Block", @"Cancel",nil];
             [alert show];
-            
-            
-        }else{
-            
-            
-            if([appDelegate.friendsToBeAddedToComposeTheMessageDictionary objectForKey:mumblerFriendId] == nil){
-                
+        } else {
+            if([appDelegate.friendsToBeAddedToComposeTheMessageDictionary objectForKey:mumblerFriendId] == nil) {
                 [appDelegate.friendsToBeAddedDictionary setObject:friendship.friendMumblerUser forKey:mumblerFriendId];
-                
-            }else{
-                
+            } else {
                 [appDelegate.friendsToBeAddedToComposeTheMessageDictionary removeObjectForKey:mumblerFriendId];
-                
-                
-                
             }
         }
         
-        
+        sendMessageView.hidden = appDelegate.friendsToBeAddedDictionary.count == 0;
     }
 }
 
@@ -585,6 +583,30 @@
         return objects;
     } else {
         return nil;
+    }
+}
+
+- (void)friendCellWithUser:(User *)user changedState:(BOOL)selected
+{
+    selectedFriendsCount += selected ? 1 : -1;
+    if (selectedFriendsCount) {
+        [sendMessageInfoLabel setText:[NSString stringWithFormat:@"Send the message to %@", user.name]];
+    } else {
+        [NSString stringWithFormat:@"Send message to %d friends", selectedFriendsCount];
+    }
+    sendMessageView.hidden = selectedFriendsCount == 0;
+}
+
+- (IBAction)sendButtonTapped:(id)sender
+{
+    DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
+    
+    [self performSegueWithIdentifier:@"leftChatThreadScreen" sender:self];
+    //chat thread
+    //friendsToBeAddedToComposeTheMessage
+    if([appDelegate.friendsToBeAddedToComposeTheMessageDictionary count] > 0){
+        ChatMessageDao *chatMessageDao = [ChatMessageDao new];
+        [chatMessageDao saveComposedChatMessageWithFriends:composedChatMsg];
     }
 }
 
