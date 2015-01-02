@@ -11,6 +11,10 @@
       "filename" : "blue01_back@2x~iphone.png"
     },
     {
+      "idiom" : "iphone",
+      "scale" : "3x"
+    },
+    {
       "idiom" : "ipad",
       "scale" : "1x",
       "filename" : "blue01_back~ipad.png"

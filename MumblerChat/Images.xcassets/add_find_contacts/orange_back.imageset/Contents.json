@@ -11,6 +11,10 @@
       "filename" : "orange_back@2x~iphone.png"
     },
     {
+      "idiom" : "iphone",
+      "scale" : "3x"
+    },
+    {
       "idiom" : "ipad",
       "scale" : "1x",
       "filename" : "orange_back~ipad.png"

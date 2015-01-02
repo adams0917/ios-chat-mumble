@@ -11,6 +11,10 @@
       "filename" : "back02@2x~iphone.png"
     },
     {
+      "idiom" : "iphone",
+      "scale" : "3x"
+    },
+    {
       "idiom" : "ipad",
       "scale" : "1x",
       "filename" : "back02~ipad.png"

@@ -11,6 +11,10 @@
       "filename" : "select_all@2x~iphone.png"
     },
     {
+      "idiom" : "iphone",
+      "scale" : "3x"
+    },
+    {
       "idiom" : "ipad",
       "scale" : "1x",
       "filename" : "select_all~ipad.png"

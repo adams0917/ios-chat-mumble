@@ -1436,10 +1436,10 @@
                                         </connections>
                                     </button>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="message" translatesAutoresizingMaskIntoConstraints="NO" id="8fy-35-BBU">
-                                        <rect key="frame" x="20" y="71" width="15" height="15"/>
+                                        <rect key="frame" x="16" y="74" width="18" height="13"/>
                                     </imageView>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username" minimumFontSize="15" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Pig-La-VOM">
-                                        <rect key="frame" x="43" y="64" width="251" height="30"/>
+                                        <rect key="frame" x="54" y="66" width="250" height="30"/>
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="italicSystem" pointSize="18"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no"/>
@@ -1461,10 +1461,10 @@
                                         </connections>
                                     </button>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="locked" translatesAutoresizingMaskIntoConstraints="NO" id="OKS-Yc-oDO">
-                                        <rect key="frame" x="20" y="139" width="15" height="15"/>
+                                        <rect key="frame" x="16" y="139" width="15" height="18"/>
                                     </imageView>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" minimumFontSize="15" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="ZAW-fF-hyq">
-                                        <rect key="frame" x="43" y="132" width="251" height="30"/>
+                                        <rect key="frame" x="54" y="133" width="250" height="30"/>
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="italicSystem" pointSize="18"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="numberPad" secureTextEntry="YES"/>
@@ -2116,9 +2116,9 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Pou-0b-jS4"/>
-        <segue reference="Spl-ia-VIL"/>
-        <segue reference="Bf1-oD-RDE"/>
+        <segue reference="egh-gZ-0aL"/>
         <segue reference="gwY-jH-wYg"/>
+        <segue reference="Spl-ia-VIL"/>
+        <segue reference="6Qw-mc-pnE"/>
     </inferredMetricsTieBreakers>
 </document>

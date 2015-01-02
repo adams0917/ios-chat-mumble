@@ -11,6 +11,10 @@
       "filename" : "toggle_off@2x~iphone.png"
     },
     {
+      "idiom" : "iphone",
+      "scale" : "3x"
+    },
+    {
       "idiom" : "ipad",
       "scale" : "1x",
       "filename" : "toggle_off~ipad.png"

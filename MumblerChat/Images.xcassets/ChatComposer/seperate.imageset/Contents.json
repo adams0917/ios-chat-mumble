@@ -11,6 +11,10 @@
       "filename" : "seperate@2x~iphone.png"
     },
     {
+      "idiom" : "iphone",
+      "scale" : "3x"
+    },
+    {
       "idiom" : "ipad",
       "scale" : "1x",
       "filename" : "seperate~ipad.png"

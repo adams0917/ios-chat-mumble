@@ -123,11 +123,10 @@
     return [UIView new];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    return 40.0f;
-}
-
+//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+//{
+//    return 40.0f;
+//}
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
@@ -604,7 +603,7 @@
     [self performSegueWithIdentifier:@"leftChatThreadScreen" sender:self];
     //chat thread
     //friendsToBeAddedToComposeTheMessage
-    if([appDelegate.friendsToBeAddedToComposeTheMessageDictionary count] > 0){
+    if(appDelegate.friendsToBeAddedToComposeTheMessageDictionary.count > 0){
         ChatMessageDao *chatMessageDao = [ChatMessageDao new];
         [chatMessageDao saveComposedChatMessageWithFriends:composedChatMsg];
     }

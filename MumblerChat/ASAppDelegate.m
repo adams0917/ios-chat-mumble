@@ -1041,6 +1041,7 @@ NSString * const OptionPassword = @"...";
     
     if (!isXmppConnected) {
         DDLogError(@"Unable to connect to server. Check xmppStream.hostName");
+        DDLogError(@"Error: %@", error);
     }
 }
 
