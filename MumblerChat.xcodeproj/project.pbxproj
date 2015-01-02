@@ -24,7 +24,6 @@
 		121DAA8119D5B24B005DAC4B /* ASAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 121DA6CF19D5B248005DAC4B /* ASAppDelegate.m */; };
 		121DAA8219D5B24B005DAC4B /* CustomTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = 121DA6D319D5B248005DAC4B /* CustomTabController.m */; };
 		121DAA8319D5B24B005DAC4B /* mumbler_reply_button.png in Resources */ = {isa = PBXBuildFile; fileRef = 121DA6D719D5B248005DAC4B /* mumbler_reply_button.png */; };
-		121DAA8419D5B24B005DAC4B /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 121DA6DB19D5B248005DAC4B /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		121DAA8519D5B24B005DAC4B /* ChatThreadTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 121DA6DE19D5B248005DAC4B /* ChatThreadTableViewCell.m */; };
 		121DAA8619D5B24B005DAC4B /* FriendTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 121DA6E019D5B248005DAC4B /* FriendTableViewCell.m */; };
 		121DAA8719D5B24B005DAC4B /* MyChatTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 121DA6E219D5B248005DAC4B /* MyChatTableViewCell.m */; };
@@ -546,8 +545,6 @@
 		121DA6D219D5B248005DAC4B /* CustomTabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTabController.h; sourceTree = "<group>"; };
 		121DA6D319D5B248005DAC4B /* CustomTabController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTabController.m; sourceTree = "<group>"; };
 		121DA6D719D5B248005DAC4B /* mumbler_reply_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mumbler_reply_button.png; sourceTree = "<group>"; };
-		121DA6DA19D5B248005DAC4B /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = MumblerChat/JSONKit.h; sourceTree = SOURCE_ROOT; };
-		121DA6DB19D5B248005DAC4B /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = MumblerChat/JSONKit.m; sourceTree = SOURCE_ROOT; };
 		121DA6DD19D5B248005DAC4B /* ChatThreadTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatThreadTableViewCell.h; sourceTree = "<group>"; };
 		121DA6DE19D5B248005DAC4B /* ChatThreadTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatThreadTableViewCell.m; sourceTree = "<group>"; };
 		121DA6DF19D5B248005DAC4B /* FriendTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendTableViewCell.h; sourceTree = "<group>"; };
@@ -2509,8 +2506,6 @@
 				121DA6CF19D5B248005DAC4B /* ASAppDelegate.m */,
 				121DA6D119D5B248005DAC4B /* CustomTab */,
 				121DA6D419D5B248005DAC4B /* Images */,
-				121DA6DA19D5B248005DAC4B /* JSONKit.h */,
-				121DA6DB19D5B248005DAC4B /* JSONKit.m */,
 				121DA6DC19D5B248005DAC4B /* TableViewCells */,
 				121DA6E319D5B248005DAC4B /* TakePhotoClasses */,
 				121DA70119D5B248005DAC4B /* Timer_View */,
@@ -3807,7 +3802,6 @@
 				121DAAA419D5B24B005DAC4B /* ChatMessage.m in Sources */,
 				121DAA9519D5B24B005DAC4B /* SSPhotoCropperViewController.m in Sources */,
 				121DAAAB19D5B24B005DAC4B /* MumblerUser.m in Sources */,
-				121DAA8419D5B24B005DAC4B /* JSONKit.m in Sources */,
 				FA8993AD1A446E83008ECDA5 /* DDContextFilterLogFormatter.m in Sources */,
 				121DAAA119D5B24B005DAC4B /* ASNeometricMLabel.m in Sources */,
 				FA8993421A446E83008ECDA5 /* XMPPCoreDataStorage.m in Sources */,

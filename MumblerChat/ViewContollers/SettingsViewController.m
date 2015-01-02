@@ -321,16 +321,14 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
     //////////////Clear History//28
     else if([actionSheetType isEqualToString:@"clear_history"]){
         //serverCall
-        if(buttonIndex==0){
-            ChatMessageDao *cmd=[[ChatMessageDao alloc] init];
+        if (buttonIndex==0) {
+            ChatMessageDao *cmd = [[ChatMessageDao alloc] init];
             [cmd clearHistory];
             NSLog(@"History cleared");
-        }else{
+        } else {
             NSLog(@"History not cleared");
         }
-        
-        
-    }else{
+    } else {
         
         // NSString *whoCanSendStr = @"";
         if(buttonIndex==0){
@@ -344,10 +342,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
             // [self btnUpdateMySettings:actionSheet];
             whoCanMsgMe=@"2";
         }
-        
-        
     }
-    
 }
 
 

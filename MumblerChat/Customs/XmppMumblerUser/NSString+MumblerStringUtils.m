@@ -7,12 +7,12 @@
 //
 
 #import "NSString+MumblerStringUtils.h"
-#import "JSONKit.h"
 
 @implementation NSString (MumblerStringUtils)
 
-#pragma mark === Encoding / UnEncoding ===
-+(NSString *)decodeString:(NSString *)string
+#pragma mark - Encoding / UnEncoding
+
++ (NSString *)decodeString:(NSString *)string
 {
     NSString *result = [string stringByReplacingOccurrencesOfString:@"+" withString:@" "];
     
@@ -24,7 +24,7 @@
     return crRemovedText;
 }
 
-+(NSString *)encodeString:(NSString *)string
++ (NSString *)encodeString:(NSString *)string
 {
     CFStringRef s = CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)string,NULL,(CFStringRef)@"!*’();:@&=+$,/?%#[]",kCFStringEncodingUTF8 );
     NSString * encodedString = [NSString stringWithFormat:@"%@",(__bridge_transfer NSString *)s];
@@ -32,16 +32,18 @@
     return encodedString;
 }
 
-#pragma mark === JSON String to Dictionary ===
-+(NSDictionary *)getJSONDictionaryFromString:(NSString *)string
+#pragma mark - JSON String to Dictionary
+
++ (NSDictionary *)getJSONDictionaryFromString:(NSString *)string
 {
-    JSONDecoder* jsonDecoder=[[JSONDecoder alloc] init];
-    NSDictionary* jsonDictionary=[jsonDecoder objectWithData:[string dataUsingEncoding:NSUTF8StringEncoding]];
-    return jsonDictionary;
+    NSData *jsonData = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *e = nil;
+    return [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&e];
 }
 
-#pragma mark === WhiteSpaces Trim ===
-+(NSString *)trimString:(NSString *)string
+#pragma mark - WhiteSpaces Trim
+
++ (NSString *)trimString:(NSString *)string
 {
     return [[NSString stringWithFormat:@"%@",string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 }

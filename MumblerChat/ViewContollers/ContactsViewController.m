@@ -15,6 +15,7 @@
 #import "User.h"
 
 #import "UIAlertView+Utils.h"
+#import "NSDictionary+JSON.h"
 
 #define colorTheme [UIColor colorWithRed:233.0/255.0 green:153.0/255.0 blue:6.0/255.0 alpha:1]
 
@@ -48,7 +49,7 @@
     NSMutableDictionary *profileImagesDictionary;
     
     NSMutableDictionary *friends;
-    NSMutableArray *friendSectionTitle;
+    NSArray *friendSectionTitle;
 }
 
 @end
@@ -99,7 +100,9 @@
     profileImagesDictionary = [[NSMutableDictionary alloc] init];
     
     friends = [NSMutableDictionary new];
-    friendSectionTitle = [NSMutableArray new];
+    friendSectionTitle = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I",
+                           @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R",
+                           @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
     
     [self loadContactsData];
 }
@@ -119,7 +122,7 @@
         self.addedFriendsBackgroundView.hidden=false;
         for(id key in appDelegate.friendsToBeAddedDictionary) {
             id value = [appDelegate.friendsToBeAddedDictionary objectForKey:key];
-            NSString *selectedUserName =[NSString stringWithFormat:@"%@",[value valueForKey:@"alias"]];
+            NSString *selectedUserName = [NSString stringWithFormat:@"%@", value[@"alias"]];
             
             if(addedFriendsNames == nil){
                 addedFriendsNames=selectedUserName;
@@ -197,7 +200,6 @@
     
     [addressBookTableView resignFirstResponder];
     [searchAddressBook resignFirstResponder];
-    
 }
 
 - (void)sendContactsToTheServer
@@ -208,14 +210,9 @@
     
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
-    
-    NSMutableString *jsonString  = [[NSMutableString alloc] init];
-    
-    [jsonString appendFormat:@"{"];
-    
-    [jsonString appendFormat:@"\"phoneNumbers\":%@",phoneNumbers];
-    
-    [jsonString appendFormat:@"}"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.length > 0"];
+    NSDictionary *data = @{@"phoneNumbers": [phoneNumbers filteredArrayUsingPredicate:predicate]};
+    NSString *jsonString = [data jsonStringWithPrettyPrint:YES];
     
     NSLog(@"JSON string%@ ", jsonString);
     
@@ -276,26 +273,16 @@
     
 }
 
-- (void)addFriends:(NSMutableArray *)friendsToAdd
+- (void)addFriends:(NSArray *)friendsToAdd
 {
     for (NSDictionary *friend in friendsToAdd) {
         NSString *alias = friend[@"alias"];
         NSString *sectionTitle = [[alias substringToIndex:1] uppercaseString];
         if (friends[sectionTitle] == nil) {
             friends[sectionTitle] = [NSMutableArray new];
-            [friendSectionTitle addObject:sectionTitle];
         }
         [friends[sectionTitle] addObject:friend];
     }
-    
-    NSArray *sortedKeys = [friends.allKeys sortedArrayUsingSelector:@selector(compare:)];
-    NSMutableDictionary *sortedFriends = [NSMutableDictionary new];
-    for (NSString *key in sortedKeys) {
-        sortedFriends[key] = friends[key];
-    }
-    
-    friends = [[NSMutableDictionary alloc] initWithDictionary:sortedFriends copyItems:YES];
-    friendSectionTitle = [[NSMutableArray alloc] initWithArray:sortedKeys copyItems:YES];
 }
 
 - (void)showContactsFriends:(NSMutableArray *)friendsAllreadyInMumbler showFriends:(NSMutableArray *)friendsInviteMumblerArray
@@ -303,7 +290,6 @@
     DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
     
     [friends removeAllObjects];
-    [friendSectionTitle removeAllObjects];
     
     if (friendsAllreadyInMumbler.count > 0) {
         NSString *mumblerUserId= [NSString stringWithFormat:@"%@",[NSUserDefaults.standardUserDefaults valueForKey:MUMBLER_USER_ID]];
@@ -345,7 +331,6 @@
     
     //    [self.sections removeAllObjects];
     [friends removeAllObjects];
-    [friendSectionTitle removeAllObjects];
     
     CFErrorRef *error = nil;
     
@@ -451,86 +436,32 @@
     return friendSectionTitle;
 }
 
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
+{
+    NSArray *sortedKeys = [friends.allKeys sortedArrayUsingSelector:@selector(compare:)];
+    NSString *match = sortedKeys[0];
+    for (NSString *sectionTitle in sortedKeys) {
+        if ([sectionTitle compare:title] == NSOrderedDescending) {
+            break;
+        }
+        match = sectionTitle;
+    }
+    return [friends.allKeys indexOfObject:match];
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return friendSectionTitle.count;
+    return friends.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSString *sectionTitle = friendSectionTitle[section];
+    NSArray *sortedKeys = [friends.allKeys sortedArrayUsingSelector:@selector(compare:)];
+    NSString *sectionTitle = sortedKeys[section];
     return [friends[sectionTitle] count];
 }
 
 #pragma mark - UITableViewDelegate
-
-//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-//{
-//    NSString *sectionTitle = [self tableView:tableView titleForHeaderInSection:section];
-//    if (sectionTitle == nil) {
-//        return nil;
-//    }
-//
-//    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 35)];
-//    [headerView setBackgroundColor:colorTheme];
-//
-//    UILabel *label = [[UILabel alloc] init];
-//    label.frame = CGRectMake(20, 2.5, 200, 18);
-//    label.backgroundColor = [UIColor clearColor];
-//    label.textColor = [UIColor whiteColor];
-//    label.shadowColor = [UIColor grayColor];
-//    label.shadowOffset = CGSizeMake(-1.0, 1.0);
-//    label.font = [UIFont boldSystemFontOfSize:16];
-//    label.text = sectionTitle;
-//
-//    UILabel *labelSelectAll = [[UILabel alloc] init];
-//    labelSelectAll.frame = CGRectMake(220, 2.5, 60, 18);
-//    labelSelectAll.backgroundColor = [UIColor clearColor];
-//    labelSelectAll.textColor = [UIColor whiteColor];
-//    labelSelectAll.shadowColor = [UIColor grayColor];
-//    labelSelectAll.shadowOffset = CGSizeMake(-1.0, 1.0);
-//    labelSelectAll.font = [UIFont boldSystemFontOfSize:12];
-//    labelSelectAll.text = @"Select All";
-//
-//    if ([sectionTitle isEqualToString:@"Friends Using Mumbler"]) {
-//        selectAllImageViewFriendsWithMumbler= [UIImageView new];
-//        selectAllImageViewFriendsWithMumbler.frame = CGRectMake(290, 2.5, 30, 18);
-//        if (selectAllOptionFriendsUsingMumbler) {
-//            selectAllImageViewFriendsWithMumbler.image = [UIImage imageNamed:@"check"];
-//        } else {
-//            selectAllImageViewFriendsWithMumbler.image = [UIImage imageNamed:@"uncheck"];
-//        }
-//
-//        [selectAllImageViewFriendsWithMumbler setUserInteractionEnabled:YES];
-//
-//        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageTappedFriendsWithMumbler:)];
-//        [selectAllImageViewFriendsWithMumbler addGestureRecognizer:tap];
-//
-//        [headerView addSubview:labelSelectAll];
-//        [headerView addSubview:label];
-//        [headerView addSubview:selectAllImageViewFriendsWithMumbler];
-//    } else {
-//        selectAllImageViewInviteFriends= [UIImageView new];
-//        selectAllImageViewInviteFriends.frame = CGRectMake(290, 2.5, 30, 18);
-//
-//        if (selectAllOptionInviteFriends) {
-//            selectAllImageViewInviteFriends.image=[UIImage imageNamed:@"check"];
-//        } else {
-//            selectAllImageViewInviteFriends.image=[UIImage imageNamed:@"uncheck"];
-//        }
-//
-//        [selectAllImageViewInviteFriends setUserInteractionEnabled:YES];
-//
-//        UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageTappedInviteFriends:)];
-//        [selectAllImageViewInviteFriends addGestureRecognizer:tap1];
-//
-//        [headerView addSubview:labelSelectAll];
-//        [headerView addSubview:label];
-//        [headerView addSubview:selectAllImageViewInviteFriends];
-//    }
-//
-//    return headerView;
-//}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -542,7 +473,8 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return [friendSectionTitle objectAtIndex:section];
+    NSArray *sortedKeys = [friends.allKeys sortedArrayUsingSelector:@selector(compare:)];
+    return sortedKeys[section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -552,7 +484,8 @@
     FriendTableViewCell *tablecell = (FriendTableViewCell *)[tableView dequeueReusableCellWithIdentifier:tableIdentifier];
     
     tablecell.selectionStyle = UITableViewCellSelectionStyleNone;
-    NSString *sectionTitle = friendSectionTitle[indexPath.section];
+    NSArray *sortedKeys = [friends.allKeys sortedArrayUsingSelector:@selector(compare:)];
+    NSString *sectionTitle = sortedKeys[indexPath.section];
     NSMutableArray *sectionData = friends[sectionTitle];
     NSDictionary *mumblerUser = sectionData[indexPath.row];
     

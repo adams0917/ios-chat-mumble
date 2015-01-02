@@ -26,8 +26,6 @@
 
 #import "ChatMessageDao.h"
 
-#import "JSONKit.h"
-
 #import <CFNetwork/CFNetwork.h>
 
 #import "XMPPRoomMemoryStorage.h"
@@ -205,7 +203,7 @@ NSString * const OptionPassword = @"...";
     // The XMPPStream is the base class for all activity.
     // Everything else plugs into the xmppStream, such as modules/extensions and delegates.
     
-    xmppStream = [[XMPPStream alloc] init];
+    xmppStream = [XMPPStream new];
    	
 #if !TARGET_IPHONE_SIMULATOR
     {

@@ -19,9 +19,9 @@
 @interface SearchViewController ()
 {
     ASAppDelegate *appDelegate;
-
+    
     NSMutableDictionary *friends;
-    NSMutableArray *friendSectionTitle;
+    NSArray *friendSectionTitle;
 }
 
 @end
@@ -54,7 +54,7 @@
     [super viewDidLoad];
     
     appDelegate = (ASAppDelegate *)[[UIApplication sharedApplication]delegate];
-
+    
     self.findFriendTableView.dataSource=self;
     self.findFriendTableView.delegate=self;
     
@@ -63,36 +63,27 @@
     self.findFriendTableView.hidden=true;
     
     friends = [NSMutableDictionary new];
-    friendSectionTitle = [NSMutableArray new];
+    friendSectionTitle = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I",
+                           @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R",
+                           @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
 }
 
-- (void)addFriends:(NSMutableArray *)friendsToAdd
+- (void)addFriends:(NSArray *)friendsToAdd
 {
     for (NSDictionary *friend in friendsToAdd) {
         NSString *alias = friend[@"alias"];
         NSString *sectionTitle = [[alias substringToIndex:1] uppercaseString];
         if (friends[sectionTitle] == nil) {
             friends[sectionTitle] = [NSMutableArray new];
-            [friendSectionTitle addObject:sectionTitle];
         }
         [friends[sectionTitle] addObject:friend];
     }
-    
-    NSArray *sortedKeys = [friends.allKeys sortedArrayUsingSelector:@selector(compare:)];
-    NSMutableDictionary *sortedFriends = [NSMutableDictionary new];
-    for (NSString *key in sortedKeys) {
-        sortedFriends[key] = friends[key];
-    }
-    
-    friends = [[NSMutableDictionary alloc] initWithDictionary:sortedFriends copyItems:YES];
-    friendSectionTitle = [[NSMutableArray alloc] initWithArray:sortedKeys copyItems:YES];
 }
 
 - (IBAction)didTapOnSearchButton:(id)sender {
     DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
     
     [friends removeAllObjects];
-    [friendSectionTitle removeAllObjects];
     [self.allData removeAllObjects];
     
     NSString *searchText =[self.searchFriendsSearchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
@@ -150,20 +141,35 @@
     return friendSectionTitle;
 }
 
+- (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index
+{
+    NSArray *sortedKeys = [friends.allKeys sortedArrayUsingSelector:@selector(compare:)];
+    NSString *match = sortedKeys[0];
+    for (NSString *sectionTitle in sortedKeys) {
+        if ([sectionTitle compare:title] == NSOrderedDescending) {
+            break;
+        }
+        match = sectionTitle;
+    }
+    return [friends.allKeys indexOfObject:match];
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return friendSectionTitle.count;
+    return friends.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSString *sectionTitle = friendSectionTitle[section];
+    NSArray *sortedKeys = [friends.allKeys sortedArrayUsingSelector:@selector(compare:)];
+    NSString *sectionTitle = sortedKeys[section];
     return [friends[sectionTitle] count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return [friendSectionTitle objectAtIndex:section];
+    NSArray *sortedKeys = [friends.allKeys sortedArrayUsingSelector:@selector(compare:)];
+    return sortedKeys[section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -173,7 +179,8 @@
     FriendTableViewCell *tablecell = (FriendTableViewCell *)[tableView dequeueReusableCellWithIdentifier:tableIdentifier];
     
     tablecell.selectionStyle=UITableViewCellSelectionStyleNone;
-    NSString *sectionTitle = friendSectionTitle[indexPath.section];
+    NSArray *sortedKeys = [friends.allKeys sortedArrayUsingSelector:@selector(compare:)];
+    NSString *sectionTitle = sortedKeys[indexPath.section];
     NSMutableArray *sectionData = friends[sectionTitle];
     NSDictionary *mumblerUser = sectionData[indexPath.row];
     
