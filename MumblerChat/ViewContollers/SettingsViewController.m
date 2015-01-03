@@ -303,8 +303,8 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
             [userDefaults synchronize];
             [[[self appDelegate] xmppStream ]disconnect];
             [[[self appDelegate] xmppvCardTempModule] removeDelegate:self];
-            //[self.navigationController popToRootViewControllerAnimated:YES];
-            [self performSegueWithIdentifier:@"backToHome" sender:self];
+            [self.navigationController popToRootViewControllerAnimated:YES];
+//            [self performSegueWithIdentifier:@"backToHome" sender:self];
             
             
             
