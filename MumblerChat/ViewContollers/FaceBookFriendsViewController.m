@@ -116,7 +116,6 @@
     self.facebookFriendsTableView.hidden=true;
     
     self.loginView.readPermissions = @[@"public_profile", @"email", @"user_friends"];
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated

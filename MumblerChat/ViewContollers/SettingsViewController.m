@@ -275,10 +275,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
         [actionSheet addButtonWithTitle:@"FRIENDS"];
         actionSheet.delegate=self;
         [actionSheet showFromRect:CGRectMake(220, 250, 320, 300) inView:self.view animated:YES];
-        
     }
-    
-    
 }
 
 
@@ -305,11 +302,7 @@ didFinishPickingMediaWithInfo: (NSDictionary *) info{
             [[[self appDelegate] xmppvCardTempModule] removeDelegate:self];
             [self.navigationController popToRootViewControllerAnimated:YES];
 //            [self performSegueWithIdentifier:@"backToHome" sender:self];
-            
-            
-            
-            
-        }else{
+        } else {
             NSLog(@"LOGOT CANCELED");
         }
         
