@@ -145,15 +145,14 @@
     return sectionInfo.numberOfObjects;
 }
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
     ChatThread *chatMsgThread = [_fetchedResultsController objectAtIndexPath:indexPath];
     
-    
-    long long timeInSeconds = [chatMsgThread.lastUpdatedDateTime longLongValue]/1000;
+    long long timeInSeconds = [chatMsgThread.lastUpdatedDateTime longLongValue] / 1000;
     NSDate *tr = [NSDate dateWithTimeIntervalSince1970:timeInSeconds];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy/MM/dd HH:mm"];
+    NSDateFormatter *formatter = [NSDateFormatter new];
+    formatter.dateFormat = @"yyyy/MM/dd HH:mm";
     
     NSString *messageDate= [formatter stringFromDate:tr];
     
@@ -250,6 +249,7 @@
         }
         //non-opened
         else{
+            [self startFlashingImage:tablecell.messageStatusImageView];
             if([chatMsgThread.threadLastMessageMedium isEqualToString:MESSAGE_MEDIUM_TEXT]){
                 
                 if([chatMsgThread.threadLastMessageMediumTextType isEqualToString:TEXT_TYPE_STATEMENT]){
@@ -421,7 +421,19 @@
     
 }
 
-
+- (void)startFlashingImage:(id)view
+{
+    [view setAlpha:1.0f];
+    [UIView animateWithDuration:1.0
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse
+                     animations:^{
+                         [view setAlpha:0.0f];
+                     }
+                     completion:^(BOOL finished){
+                         // Do nothing
+                     }];
+}
 
 - (void)didReceiveMemoryWarning
 {
