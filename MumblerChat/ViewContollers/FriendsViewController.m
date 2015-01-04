@@ -72,7 +72,7 @@ typedef enum _MCTooltipTag
     tutorialDone = [defaults boolForKey:kFriendsTutorialDone];
     
     if (!tutorialDone) {
-        [self showTooltipWithMessage:@"Long pressing on a friend shows more options"
+        [self showTooltipWithMessage:@"Tapping a friend shows more options"
                                  tag:MCFriendsTableView
                               atView:self.friendsTableView
                        withDirection:PointDirectionDown];
