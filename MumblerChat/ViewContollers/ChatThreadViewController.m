@@ -154,10 +154,10 @@
     NSDateFormatter *formatter = [NSDateFormatter new];
     formatter.dateFormat = @"yyyy/MM/dd HH:mm";
     
-    NSString *messageDate= [formatter stringFromDate:tr];
+    NSString *messageDate = [formatter stringFromDate:tr];
     
     ChatThreadTableViewCell *tablecell = (ChatThreadTableViewCell *)cell;
-    tablecell.selectionStyle=UITableViewCellSelectionStyleGray;
+    tablecell.selectionStyle = UITableViewCellSelectionStyleGray;
     
     
     NSString *descriptionText;
@@ -175,13 +175,9 @@
             if([chatMsgThread.threadLastMessageMediumTextType isEqualToString:TEXT_TYPE_STATEMENT]){
                 tablecell.chatThreadCell=ChatThreadCellType_Statement_From_Me;
                 descriptionText = [NSString stringWithFormat:@" %@  %@",messageDate,STATEMENT_SENT];
-                
-                
-            }else{
+            } else {
                 tablecell.chatThreadCell=ChatThreadCellType_Question_From_Me;
                 descriptionText = [NSString stringWithFormat:@" %@  %@",messageDate,QUESTION_SENT];
-                
-                
             }
             
             tablecell.subUILabel.text = descriptionText;
@@ -193,20 +189,14 @@
             tablecell.chatThreadCell=ChatThreadCellType_Image_From_Me;
             descriptionText = [NSString stringWithFormat:@" %@  %@",messageDate,IMAGE_SENT];
             tablecell.subUILabel.text = descriptionText;
-            
-            
-            
-            
-        }else if([chatMsgThread.threadLastMessageMedium isEqualToString:MESSAGE_MEDIUM_VIDEO]){
-            
+        } else if([chatMsgThread.threadLastMessageMedium isEqualToString:MESSAGE_MEDIUM_VIDEO]) {
             tablecell.chatThreadCell=ChatThreadCellType_Video_From_Me;
             descriptionText = [NSString stringWithFormat:@" %@  %@",messageDate,VIDEO_SENT];
             tablecell.subUILabel.text = descriptionText;
-            
-            
+        } else {
+            tablecell.subUILabel.text = @"";
         }
-        
-    }else{
+    } else {
         //orange
         //replyIcon
         
@@ -380,8 +370,8 @@
     NSLog(@"CHAT THREAD MESSAGE %@",chatThreadInCell.threadId);
     
     
-    if([chatThreadInCell.threadStatus intValue] == ACTIVE_THREAD){
-        
+//    if([chatThreadInCell.threadStatus intValue] == ACTIVE_THREAD){
+    
         if(![chatThreadInCell.threadLastMessageOwnerId isEqualToString:meEjabberdId]){
             
             chatThread = chatThreadInCell;
@@ -412,13 +402,11 @@
             
         }
         
-    }else{
-        //not selectable
-        NSLog(@"CHAT THREAD STATUS NOT ACTIVE ");
-        
-    }
-    
-    
+//    }else{
+//        //not selectable
+//        NSLog(@"CHAT THREAD STATUS NOT ACTIVE ");
+//        
+//    }
 }
 
 - (void)startFlashingImage:(id)view

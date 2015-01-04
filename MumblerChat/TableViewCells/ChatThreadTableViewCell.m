@@ -45,7 +45,7 @@
     switch (_chatThreadCell) {
             
         case ChatThreadCellType_New_Opened_Question_For_Me:
-            imageIcon1 = [UIImage imageNamed:@"question_opened"];
+            imageIcon1 = [UIImage imageNamed:@"question_orange"];
            // imageIcon2 = [UIImage imageNamed:@"message02_gray"];
             
             _messageStatusImageView.image =imageIcon1;
@@ -54,7 +54,7 @@
             break;
             
         case ChatThreadCellType_New_Opened_Statement_For_Me:
-            imageIcon1 = [UIImage imageNamed:@"message02_gray"];
+            imageIcon1 = [UIImage imageNamed:@"exclamation_orange"];
             //imageIcon2 = [UIImage imageNamed:@"message02_gray"];
             
             _messageStatusImageView.image =imageIcon1;
@@ -90,7 +90,7 @@
             
         case ChatThreadCellType_New_Non_Opened_Question_For_Me:
             
-            imageIcon1 = [UIImage imageNamed:@"new_question"];
+            imageIcon1 = [UIImage imageNamed:@"question_orange"];
             //imageIcon2 = [UIImage imageNamed:@"message01_orange"];
             
             _messageStatusImageView.image =imageIcon1;
@@ -100,10 +100,10 @@
             break;
             
         case ChatThreadCellType_New_Non_Opened_Statement_For_Me:
-            imageIcon1 = [UIImage imageNamed:@"message01_orange"];
+            imageIcon1 = [UIImage imageNamed:@"exclamation_orange"];
             //imageIcon2 = [UIImage imageNamed:@"message01_orange"];
             
-            _messageStatusImageView.image =imageIcon1;
+            _messageStatusImageView.image = imageIcon1;
             //_subMessageStatusImageView.image =imageIcon2;
             
             break;
@@ -136,7 +136,7 @@
             
         case ChatThreadCellType_Question_From_Me:
             
-            imageIcon1 = [UIImage imageNamed:@"question_sent"];
+            imageIcon1 = [UIImage imageNamed:@"question"];
             //imageIcon2 = [UIImage imageNamed:@"message01_gray"];
             
             _messageStatusImageView.image =imageIcon1;
@@ -146,7 +146,7 @@
             break;
             
         case ChatThreadCellType_Statement_From_Me:
-            imageIcon1 = [UIImage imageNamed:@"message01_gray"];
+            imageIcon1 = [UIImage imageNamed:@"exclamation"];
             //imageIcon2 = [UIImage imageNamed:@"message01_gray"];
             
             _messageStatusImageView.image =imageIcon1;

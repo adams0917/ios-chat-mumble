@@ -912,45 +912,31 @@
             NSLog(@"self.countDownProgress == nil");
         }
         
-        NSUInteger remainingSeconds = 0;
+        long long remainingSeconds = 0;
         
-        NSString *milliSecondsStr = chatThread.lastReceivedMessageOpenedTime;
+        NSString *millisecondsStr = chatThread.lastReceivedMessageOpenedTime;
         
-        NSLog(@"milliSecondsStr %@",milliSecondsStr);
+        NSLog(@"milliSecondsStr %@", millisecondsStr);
         
         
-        long long chatOpenedTimeInSeconds = [milliSecondsStr longLongValue]/1000;
+        long long chatOpenedTimeInSeconds = millisecondsStr.longLongValue / 1000;
         
         NSLog(@"chatOpenedTimeInSeconds %lld",chatOpenedTimeInSeconds);
         
         
-        NSTimeInterval currentTimeInSeconds = [[NSDate date] timeIntervalSince1970];
-        long long currentTimeInSecondsAsInt = currentTimeInSeconds;
+        long long currentTimeInSecondsAsInt = NSDate.date.timeIntervalSince1970;
         
-        NSLog(@"currentTimeInSecondsAsInt %lld",currentTimeInSecondsAsInt);
+        NSLog(@"currentTimeInSecondsAsInt %lld", currentTimeInSecondsAsInt);
         
-        
-        
-        NSUInteger countDifference= currentTimeInSecondsAsInt -chatOpenedTimeInSeconds;
-        
-        
-        remainingSeconds= ([chatThread.timeGivenToRespond integerValue]*1000 - countDifference) ;
-        
-        
-        int secondsRemaining = (int)remainingSeconds;
-        
-        int timeGivenToRespondLastMsg = (int)[chatThread.timeGivenToRespond integerValue];
-        
-        
-        
+        long long countDifference = currentTimeInSecondsAsInt - chatOpenedTimeInSeconds;
+        remainingSeconds = (chatThread.timeGivenToRespond.integerValue * 1000 - countDifference) ;
+        int secondsRemaining = (int) remainingSeconds;
+        int timeGivenToRespondLastMsg = (int) chatThread.timeGivenToRespond.integerValue;
+
         NSLog(@"secondsRemaining %d",secondsRemaining/1000);
         NSLog(@"timeGivenToRespondLastMsg %d",timeGivenToRespondLastMsg);
         
-        
-        // int abc =[remaingTime]
-        
-        [self.cdp startCountDownFromSeconds:timeGivenToRespondLastMsg:secondsRemaining/1000];
-        
+        [self.cdp startCountDownFromSeconds:timeGivenToRespondLastMsg:30];//secondsRemaining / 1000];
         
         NSLog(@"countDownProgress 1");
         
@@ -968,21 +954,17 @@
         
         DDLogVerbose(@"%@: %@: chatThread meEjabberdId=%@", THIS_FILE, THIS_METHOD,meEjabberdId);
         
-        
         friendEjabberdId=[NSString stringWithFormat:@"%@%@",chatThread.recipient.userId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
-        
         
         //  friendEjabberdId = chatThread.threadRecipient;
         
         DDLogVerbose(@"%@: %@: friendEjabberdId =%@ ", THIS_FILE, THIS_METHOD,friendEjabberdId);
         
         NSError *error = nil;
-        [[self fetchedResultsController] performFetch:&error];
-        
-        
+        [self.fetchedResultsController performFetch:&error];
     }
     
-    floor=1000000.0;
+    floor = 1000000.0;
     
     UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft:)];
     leftSwipe.direction = (UISwipeGestureRecognizerDirectionLeft);
@@ -993,11 +975,11 @@
     [self.view addGestureRecognizer:rightSwipe];
     
     imagePicker = [UIImagePickerController new];
-    imagePicker.delegate=self;
+    imagePicker.delegate = self;
     
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     
     NSLog(@"viewWillAppear chat composer end");
 }

@@ -334,14 +334,7 @@
 - (IBAction)swipeLeft:(id)sender
 {
     DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
-    
-    [self performSegueWithIdentifier:@"leftChatThreadScreen" sender:self];
-    //chat thread
-    //friendsToBeAddedToComposeTheMessage
-    if([appDelegate.friendsToBeAddedToComposeTheMessageDictionary count] > 0){
-        ChatMessageDao *chatMessageDao = [ChatMessageDao new];
-        [chatMessageDao saveComposedChatMessageWithFriends:composedChatMsg];
-    }
+    [self sendMessage];
 }
 
 - (IBAction)swipeRight:(id)sender
@@ -599,13 +592,16 @@
 - (IBAction)sendButtonTapped:(id)sender
 {
     DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
-    
+    [self sendMessage];
+}
+
+- (void)sendMessage
+{
     [self performSegueWithIdentifier:@"leftChatThreadScreen" sender:self];
-    //chat thread
-    //friendsToBeAddedToComposeTheMessage
-    if(appDelegate.friendsToBeAddedToComposeTheMessageDictionary.count > 0){
-        ChatMessageDao *chatMessageDao = [ChatMessageDao new];
+    if (appDelegate.friendsToBeAddedToComposeTheMessageDictionary.count > 0) {
         [chatMessageDao saveComposedChatMessageWithFriends:composedChatMsg];
+        [appDelegate.friendsToBeAddedToComposeTheMessageDictionary removeAllObjects];
+        composedChatMsg = nil;
     }
 }
 

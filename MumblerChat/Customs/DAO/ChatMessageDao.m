@@ -18,7 +18,7 @@
     ASAppDelegate *appDelegate = (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
     NSManagedObjectContext *managedObjectContext = [appDelegate managedObjectContext];
     
-
+    
     
     NSEntityDescription *entityDesc = [NSEntityDescription entityForName:@"ChatThread" inManagedObjectContext:managedObjectContext];
     
@@ -36,7 +36,7 @@
         NSLog(@"CHAT THREAD DELETED SUCCESSFULLY FOR");
         
     }
-
+    
 }
 
 //deleting chatThread
@@ -58,7 +58,7 @@
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDesc];
     
-
+    
     NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"(recipient.userId = %@)",friendUserId];
     
     predicateArray = [predicateArray arrayByAddingObject:predicate1];
@@ -68,7 +68,7 @@
     predicateArray = [predicateArray arrayByAddingObject:predicate2];
     
     NSPredicate *predicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicateArray];
-
+    
     [request setPredicate:predicate];
     
     NSError *error;
@@ -83,47 +83,47 @@
         
     }
     
-   /*
-    
-    //delete Chat Messages
-    NSEntityDescription *entityDescChatMessage = [NSEntityDescription entityForName:@"ChatMessage" inManagedObjectContext:managedObjectContext];
-    
-    [request setEntity:entityDescChatMessage];
-    NSArray *predicateArray2 = [[NSArray alloc]init];
-    
-
-   NSPredicate *predicateNew1 = [NSPredicate predicateWithFormat:@"(messageSender = %@)",myUserId];
-    [predicateArray2 arrayByAddingObject:predicateNew1];
-    
-    NSPredicate *predicateNew2 = [NSPredicate predicateWithFormat:@"(messageRecipient = %@)",friendUserId];
-    [predicateArray arrayByAddingObject:predicateNew2];
-    
-    
-    NSPredicate *predicateNew = [NSCompoundPredicate andPredicateWithSubpredicates:predicateArray2];
-    
-    [request setPredicate:predicateNew];
-    
-    NSError *error1;
-    NSArray *objects1 = [managedObjectContext executeFetchRequest:request error:&error1];
-    
-    for(ChatMessage *ct in objects1){
-        [managedObjectContext deleteObject:ct];
-        NSLog(@"CHAT ChatMessage DELETED SUCCESSFULLY");
-        
-    }
-*/
+    /*
+     
+     //delete Chat Messages
+     NSEntityDescription *entityDescChatMessage = [NSEntityDescription entityForName:@"ChatMessage" inManagedObjectContext:managedObjectContext];
+     
+     [request setEntity:entityDescChatMessage];
+     NSArray *predicateArray2 = [[NSArray alloc]init];
+     
+     
+     NSPredicate *predicateNew1 = [NSPredicate predicateWithFormat:@"(messageSender = %@)",myUserId];
+     [predicateArray2 arrayByAddingObject:predicateNew1];
+     
+     NSPredicate *predicateNew2 = [NSPredicate predicateWithFormat:@"(messageRecipient = %@)",friendUserId];
+     [predicateArray arrayByAddingObject:predicateNew2];
+     
+     
+     NSPredicate *predicateNew = [NSCompoundPredicate andPredicateWithSubpredicates:predicateArray2];
+     
+     [request setPredicate:predicateNew];
+     
+     NSError *error1;
+     NSArray *objects1 = [managedObjectContext executeFetchRequest:request error:&error1];
+     
+     for(ChatMessage *ct in objects1){
+     [managedObjectContext deleteObject:ct];
+     NSLog(@"CHAT ChatMessage DELETED SUCCESSFULLY");
+     
+     }
+     */
     if([managedObjectContext save:&error] ) {
         NSLog(@"CHAT THREAD DELETED SUCCESSFULLY SAVED");
         
-
-       
+        
+        
     } else {
         
         NSLog(@"CHAT THREAD DELETED SUCCESSFULLY NOT SAVED");
         
-
+        
     }
-
+    
     
 }
 
@@ -167,8 +167,8 @@
             chatThread.lastReceivedMessageOpenedTime=@"";
             chatThread.timeGivenToRespond=timeGivenToRespond;
         }
-       
-         chatThread.readStatus =[NSNumber numberWithInt:0];
+        
+        chatThread.readStatus =[NSNumber numberWithInt:0];
         
         
         DDLogVerbose(@"%@: %@: CHAT THREAD IS NOT NIL threadId=%@", THIS_FILE, THIS_METHOD,threadId);
@@ -195,12 +195,12 @@
         
         
         
-       /* chatThread = [self createThread:threadId  :messageContent :messageDateTime : recipientEjabberdId :recipient :[NSNumber numberWithInt:0]:receiveType];*/
+        /* chatThread = [self createThread:threadId  :messageContent :messageDateTime : recipientEjabberdId :recipient :[NSNumber numberWithInt:0]:receiveType];*/
         
         
-       
         
-         chatThread = [self createThread:threadId lastTextMessage:messageContent messageTime:messageDateTime friend:recipient isGroupChat:[NSNumber numberWithInt:0] chatType:messageMedium];
+        
+        chatThread = [self createThread:threadId lastTextMessage:messageContent messageTime:messageDateTime friend:recipient isGroupChat:[NSNumber numberWithInt:0] chatType:messageMedium];
         
         
         
@@ -209,7 +209,7 @@
         chatThread.lastUpdatedDateTime = messageDateTime;
         chatThread.threadOwner=sender;
         chatThread.recipient=recipient;
-         chatThread.timeGivenToRespond=timeGivenToRespond;
+        chatThread.timeGivenToRespond=timeGivenToRespond;
         chatThread.threadLastMessageMedium=messageMedium;
         chatThread.threadStatus=[NSNumber numberWithInt:ACTIVE_THREAD];
         if([messageMedium isEqualToString:MESSAGE_MEDIUM_TEXT]){
@@ -249,7 +249,7 @@
     
     NSError *error = nil;
     if([managedObjectContext save:&error] ) {
-       // DDLogVerbose(@"%@: %@: CHAT MESSAGE SAVED %@", THIS_FILE, THIS_METHOD,chatMessage);
+        // DDLogVerbose(@"%@: %@: CHAT MESSAGE SAVED %@", THIS_FILE, THIS_METHOD,chatMessage);
         
         NSLog(@"saveChatMessageWithThreadId CHAT MESSAGE SAVED %@",chatMessage);
         
@@ -257,7 +257,7 @@
         NSLog(@"saveChatMessageWithThreadId CHAT MESSAGE NOT SAVED");
         
         
-       // DDLogVerbose(@"%@: %@: CHAT MESSAGE NOT SAVED", THIS_FILE, THIS_METHOD);
+        // DDLogVerbose(@"%@: %@: CHAT MESSAGE NOT SAVED", THIS_FILE, THIS_METHOD);
         
     }
     return chatMessage;
@@ -273,7 +273,7 @@
     ChatMessage *chatMessage = (ChatMessage  *)[NSEntityDescription
                                                 insertNewObjectForEntityForName:@"ChatMessage"inManagedObjectContext:managedObjectContext];
     
-
+    
     chatMessage.messageDeliveredDateTime=deliveredDateTime;
     chatMessage.textMessageType=chatTextType;
     chatMessage.messageSender=senderEjabberdId;
@@ -285,7 +285,7 @@
     chatMessage.threadState=imageEncodedString;
     chatMessage.timeGivenToRespond=timeGivenToRespond;
     
-   
+    
     NSError *error = nil;
     if([managedObjectContext save:&error] ) {
         DDLogVerbose(@"%@: %@: CHAT MESSAGE SAVED saveChatMessageWithOutFriend %@", THIS_FILE, THIS_METHOD,chatMessage);
@@ -296,7 +296,7 @@
         
     }
     return chatMessage;
-
+    
 }
 
 
@@ -316,14 +316,14 @@
     NSString *timeToRespond= [chatMessage.timeGivenToRespond stringValue];
     
     for(id key in appDelegate.friendsToBeAddedToComposeTheMessageDictionary) {
-
+        
         id recipient = [appDelegate.friendsToBeAddedToComposeTheMessageDictionary objectForKey:key];
         NSLog(@" testing value %@",recipient);
         
-          NSString *selectedFriendUserId =[NSString stringWithFormat:@"%@",[recipient valueForKey:@"userId"]];
+        NSString *selectedFriendUserId =[NSString stringWithFormat:@"%@",[recipient valueForKey:@"userId"]];
         
-         User *userFriend = [self getUserForId:selectedFriendUserId];
-       NSString *friendEjabberdId=[NSString stringWithFormat:@"%@%@",selectedFriendUserId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
+        User *userFriend = [self getUserForId:selectedFriendUserId];
+        NSString *friendEjabberdId=[NSString stringWithFormat:@"%@%@",selectedFriendUserId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
         
         
         
@@ -365,21 +365,21 @@
         DDLogVerbose(@"%@: %@: messaged Typed =%@ ", THIS_FILE, THIS_METHOD,message);
         
         [appDelegate.xmppStream sendElement:message];
-
         
-                
+        
+        
         
         //DB SAVE
-      
+        
         //get current time, thread id should be unique
-       
+        
         
         
         ASAppDelegate *appDelegate = (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
         NSManagedObjectContext *managedObjectContext = [appDelegate managedObjectContext];
         
         ChatMessage *chatMessageNew = (ChatMessage  *)[NSEntityDescription
-                                                    insertNewObjectForEntityForName:@"ChatMessage"inManagedObjectContext:managedObjectContext];
+                                                       insertNewObjectForEntityForName:@"ChatMessage"inManagedObjectContext:managedObjectContext];
         
         ChatThread *chatThread;
         if(chatThread == nil){
@@ -419,14 +419,14 @@
         
         NSError *error = nil;
         if([managedObjectContext save:&error] ) {
-           // DDLogVerbose(@"%@: %@: CHAT MESSAGE SAVED saveComposedChatMessageWithFriends %@", THIS_FILE, THIS_METHOD,chatMessage);
+            // DDLogVerbose(@"%@: %@: CHAT MESSAGE SAVED saveComposedChatMessageWithFriends %@", THIS_FILE, THIS_METHOD,chatMessage);
             
             NSLog(@"CHAT MESSAGE SAVED saveComposedChatMessageWithFriends %@=",chatMessage);
             
         } else {
             
-               NSLog(@"CHAT MESSAGE NOT SAVED saveComposedChatMessageWithFriends");
-           // DDLogVerbose(@"%@: %@: CHAT MESSAGE NOT SAVED saveComposedChatMessageWithFriends ", THIS_FILE, THIS_METHOD);
+            NSLog(@"CHAT MESSAGE NOT SAVED saveComposedChatMessageWithFriends");
+            // DDLogVerbose(@"%@: %@: CHAT MESSAGE NOT SAVED saveComposedChatMessageWithFriends ", THIS_FILE, THIS_METHOD);
             
         }
         
@@ -532,7 +532,7 @@
         NSLog(@"Chat updateLastMessageOpenedTime not saved");
         
     }
-
+    
     
 }
 
@@ -548,7 +548,7 @@
     if(chatThread1 !=nil){ //existing thread
         chatThread1.readStatus =[NSNumber numberWithInt:1];
         
-        }
+    }
     
     NSError *error = nil;
     if([managedObjectContext save:&error] ) {
@@ -559,7 +559,7 @@
         
     }
     
-   
+    
 }
 
 -(void) updateThreadInActiveStatus:(NSString *)threadId{
@@ -571,7 +571,7 @@
     ChatThread *chatThread  = [self getChatThread:threadId];
     
     if(chatThread !=nil){ //existing thread
-         chatThread.threadStatus=[NSNumber numberWithInt:IN_ACTIVE_THREAD];
+        chatThread.threadStatus=[NSNumber numberWithInt:IN_ACTIVE_THREAD];
         
     }
     
@@ -584,7 +584,7 @@
         
     }
     
-
+    
 }
 
 
@@ -613,7 +613,7 @@
         
         //chatThread.unreadMessages=[NSNumber numberWithInt:1];
     }else{
-       // chatThread.unreadMessages=[NSNumber numberWithInt:0];
+        // chatThread.unreadMessages=[NSNumber numberWithInt:0];
         
     }
     
