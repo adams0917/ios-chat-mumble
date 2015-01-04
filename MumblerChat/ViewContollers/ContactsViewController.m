@@ -59,6 +59,7 @@ typedef enum _MCTooltipTag
     NSArray *friendSectionTitle;
 
     CMPopTipView *currentPopTipView;
+    BOOL tutorialDone;
     __weak IBOutlet UIImageView *swipeButtonBar;
 }
 
@@ -114,6 +115,10 @@ typedef enum _MCTooltipTag
                            @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R",
                            @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
     
+    // Set up tutorial
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    tutorialDone = [defaults boolForKey:kContactsTutorialDone];
+    
     [self loadContactsData];
 }
 
@@ -141,7 +146,7 @@ typedef enum _MCTooltipTag
 {
     NSString * addedFriendsNames;
     
-    if (currentPopTipView && currentPopTipView.tag == MCAddressBookTableViewTooltip) {
+    if (!tutorialDone && currentPopTipView && currentPopTipView.tag == MCAddressBookTableViewTooltip) {
         [currentPopTipView dismissAnimated:YES];
         [self showTooltipWithMessage:@"Finally tap the arrow button or swipe left to add the selected friends"
                                  tag:MCSwipeButtonTooltip
@@ -253,10 +258,6 @@ typedef enum _MCTooltipTag
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               [SVProgressHUD dismiss];
               DDLogVerbose(@"%@: %@: getMumblerUsersForPhoneNumbers.htm responseObject =%@ ", THIS_FILE, THIS_METHOD,responseObject);
-              
-              // Set up tutorial
-              NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
-              BOOL tutorialDone = [defaults boolForKey:kContactsTutorialDone];
               
               if (!tutorialDone) {
                   [self showTooltipWithMessage:@"Select one or more friends by tapping on the add friend button on the right of the result"

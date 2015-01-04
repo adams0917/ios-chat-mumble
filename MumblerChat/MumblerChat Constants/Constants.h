@@ -132,5 +132,6 @@ static NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBS
 
 static NSString *const kContactsTutorialDone = @"ContactsTutorialDone";
 static NSString *const kSearchTutorialDone = @"SearchTutorialDone";
+static NSString *const kFriendsTutorialDone = @"FriendsTutorialDone";
 
 #endif

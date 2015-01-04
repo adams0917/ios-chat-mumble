@@ -33,6 +33,7 @@ typedef enum _MCTooltipTag
     NSMutableDictionary *friends;
     NSArray *friendSectionTitle;
     CMPopTipView *currentPopTipView;
+    BOOL tutorialDone;
     __weak IBOutlet UIButton *searchButton;
     __weak IBOutlet UIImageView *swipeButtonBar;
 }
@@ -77,7 +78,7 @@ typedef enum _MCTooltipTag
     
     // Set up tutorial
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
-    BOOL tutorialDone = [defaults boolForKey:kSearchTutorialDone];
+    tutorialDone = [defaults boolForKey:kSearchTutorialDone];
     
     if (!tutorialDone) {
         self.searchFriendsSearchBar.delegate = self;
@@ -179,10 +180,12 @@ typedef enum _MCTooltipTag
                  NSString *status = [responseObject valueForKey:@"status"];
                  
                  if([status isEqualToString:@"success"]) {
-                     [self showTooltipWithMessage:@"Select one or more friends by tapping on the add friend button on the right of the result"
-                                              tag:MCSearchFriendTableViewTooltip
-                                           atView:self.findFriendTableView
-                                    withDirection:PointDirectionDown];
+                     if (!tutorialDone) {
+                         [self showTooltipWithMessage:@"Select one or more friends by tapping on the add friend button on the right of the result"
+                                                  tag:MCSearchFriendTableViewTooltip
+                                               atView:self.findFriendTableView
+                                        withDirection:PointDirectionDown];
+                     }
                      
                      NSDictionary *data= responseObject[@"data"];
                      
@@ -319,7 +322,7 @@ typedef enum _MCTooltipTag
                 NSLog(@"addedFriendsNames else %@", addedFriendsNames);
             }
             
-            if (currentPopTipView && currentPopTipView.tag == MCSearchFriendTableViewTooltip) {
+            if (!tutorialDone && currentPopTipView && currentPopTipView.tag == MCSearchFriendTableViewTooltip) {
                 [currentPopTipView dismissAnimated:YES];
                 [self showTooltipWithMessage:@"Finally tap the arrow button or swipe left to add the selected friends"
                                          tag:MCSwipeButtonTooltip
@@ -349,7 +352,7 @@ typedef enum _MCTooltipTag
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    if (currentPopTipView && currentPopTipView.tag == MCSearchBarTooltip && searchText.length >= 3) {
+    if (!tutorialDone && currentPopTipView && currentPopTipView.tag == MCSearchBarTooltip && searchText.length >= 3) {
         [currentPopTipView dismissAnimated:YES];
         [self showTooltipWithMessage:@"Now tap this button to see the results of your search"
                                  tag:MCSearchButtonTooltip

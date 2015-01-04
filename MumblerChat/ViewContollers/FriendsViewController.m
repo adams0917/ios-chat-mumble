@@ -15,9 +15,15 @@
 #import "XMPPvCardTemp.h"
 #import "XMPPFramework.h"
 #import "UserDao.h"
-
+#import "CMPopTipView.h"
 
 #define colorTheme [UIColor colorWithRed:233.0/255.0 green:153.0/255.0 blue:6.0/255.0 alpha:1]
+
+typedef enum _MCTooltipTag
+{
+    MCFriendsTableView = 0
+} MCTooltipTag;
+
 @interface FriendsViewController (){
     User *mumblerUserFriend;
     BOOL recognizeLongPressGesture;
@@ -31,11 +37,15 @@
     __weak IBOutlet UILabel *sendMessageInfoLabel;
     __weak IBOutlet UIButton *sendMessageButton;
     __weak IBOutlet UIView *sendMessageView;
+    
+    CMPopTipView *currentPopTipView;
+    BOOL tutorialDone;
 }
 
 @end
 
 @implementation FriendsViewController
+
 @synthesize friendsTableView;
 @synthesize friendsDictionary;
 @synthesize actionType;
@@ -56,6 +66,17 @@
 {
     [super viewDidLoad];
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
+    
+    // Set up tutorial
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    tutorialDone = [defaults boolForKey:kFriendsTutorialDone];
+    
+    if (!tutorialDone) {
+        [self showTooltipWithMessage:@"Long pressing on a friend shows more options"
+                                 tag:MCFriendsTableView
+                              atView:self.friendsTableView
+                       withDirection:PointDirectionDown];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -114,6 +135,21 @@
 - (ASAppDelegate *)appDelegate
 {
     return (ASAppDelegate *) UIApplication.sharedApplication.delegate;
+}
+
+- (void)markTutorialDone
+{
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    [defaults setBool:YES forKey:kFriendsTutorialDone];
+    [defaults synchronize];
+}
+
+- (void)showTooltipWithMessage:(NSString *)message tag:(int)tag atView:(UIView *)view withDirection:(PointDirection)direction
+{
+    currentPopTipView = [[CMPopTipView alloc] initWithMessage:message];
+    currentPopTipView.tag = tag;
+    currentPopTipView.preferredPointDirection = direction;
+    [currentPopTipView presentPointingAtView:view inView:self.view animated:YES];
 }
 
 #pragma mark - UITableViewDelegate
@@ -383,6 +419,10 @@
         DDLogVerbose(@"%@: %@: selected friend mumblerId= %@ ", THIS_FILE, THIS_METHOD,mumblerFriendId);
         
         if(![actionType isEqualToString:ACTION_TYPE_FRIEND_TO_BE_SELECTED]){
+            if (currentPopTipView && currentPopTipView.tag == MCFriendsTableView) {
+                [currentPopTipView dismissAnimated:YES];
+                [self markTutorialDone];
+            }
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Alert" message:nil delegate:self cancelButtonTitle:@"Delete" otherButtonTitles:@"Block", @"Cancel",nil];
             [alert show];
         } else {
