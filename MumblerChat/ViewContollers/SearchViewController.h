@@ -6,7 +6,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SearchViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
+#import "CMPopTipView.h"
+
+@interface SearchViewController : UIViewController<UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UISearchBar *searchFriendsSearchBar;
 @property (strong, nonatomic) IBOutlet UITableView *findFriendTableView;

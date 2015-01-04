@@ -509,6 +509,8 @@
 		FA8993B61A446E83008ECDA5 /* libidn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA8991711A446E82008ECDA5 /* libidn.a */; };
 		FA8994B31A44722C008ECDA5 /* NSDictionary+JSON.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8994B21A44722C008ECDA5 /* NSDictionary+JSON.m */; };
 		FA8994B61A44891E008ECDA5 /* UIAlertView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8994B51A44891E008ECDA5 /* UIAlertView+Utils.m */; };
+		FAC1756C1A59B011003D104C /* CMPopTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1756B1A59B011003D104C /* CMPopTipView.m */; };
+		FAC1756F1A59C3BB003D104C /* FriendsUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1756E1A59C3BB003D104C /* FriendsUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1350,6 +1352,10 @@
 		FA8994B21A44722C008ECDA5 /* NSDictionary+JSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDictionary+JSON.m"; path = "MumblerChat/Categories/NSDictionary+JSON.m"; sourceTree = SOURCE_ROOT; };
 		FA8994B41A44891E008ECDA5 /* UIAlertView+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIAlertView+Utils.h"; path = "MumblerChat/Categories/UIAlertView+Utils.h"; sourceTree = SOURCE_ROOT; };
 		FA8994B51A44891E008ECDA5 /* UIAlertView+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIAlertView+Utils.m"; path = "MumblerChat/Categories/UIAlertView+Utils.m"; sourceTree = SOURCE_ROOT; };
+		FAC1756A1A59B011003D104C /* CMPopTipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPopTipView.h; sourceTree = "<group>"; };
+		FAC1756B1A59B011003D104C /* CMPopTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPopTipView.m; sourceTree = "<group>"; };
+		FAC1756D1A59C3BB003D104C /* FriendsUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsUtils.h; sourceTree = "<group>"; };
+		FAC1756E1A59C3BB003D104C /* FriendsUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsUtils.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1428,6 +1434,8 @@
 			children = (
 				121DA6D219D5B248005DAC4B /* CustomTabController.h */,
 				121DA6D319D5B248005DAC4B /* CustomTabController.m */,
+				FAC1756D1A59C3BB003D104C /* FriendsUtils.h */,
+				FAC1756E1A59C3BB003D104C /* FriendsUtils.m */,
 			);
 			name = CustomTab;
 			path = MumblerChat/CustomTab;
@@ -2500,6 +2508,7 @@
 		F83A271A19336211002E5B63 /* MumblerChat */ = {
 			isa = PBXGroup;
 			children = (
+				FAC175691A59B011003D104C /* CMPopTipView */,
 				FA8994B01A4471C9008ECDA5 /* Categories */,
 				12AE472F19D5B43C00A637B4 /* XMPP */,
 				121DA6B219D5B248005DAC4B /* ViewContollers */,
@@ -3415,6 +3424,16 @@
 			name = Categories;
 			sourceTree = "<group>";
 		};
+		FAC175691A59B011003D104C /* CMPopTipView */ = {
+			isa = PBXGroup;
+			children = (
+				FAC1756A1A59B011003D104C /* CMPopTipView.h */,
+				FAC1756B1A59B011003D104C /* CMPopTipView.m */,
+			);
+			name = CMPopTipView;
+			path = MumblerChat/CMPopTipView;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3749,6 +3768,7 @@
 				FA89935D1A446E83008ECDA5 /* XMPPRoomOccupantHybridMemoryStorageObject.m in Sources */,
 				FA8993821A446E83008ECDA5 /* XMPPCapsResourceCoreDataStorageObject.m in Sources */,
 				FA8993A91A446E83008ECDA5 /* DDASLLogger.m in Sources */,
+				FAC1756F1A59C3BB003D104C /* FriendsUtils.m in Sources */,
 				121DAA7A19D5B24B005DAC4B /* HomeViewController.m in Sources */,
 				FA8993541A446E83008ECDA5 /* XMPPLastActivity.m in Sources */,
 				FA8993451A446E83008ECDA5 /* XMPPReconnect.m in Sources */,
@@ -3789,6 +3809,7 @@
 				FA8993701A446E83008ECDA5 /* XMPPvCardTempTel.m in Sources */,
 				FA8993641A446E83008ECDA5 /* XMPPvCard.xcdatamodeld in Sources */,
 				FA8993A21A446E83008ECDA5 /* RFImageToDataTransformer.m in Sources */,
+				FAC1756C1A59B011003D104C /* CMPopTipView.m in Sources */,
 				FA8993991A446E83008ECDA5 /* XMPPMessage+XEP_0224.m in Sources */,
 				121DABDC19D5B24B005DAC4B /* SBJsonStreamParserAccumulator.m in Sources */,
 				121DABB219D5B24B005DAC4B /* ASICloudFilesContainerRequest.m in Sources */,

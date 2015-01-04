@@ -5,16 +5,26 @@
 
 
 #import "SearchViewController.h"
+#import "ASAppDelegate.h"
 #import "AFHTTPRequestOperationManager.h"
 #import "SVProgressHUD.h"
 #import <AdSupport/AdSupport.h>
 #import "Constants.h"
 #import "FriendTableViewCell.h"
-#import "ASAppDelegate.h"
+
+#import "FriendsUtils.h"
 
 #import "NSDictionary+JSON.h"
 
 #define colorTheme [UIColor colorWithRed:233.0/255.0 green:153.0/255.0 blue:6.0/255.0 alpha:1]
+
+typedef enum _MCTooltipTag
+{
+    MCSearchBarTooltip = 0,
+    MCSearchButtonTooltip,
+    MCSearchFriendTableViewTooltip,
+    MCSwipeButtonTooltip
+} MCTooltipTag;
 
 @interface SearchViewController ()
 {
@@ -22,6 +32,9 @@
     
     NSMutableDictionary *friends;
     NSArray *friendSectionTitle;
+    CMPopTipView *currentPopTipView;
+    __weak IBOutlet UIButton *searchButton;
+    __weak IBOutlet UIImageView *swipeButtonBar;
 }
 
 @end
@@ -43,18 +56,12 @@
     return self;
 }
 
-- (IBAction)didTapSwipeButton:(id)sender
-{
-    NSLog(@"here");
-}
-
 - (void)viewDidLoad
 {
-    //DDLogVerbose(@"%@: %@: ", THIS_FILE, THIS_METHOD);
     NSLog(@"Search View viewDidLoad");
     [super viewDidLoad];
     
-    appDelegate = (ASAppDelegate *)[[UIApplication sharedApplication]delegate];
+    appDelegate = (ASAppDelegate *) UIApplication.sharedApplication.delegate;
     
     self.findFriendTableView.dataSource=self;
     self.findFriendTableView.delegate=self;
@@ -67,6 +74,66 @@
     friendSectionTitle = @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I",
                            @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R",
                            @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
+    
+    // Set up tutorial
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    BOOL tutorialDone = [defaults boolForKey:kSearchTutorialDone];
+    
+    if (!tutorialDone) {
+        self.searchFriendsSearchBar.delegate = self;
+        [self showTooltipWithMessage:@"Type the the name (or part of the name) of a friend who's using MumblerChat"
+                                 tag:MCSearchBarTooltip
+                              atView:self.searchFriendsSearchBar
+                       withDirection:PointDirectionUp];
+    }
+}
+
+- (IBAction)didTapSwipeButton:(id)sender
+{
+    if (currentPopTipView && currentPopTipView.tag == MCSwipeButtonTooltip) {
+        [currentPopTipView dismissAnimated:YES];
+        [self markTutorialDone];
+    }
+    
+    if (appDelegate.addedFriendsInFaceBook.count > 0) {
+        [FriendsUtils getFbFriendsMumblerUserIdsWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+            ;
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            ;
+        }];
+    } else {
+        if (appDelegate.friendsToBeAddedDictionary.count > 0) {
+            DDLogVerbose(@"%@: %@: START appDelegate.friendsToBeAddedDictionary count]>0", THIS_FILE, THIS_METHOD);
+            
+            [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
+            
+            [NSUserDefaults.standardUserDefaults synchronize];
+            
+            double delayInSeconds = 0.25;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                // code to be executed on the main queue after delay
+                [FriendsUtils updateAddedFriends];
+            });
+        }
+    }
+    
+    [self performSegueWithIdentifier:@"leftFriendsView" sender:self];
+}
+
+- (void)markTutorialDone
+{
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    [defaults setBool:YES forKey:kSearchTutorialDone];
+    [defaults synchronize];
+}
+
+- (void)showTooltipWithMessage:(NSString *)message tag:(int)tag atView:(UIView *)view withDirection:(PointDirection)direction
+{
+    currentPopTipView = [[CMPopTipView alloc] initWithMessage:message];
+    currentPopTipView.tag = tag;
+    currentPopTipView.preferredPointDirection = direction;
+    [currentPopTipView presentPointingAtView:view inView:self.view animated:YES];
 }
 
 - (void)addFriends:(NSArray *)friendsToAdd
@@ -84,12 +151,16 @@
 - (IBAction)didTapOnSearchButton:(id)sender {
     DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
     
+    if (currentPopTipView && currentPopTipView.tag == MCSearchButtonTooltip) {
+        [currentPopTipView dismissAnimated:YES];
+    }
+    
     [friends removeAllObjects];
     [self.allData removeAllObjects];
     
     NSString *searchText =[self.searchFriendsSearchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     
-    if([searchText length]>0){
+    if (searchText.length > 0) {
         [SVProgressHUD show];
         [self.searchFriendsSearchBar resignFirstResponder];
         [self.view endEditing:YES];
@@ -108,6 +179,11 @@
                  NSString *status = [responseObject valueForKey:@"status"];
                  
                  if([status isEqualToString:@"success"]) {
+                     [self showTooltipWithMessage:@"Select one or more friends by tapping on the add friend button on the right of the result"
+                                              tag:MCSearchFriendTableViewTooltip
+                                           atView:self.findFriendTableView
+                                    withDirection:PointDirectionDown];
+                     
                      NSDictionary *data= responseObject[@"data"];
                      
                      NSArray *tmpData = data[@"mumbler_users"];
@@ -122,6 +198,7 @@
                      self.findFriendTableView.hidden=false;
                      [self.findFriendTableView reloadData];
                  } else {
+                     [self markTutorialDone];
                      [[[UIAlertView alloc] initWithTitle:@"Alert"
                                                  message:status
                                                 delegate:nil
@@ -234,12 +311,20 @@
             id value = [appDelegate.friendsToBeAddedDictionary objectForKey:key];
             NSString *selectedUserName =[NSString stringWithFormat:@"%@",[value valueForKey:@"alias"]];
             
-            if(addedFriendsNames == nil){
+            if (addedFriendsNames == nil) {
                 addedFriendsNames=selectedUserName;
                 NSLog(@"addedFriendsNames if %@", addedFriendsNames);
-            }else{
+            } else {
                 addedFriendsNames=[NSString stringWithFormat:@"%@%@%@", selectedUserName, @",", addedFriendsNames];
                 NSLog(@"addedFriendsNames else %@", addedFriendsNames);
+            }
+            
+            if (currentPopTipView && currentPopTipView.tag == MCSearchFriendTableViewTooltip) {
+                [currentPopTipView dismissAnimated:YES];
+                [self showTooltipWithMessage:@"Finally tap the arrow button or swipe left to add the selected friends"
+                                         tag:MCSwipeButtonTooltip
+                                      atView:swipeButtonBar
+                               withDirection:PointDirectionDown];
             }
         }
         NSLog(@"addedFriendsNames OUT %@", addedFriendsNames);
@@ -254,11 +339,23 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addedFriendsLabelUpdate" object:nil];
 }
 
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    if (currentPopTipView && currentPopTipView.tag == MCSearchBarTooltip && searchText.length >= 3) {
+        [currentPopTipView dismissAnimated:YES];
+        [self showTooltipWithMessage:@"Now tap this button to see the results of your search"
+                                 tag:MCSearchButtonTooltip
+                              atView:searchButton
+                       withDirection:PointDirectionUp];
+    }
 }
 
 @end

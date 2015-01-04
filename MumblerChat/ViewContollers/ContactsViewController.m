@@ -8,20 +8,27 @@
 #import "ASAppDelegate.h"
 #import "Constants.h"
 #import "FriendDao.h"
+#import "FriendsUtils.h"
 #import "SVProgressHUD.h"
 #import "AFHTTPRequestOperationManager.h"
 #import "MumblerFriendship.h"
 #import "FriendTableViewCell.h"
 #import "User.h"
+#import "CMPopTipView.h"
 
 #import "UIAlertView+Utils.h"
 #import "NSDictionary+JSON.h"
 
 #define colorTheme [UIColor colorWithRed:233.0/255.0 green:153.0/255.0 blue:6.0/255.0 alpha:1]
 
+typedef enum _MCTooltipTag
+{
+    MCAddressBookTableViewTooltip = 0,
+    MCSwipeButtonTooltip
+} MCTooltipTag;
+
 @interface ContactsViewController ()
 {
-    
     NSArray *keySelect;
     NSString *sectionHeaderSelect;
     NSMutableArray *contactListSelect;
@@ -50,6 +57,9 @@
     
     NSMutableDictionary *friends;
     NSArray *friendSectionTitle;
+
+    CMPopTipView *currentPopTipView;
+    __weak IBOutlet UIImageView *swipeButtonBar;
 }
 
 @end
@@ -112,9 +122,32 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addedFriendsLabelUpdated:) name:@"addedFriendsLabelUpdate" object:nil];
 }
 
--(void)addedFriendsLabelUpdated:(NSNotification*)notification {
-    
+- (void)markTutorialDone
+{
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    [defaults setBool:YES forKey:kContactsTutorialDone];
+    [defaults synchronize];
+}
+
+- (void)showTooltipWithMessage:(NSString *)message tag:(int)tag atView:(UIView *)view withDirection:(PointDirection)direction
+{
+    currentPopTipView = [[CMPopTipView alloc] initWithMessage:message];
+    currentPopTipView.tag = tag;
+    currentPopTipView.preferredPointDirection = direction;
+    [currentPopTipView presentPointingAtView:view inView:self.view animated:YES];
+}
+
+- (void)addedFriendsLabelUpdated:(NSNotification*)notification
+{
     NSString * addedFriendsNames;
+    
+    if (currentPopTipView && currentPopTipView.tag == MCAddressBookTableViewTooltip) {
+        [currentPopTipView dismissAnimated:YES];
+        [self showTooltipWithMessage:@"Finally tap the arrow button or swipe left to add the selected friends"
+                                 tag:MCSwipeButtonTooltip
+                              atView:swipeButtonBar
+                       withDirection:PointDirectionDown];
+    }
     
     NSLog(@"addedFriendsLabelUpdated called %@",notification.object);
     
@@ -139,9 +172,6 @@
     }else{
         self.addedFriendsLabel.text=@"";
     }
-    
-    
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -223,6 +253,17 @@
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               [SVProgressHUD dismiss];
               DDLogVerbose(@"%@: %@: getMumblerUsersForPhoneNumbers.htm responseObject =%@ ", THIS_FILE, THIS_METHOD,responseObject);
+              
+              // Set up tutorial
+              NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+              BOOL tutorialDone = [defaults boolForKey:kContactsTutorialDone];
+              
+              if (!tutorialDone) {
+                  [self showTooltipWithMessage:@"Select one or more friends by tapping on the add friend button on the right of the result"
+                                           tag:MCAddressBookTableViewTooltip
+                                        atView:self.addressBookTableView
+                                 withDirection:PointDirectionDown];
+              }
               
               NSString *status = [responseObject valueForKey:@"status"];
               
@@ -608,6 +649,35 @@
 
 - (IBAction)didTapSwipeButton:(id)sender
 {
+    if (currentPopTipView && currentPopTipView.tag == MCSwipeButtonTooltip) {
+        [currentPopTipView dismissAnimated:YES];
+        [self markTutorialDone];
+    }
+    
+    if (appDelegate.addedFriendsInFaceBook.count > 0) {
+        [FriendsUtils getFbFriendsMumblerUserIdsWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+            ;
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            ;
+        }];
+    } else {
+        if (appDelegate.friendsToBeAddedDictionary.count > 0) {
+            DDLogVerbose(@"%@: %@: START appDelegate.friendsToBeAddedDictionary count]>0", THIS_FILE, THIS_METHOD);
+            
+            [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
+            
+            [NSUserDefaults.standardUserDefaults synchronize];
+            
+            double delayInSeconds = 0.25;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                // code to be executed on the main queue after delay
+                [FriendsUtils updateAddedFriends];
+            });
+        }
+    }
+    
+    [self performSegueWithIdentifier:@"leftFriendsView" sender:self];
 }
 
 - (void)didReceiveMemoryWarning

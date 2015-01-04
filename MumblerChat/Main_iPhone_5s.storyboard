@@ -484,11 +484,13 @@
                         <outlet property="addedFriendsLabel" destination="9h3-k0-cLj" id="d7t-wK-m4J"/>
                         <outlet property="addressBookTableView" destination="mTJ-gh-rBI" id="7fv-x5-c94"/>
                         <outlet property="searchAddressBook" destination="u8S-Wa-lqv" id="wAT-Zb-DWn"/>
+                        <outlet property="swipeButtonBar" destination="5cc-fl-sjI" id="VMo-ET-Win"/>
+                        <segue destination="Woc-su-h5z" kind="push" identifier="leftFriendsView" id="VMt-Y0-ixl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VMS-rP-uZw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1203" y="1770"/>
+            <point key="canvasLocation" x="1285" y="1776"/>
         </scene>
         <!--Chat Composer View Controller-->
         <scene sceneID="unE-nx-zW5">
@@ -1251,7 +1253,10 @@
                         <outlet property="addedFriendsBackgroundView" destination="6VO-wO-yc5" id="vDf-Gt-RO0"/>
                         <outlet property="addedFriendsLabel" destination="3WJ-Iu-S4x" id="rsQ-MJ-opL"/>
                         <outlet property="findFriendTableView" destination="MEY-uP-5sc" id="dAB-aK-IKf"/>
+                        <outlet property="searchButton" destination="O2v-hO-MT3" id="3er-5x-L9T"/>
                         <outlet property="searchFriendsSearchBar" destination="x1y-jx-H31" id="VQu-Bg-1nt"/>
+                        <outlet property="swipeButtonBar" destination="vd2-EA-l3l" id="xeX-7z-QM7"/>
+                        <segue destination="Woc-su-h5z" kind="push" identifier="leftFriendsView" id="vqn-NH-Ccr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wUJ-0k-8nT" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2116,9 +2121,9 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="egh-gZ-0aL"/>
-        <segue reference="dQO-s5-hEN"/>
         <segue reference="6Qw-mc-pnE"/>
-        <segue reference="Spl-ia-VIL"/>
+        <segue reference="dQO-s5-hEN"/>
+        <segue reference="egh-gZ-0aL"/>
+        <segue reference="VMt-Y0-ixl"/>
     </inferredMetricsTieBreakers>
 </document>

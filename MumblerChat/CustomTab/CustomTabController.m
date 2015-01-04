@@ -5,6 +5,7 @@
 #import "MumblerFriendship.h"
 #import "Constants.h"
 #import "FriendDao.h"
+#import "FriendsUtils.h"
 
 #import "User.h"
 #import "AFHTTPRequestOperationManager.h"
@@ -30,159 +31,159 @@
     return (ASAppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
--(void) getFbFriendsMumblerUserIds{
-    
-    
-    NSDictionary *fbIdsNSDic = [NSDictionary dictionaryWithObjectsAndKeys:
-                                appDelegate.addedFriendsInFaceBook, @"fbIds",
-                                nil];
-    NSLog(@"fb friends to server -=== %@",[fbIdsNSDic JSONRepresentation]);
-    
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSDictionary *parameters = @{@"json":[fbIdsNSDic JSONRepresentation]};
-    NSString *url=[NSString stringWithFormat:@"%@%@",BASE_URL,@"mumblerUser/getMumblerUsersForFbIds.htm"];
-    
-    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-        [SVProgressHUD dismiss];
-        
-        DDLogVerbose(@"%@: %@: getMumblerUsersForFbIds responseObject=%@ ", THIS_FILE, THIS_METHOD,responseObject);
-        
-        NSString *status = [responseObject valueForKey:@"status"];
-        
-        if([status isEqualToString:@"success"])
-        {
-            NSDictionary *data = [responseObject valueForKey:@"data"];
-            NSMutableArray *mumblerUsersArray=[data valueForKey:@"mumbler_users"]
-            ;
-            
-            DDLogVerbose(@"%@: %@: mumblerUsersArray =%@", THIS_FILE, THIS_METHOD,mumblerUsersArray);
-            
-            if(mumblerUsersArray.count > 0){
-                [self  getMumblerUserObjectsForFBFriends:mumblerUsersArray];
-            }else{
-                DDLogVerbose(@"%@: %@: EmptyArray with FBID", THIS_FILE, THIS_METHOD);
-                if([appDelegate.friendsToBeAddedDictionary count]>0){
-                    
-                    [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
-                    
-                    [NSUserDefaults.standardUserDefaults synchronize];
-                    
-                    /*[self performSelectorInBackground:@selector(updateAddedFriends:) withObject:self];*/
-                    
-                    
-                    [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
-                    
-                    [NSUserDefaults.standardUserDefaults synchronize];
-                    
-                    double delayInSeconds = 0.25;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        // code to be executed on the main queue after delay
-                        [self updateAddedFriends];
-                        
-                    });
-                    
-                    // [self performSegueWithIdentifier:@"leftFriendsView" sender:self];
-                    
-                }
-                
-            }
-            
-            
-            
-            
-        }
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        DDLogVerbose(@"%@: %@: Error =%@", THIS_FILE, THIS_METHOD,error);
-        [SVProgressHUD dismiss];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert!" message:[error localizedDescription] delegate:self
-                                              cancelButtonTitle:@"OK" otherButtonTitles: nil];
-        
-        [alert show];
-        
-    }];
-    
-    
-}
+//-(void) getFbFriendsMumblerUserIds{
+//    
+//    
+//    NSDictionary *fbIdsNSDic = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                appDelegate.addedFriendsInFaceBook, @"fbIds",
+//                                nil];
+//    NSLog(@"fb friends to server -=== %@",[fbIdsNSDic JSONRepresentation]);
+//    
+//    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//    NSDictionary *parameters = @{@"json":[fbIdsNSDic JSONRepresentation]};
+//    NSString *url=[NSString stringWithFormat:@"%@%@",BASE_URL,@"mumblerUser/getMumblerUsersForFbIds.htm"];
+//    
+//    [manager GET:url parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//        
+//        [SVProgressHUD dismiss];
+//        
+//        DDLogVerbose(@"%@: %@: getMumblerUsersForFbIds responseObject=%@ ", THIS_FILE, THIS_METHOD,responseObject);
+//        
+//        NSString *status = [responseObject valueForKey:@"status"];
+//        
+//        if([status isEqualToString:@"success"])
+//        {
+//            NSDictionary *data = [responseObject valueForKey:@"data"];
+//            NSMutableArray *mumblerUsersArray=[data valueForKey:@"mumbler_users"]
+//            ;
+//            
+//            DDLogVerbose(@"%@: %@: mumblerUsersArray =%@", THIS_FILE, THIS_METHOD,mumblerUsersArray);
+//            
+//            if(mumblerUsersArray.count > 0){
+//                [self  getMumblerUserObjectsForFBFriends:mumblerUsersArray];
+//            }else{
+//                DDLogVerbose(@"%@: %@: EmptyArray with FBID", THIS_FILE, THIS_METHOD);
+//                if([appDelegate.friendsToBeAddedDictionary count]>0){
+//                    
+//                    [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
+//                    
+//                    [NSUserDefaults.standardUserDefaults synchronize];
+//                    
+//                    /*[self performSelectorInBackground:@selector(updateAddedFriends:) withObject:self];*/
+//                    
+//                    
+//                    [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
+//                    
+//                    [NSUserDefaults.standardUserDefaults synchronize];
+//                    
+//                    double delayInSeconds = 0.25;
+//                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+//                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+//                        // code to be executed on the main queue after delay
+//                        [self updateAddedFriends];
+//                        
+//                    });
+//                    
+//                    // [self performSegueWithIdentifier:@"leftFriendsView" sender:self];
+//                    
+//                }
+//                
+//            }
+//            
+//            
+//            
+//            
+//        }
+//        
+//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//        DDLogVerbose(@"%@: %@: Error =%@", THIS_FILE, THIS_METHOD,error);
+//        [SVProgressHUD dismiss];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert!" message:[error localizedDescription] delegate:self
+//                                              cancelButtonTitle:@"OK" otherButtonTitles: nil];
+//        
+//        [alert show];
+//        
+//    }];
+//    
+//    
+//}
+//
+//-(void) getMumblerUserObjectsForFBFriends:(NSMutableArray *) fbFriends {
+//    
+//    for (NSDictionary*friend in  fbFriends) {
+//        
+//        NSLog(@"getMumblerUserObjectsForFBFriends fbFriends");
+//        
+//        if ([friend objectForKey:@"mumblerUserId"] != nil && [friend objectForKey:@"alias"] != nil ) {
+//            
+//            NSString * userId=[friend objectForKey:@"mumblerUserId"];
+//            
+//            //added friends
+//            if([appDelegate.friendsToBeAddedDictionary objectForKey:userId] == nil){
+//                NSLog(@"ADDING FB FRIEND OBJECT%@",friend);
+//                [appDelegate.friendsToBeAddedDictionary setObject:friend forKey:userId];
+//            }
+//        }else{
+//            NSLog(@"FRIEND DATA IS NOT THERE");
+//            
+//        }
+//        
+//    }
+//    
+//    //Calling Friend Dao
+//    if([appDelegate.friendsToBeAddedDictionary count]>0){
+//        
+//        [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
+//        
+//        [NSUserDefaults.standardUserDefaults synchronize];
+//        
+//        // [self performSelectorInBackground:@selector(updateAddedFriends:) withObject:self];
+//        
+//        double delayInSeconds = 0.25;
+//        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+//        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+//            // code to be executed on the main queue after delay
+//            [self updateAddedFriends];
+//            
+//        });
+//        
+//        //[self performSegueWithIdentifier:@"leftFriendsView" sender:self];
+//        
+//        
+//    }
+//    
+//}
 
--(void) getMumblerUserObjectsForFBFriends:(NSMutableArray *) fbFriends {
-    
-    for (NSDictionary*friend in  fbFriends) {
-        
-        NSLog(@"getMumblerUserObjectsForFBFriends fbFriends");
-        
-        if ([friend objectForKey:@"mumblerUserId"] != nil && [friend objectForKey:@"alias"] != nil ) {
-            
-            NSString * userId=[friend objectForKey:@"mumblerUserId"];
-            
-            //added friends
-            if([appDelegate.friendsToBeAddedDictionary objectForKey:userId] == nil){
-                NSLog(@"ADDING FB FRIEND OBJECT%@",friend);
-                [appDelegate.friendsToBeAddedDictionary setObject:friend forKey:userId];
-            }
-        }else{
-            NSLog(@"FRIEND DATA IS NOT THERE");
-            
-        }
-        
-    }
-    
-    //Calling Friend Dao
-    if([appDelegate.friendsToBeAddedDictionary count]>0){
-        
-        [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
-        
-        [NSUserDefaults.standardUserDefaults synchronize];
-        
-        // [self performSelectorInBackground:@selector(updateAddedFriends:) withObject:self];
-        
-        double delayInSeconds = 0.25;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            // code to be executed on the main queue after delay
-            [self updateAddedFriends];
-            
-        });
-        
-        //[self performSegueWithIdentifier:@"leftFriendsView" sender:self];
-        
-        
-    }
-    
-}
+//-(void)updateAddedFriends{
+//    DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
+//    FriendDao *objFriendsDao=[[FriendDao alloc]init];
+//    [objFriendsDao addFriendships];
+//    [self addFriendsToEjabberedServer];
+//    DDLogVerbose(@"%@: %@: END ", THIS_FILE, THIS_METHOD);
+//    
+//}
 
--(void)updateAddedFriends{
-    DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
-    FriendDao *objFriendsDao=[[FriendDao alloc]init];
-    [objFriendsDao addFriendships];
-    [self addFriendsToEjabberedServer];
-    DDLogVerbose(@"%@: %@: END ", THIS_FILE, THIS_METHOD);
-    
-}
-
--(void)addFriendsToEjabberedServer{
-    
-    DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
-    
-    for(id key in appDelegate.friendsToBeAddedDictionary) {
-        id value = [appDelegate.friendsToBeAddedDictionary objectForKey:key];
-        
-        NSString *selectedUserId =[NSString stringWithFormat:@"%@",[value valueForKey:@"mumblerUserId"]];
-        
-        NSString *selectedUseName =[NSString stringWithFormat:@"%@",[value valueForKey:@"alias"]];
-        
-        selectedUserId=[NSString stringWithFormat:@"%@%@",selectedUserId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
-        
-        XMPPJID *newBuddy = [XMPPJID jidWithString:selectedUserId];
-        [[[self appDelegate] xmppRoster] addUser:newBuddy withNickname:selectedUseName];
-        
-        DDLogVerbose(@"%@: %@: END ", THIS_FILE, THIS_METHOD);
-        
-    }
-    
-}
+//-(void)addFriendsToEjabberedServer{
+//    
+//    DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
+//    
+//    for(id key in appDelegate.friendsToBeAddedDictionary) {
+//        id value = [appDelegate.friendsToBeAddedDictionary objectForKey:key];
+//        
+//        NSString *selectedUserId =[NSString stringWithFormat:@"%@",[value valueForKey:@"mumblerUserId"]];
+//        
+//        NSString *selectedUseName =[NSString stringWithFormat:@"%@",[value valueForKey:@"alias"]];
+//        
+//        selectedUserId=[NSString stringWithFormat:@"%@%@",selectedUserId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
+//        
+//        XMPPJID *newBuddy = [XMPPJID jidWithString:selectedUserId];
+//        [[[self appDelegate] xmppRoster] addUser:newBuddy withNickname:selectedUseName];
+//        
+//        DDLogVerbose(@"%@: %@: END ", THIS_FILE, THIS_METHOD);
+//        
+//    }
+//    
+//}
 
 ///////////Send Text
 - (void)sendSMS:(NSString *)bodyOfMessage recipientList:(NSArray *)recipients
@@ -220,16 +221,16 @@
         [self sendTextMessagesForSelectedContacts];
     }
     
-    
-    //Add Friends Methods
-    if(appDelegate.addedFriendsInFaceBook.count > 0){
-        
-        [self getFbFriendsMumblerUserIds];
-    }else{
-        if([appDelegate.friendsToBeAddedDictionary count]>0){
-            
+    // Adding Friends
+    if (appDelegate.addedFriendsInFaceBook.count > 0) {
+        [FriendsUtils getFbFriendsMumblerUserIdsWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+            ;
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            ;
+        }];
+    } else {
+        if (appDelegate.friendsToBeAddedDictionary.count > 0) {
             DDLogVerbose(@"%@: %@: START appDelegate.friendsToBeAddedDictionary count]>0", THIS_FILE, THIS_METHOD);
-            
             
             [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
             
@@ -239,14 +240,8 @@
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 // code to be executed on the main queue after delay
-                [self updateAddedFriends];
-                
+                [FriendsUtils updateAddedFriends];
             });
-            
-            // [self performSegueWithIdentifier:@"leftFriendsView" sender:self];
-            
-            //[self performSelectorInBackground:@selector(updateAddedFriends:) withObject:self];
-            
         }
     }
     
@@ -528,6 +523,7 @@
     //[self.tabBar setSelectionIndicatorImage:[UIImage imageNamed:@"selectedTabBar.png"]];
     [self selectTab:tagNum];
 }
+
 - (void)actionBack:(id)sender {
     NSLog(@"actionBack from custom tabbar");
     

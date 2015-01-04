@@ -128,4 +128,9 @@ static NSString * const kXMPPStreamDidAuthenticate = @"xmppStreamDidAuthenticate
 
 static NSString *const FBSessionStateChangedNotification = @"com.mumblerchat:FBSessionStateChangedNotification";
 
+// Tutorial
+
+static NSString *const kContactsTutorialDone = @"ContactsTutorialDone";
+static NSString *const kSearchTutorialDone = @"SearchTutorialDone";
+
 #endif
