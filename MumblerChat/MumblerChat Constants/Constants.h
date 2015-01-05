@@ -19,7 +19,7 @@ static NSString * const BASE_URL = @"http://54.227.54.114:8080/MumblerChatWeb/";
 static NSString * const BASE_IP = @"54.227.54.114";
 static NSString * const MUMBLER_CHAT_EJJABBERD_SERVER_NAME = @"@ejabberd.server.mumblerchat";
 static NSString * const XMPP_CONTAINS_SERACH = @"@ejabberd";
-static NSString * const VIDEIO_PATH = @"http://54.198.191.57:8080/MumblerChatWeb/chatVideo/";
+static NSString * const VIDEIO_PATH = @"http://54.227.54.114:8080/MumblerChatWeb/chatVideo/";
 
 
 //chat compser
