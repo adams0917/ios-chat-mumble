@@ -34,9 +34,13 @@
 
 #import "User.h"
 
-
 #define CAMERA_TRANSFORM_X 2.0
 #define CAMERA_TRANSFORM_Y 2.0
+
+typedef enum _MCActionSheetId
+{
+    MCAttachmentActionSheet = 0
+} MCActionSheetId;
 
 @interface ChatComposerViewController ()
 {
@@ -117,7 +121,7 @@
     imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
     imagePicker.mediaTypes = @[(NSString *) kUTTypeMovie];
     imagePicker.videoQuality = UIImagePickerControllerQualityTypeHigh;
-    imagePicker.cameraCaptureMode=UIImagePickerControllerCameraCaptureModeVideo;
+    imagePicker.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
     [imagePicker setVideoMaximumDuration:10];
     [self presentViewController:imagePicker animated:YES completion:nil];
 }
@@ -170,7 +174,7 @@
                                 } else if (imagePicker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
                                     imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
                                 }
-                            } else if(imagePicker.cameraCaptureMode == UIImagePickerControllerCameraCaptureModeVideo) {
+                            } else if (imagePicker.cameraCaptureMode == UIImagePickerControllerCameraCaptureModeVideo) {
                                 if (imagePicker.cameraDevice == UIImagePickerControllerCameraDeviceRear) {
                                     imagePicker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
                                 } else if ( imagePicker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
@@ -233,10 +237,10 @@
     return newImage;
 }
 
+#pragma mark - UIImagePickerControllerDelegate
 
--(void) imagePickerController:(UIImagePickerController *) picker didFinishPickingMediaWithInfo:(NSDictionary *) info
+- (void)imagePickerController:(UIImagePickerController *) picker didFinishPickingMediaWithInfo:(NSDictionary *) info
 {
-    
     NSLog(@"didFinishPickingMediaWithInfo info == %@",info);
     
     if([[info objectForKey:@"UIImagePickerControllerMediaType"] isEqualToString:@"public.image"]){
@@ -307,98 +311,10 @@
          [self uploadVideoFile :videoData:videoBase64String];*/
         
         [self dismissViewControllerAnimated:YES completion:nil];
-        
     }
-    
-    
 }
 
--(void)uploadImageFile :(NSData *)imageToUpload :(NSString *) base64ImageString{
-    
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *url=[NSString stringWithFormat:@"%@%@",BASE_URL,@"mumblerUser/uploadImageToSend.htm"];
-    [manager POST:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        
-        [formData appendPartWithFileData:imageToUpload name:@"image" fileName:@"files.jpeg" mimeType:@"image/jpeg"];
-        
-    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        [SVProgressHUD dismiss];
-        NSLog(@"Response: %@", responseObject);
-        NSString *status=[responseObject valueForKey:@"status"];
-        if([status isEqualToString:@"success"]){
-            
-            NSDictionary *data=[responseObject objectForKey:@"data"];
-            NSString *imageUrl=[data valueForKey:@"image_url"];
-            NSLog(@"image url=== %@",imageUrl);
-            
-            [self sendFile : base64ImageString:imageUrl:@"image"];
-            
-        }
-        else{
-            
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
-        
-        NSError *error1 = nil;
-        [[self fetchedResultsController] performFetch:&error1];
-        [chatComposerTableView reloadData];
-        
-        
-        [SVProgressHUD dismiss];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Alert", nil) message:[error localizedDescription] delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"Ok", nil) otherButtonTitles: nil];
-        
-        [alert show];
-        
-    }];
-    
-}
-
-
-
--(void)uploadVideoFile : (NSData *)videoToUpload :(NSString *)videoBase64String{
-    
-    NSLog(@"uploadVideoFile");
-    
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    NSString *url=[NSString stringWithFormat:@"%@%@",BASE_URL,@"mumblerUser/uploadVideoToSend.htm"];
-    [manager POST:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        
-        [formData appendPartWithFileData:videoToUpload name:@"video" fileName:@"video" mimeType:@"video/mp4"];
-        
-    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-        NSLog(@"Response in video upload %@", responseObject);
-        NSString *status=[responseObject valueForKey:@"status"];
-        if([status isEqualToString:@"success"]){
-            NSDictionary *data=[responseObject objectForKey:@"data"];
-            NSString *videoUrlFromServer=[data valueForKey:@"videoName"];
-            NSLog(@"video url=== %@",videoUrlFromServer);
-            
-            // get the thumbnail from movie
-            UIImage * capturedPhoto = [self thumbnailFromVideoAtURL:[NSURL fileURLWithPath:videoBase64String]];
-            
-            // [self sendFile :videoBase64String:videoUrlFromServer:@"video"];
-            [self sendFile :nil:videoUrlFromServer:@"video"];
-            
-        }
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
-        [SVProgressHUD dismiss];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert", nil) message:[error localizedDescription] delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
-        
-        [alert show];
-    }];
-    
-    
-}
-
-
-
-
--(UIImage *)thumbnailFromVideoAtURL:(NSURL *)contentURL {
+- (UIImage *)thumbnailFromVideoAtURL:(NSURL *)contentURL {
     NSLog(@"Starting Thumbnail From Video file");
     UIImage *theImage = nil;
     AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:contentURL options:nil];
@@ -413,12 +329,8 @@
     return theImage;
 }
 
-
-
-
-
--(void)sendFile :(NSString *) imageString : (NSString *) imageUrl :(NSString *) fileType{
-    
+- (void)sendFile:(NSString *) imageString : (NSString *) imageUrl :(NSString *) fileType
+{
     NSLog(@"sendFile");
     // NSLog(@"sendFile imageString %@=",imageString);
     NSLog(@"sendFile imageUrl %@=",imageUrl);
@@ -577,12 +489,12 @@
     
 }
 
--(void)showCameraMode:(BOOL)video{
-    
+-(void)showCameraMode:(BOOL)video
+{
     // shouldRemoveFetchDelegate = NO;
     
     float screenWidth = [[UIScreen mainScreen] bounds].size.width;
-    imagePicker=[[UIImagePickerController alloc] init];
+    imagePicker = [UIImagePickerController new];
     imagePicker.delegate = self;
     imagePicker.allowsEditing = YES;
     
@@ -597,162 +509,147 @@
     imagePicker.modalPresentationStyle = UIModalPresentationCurrentContext;
     
     
-    if(video){
-        
+    if (video) {
         //isClicked=NO;
         //isRecordingOn=YES;
-        imagePicker.mediaTypes =
-        [NSArray arrayWithObject:(NSString *)kUTTypeMovie];
+        imagePicker.mediaTypes = [NSArray arrayWithObject:(NSString *)kUTTypeMovie];
         imagePicker.videoQuality = UIImagePickerControllerQualityTypeHigh;
-        imagePicker.cameraCaptureMode=UIImagePickerControllerCameraCaptureModeVideo;
+        imagePicker.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
         [imagePicker setVideoMaximumDuration:10];
-        
     }
     
     
     if (IS_IPAD) {
-        
-        butonBackCam=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [butonBackCam setFrame:CGRectMake(10, 14, 33, 33)];
-        [butonBackCam addTarget:self action:@selector(cameraDismiss:) forControlEvents:UIControlEventTouchUpInside];
-        [butonBackCam setBackgroundImage:[UIImage imageNamed:@"camera_back_button.png"] forState:UIControlStateNormal];
-        [butonBackCam setTintColor:[UIColor clearColor]];
-        [imagePicker.view addSubview:butonBackCam];
-        
-        buttonCapture = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [buttonCapture setFrame:CGRectMake(([[UIScreen mainScreen] bounds].size.width/2 - 40), [[UIScreen mainScreen] bounds].size.height-100, 80, 80)];
-        [buttonCapture addTarget:self action:@selector(capture:) forControlEvents:UIControlEventTouchUpInside];
-        [buttonCapture setBackgroundImage:[UIImage imageNamed:@"capture_button.png"] forState:UIControlStateNormal];
-        [buttonCapture setTintColor:[UIColor clearColor]];
-        [imagePicker.view addSubview:buttonCapture];
-        
-        buttonSwitchCam=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [buttonSwitchCam setFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width-75, 14, 60, 40)];
-        [buttonSwitchCam addTarget:self action:@selector(cameraSwitchMode:) forControlEvents:UIControlEventTouchUpInside];
-        [buttonSwitchCam setBackgroundImage:[UIImage imageNamed:@"camera_switch_mode.png"] forState:UIControlStateNormal];
-        [imagePicker.view addSubview:buttonSwitchCam];
-        
-        buttonFlashCam=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [buttonFlashCam setFrame:CGRectMake(10, [[UIScreen mainScreen] bounds].size.height-70, 33, 33)];
-        [buttonFlashCam addTarget:self action:@selector(cameraFlash:) forControlEvents:UIControlEventTouchUpInside];
-        [buttonFlashCam setBackgroundImage:[UIImage imageNamed:@"auto_flash.png"] forState:UIControlStateNormal];
-        [buttonFlashCam setTintColor:[UIColor clearColor]];
-        [imagePicker.view addSubview:buttonFlashCam];
-        imagePicker.cameraViewTransform=CGAffineTransformScale(imagePicker.cameraViewTransform, CAMERA_TRANSFORM_X, CAMERA_TRANSFORM_Y);
-        
-        labelCount=[[UILabel alloc] init];
-        [labelCount setFrame:CGRectMake(screenWidth/2 -5 , 940, 50, 50)];
-        labelCount.textColor=[UIColor whiteColor];
-        labelCount.backgroundColor=[UIColor clearColor];
-        [labelCount setFont:[UIFont boldSystemFontOfSize:20]];
-        [imagePicker.view addSubview:labelCount];
-        
-        editmodeView=[[UIImageView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width,self.view.frame.size.height+20)];
-        [editmodeView setBackgroundColor:[UIColor clearColor]];
-        [imagePicker.view addSubview:editmodeView];
-        
-        editModeCloseButton=[[UIButton alloc] initWithFrame:CGRectMake(10, 10, 33, 33)];
-        [editModeCloseButton setBackgroundImage:[UIImage imageNamed:@"editclose_icon.png"] forState:UIControlStateNormal];
-        [editModeCloseButton addTarget:self action:@selector(editModeViewSetHidden:) forControlEvents:UIControlEventTouchUpInside];
-        editModeCloseButton.tag=1;
-        
-        if(!video){
-            uploadImageButton =[[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width-70, 500, 40, 40)];
-            [uploadImageButton setBackgroundImage:[UIImage imageNamed:@"EditModesend_icon.png"] forState:UIControlStateNormal];
-            [uploadImageButton addTarget:self action:@selector(editModeViewSetHidden:) forControlEvents:UIControlEventTouchUpInside];
-            uploadImageButton.tag=2;
+        if (imagePicker.sourceType != UIImagePickerControllerSourceTypePhotoLibrary) {
+            butonBackCam=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [butonBackCam setFrame:CGRectMake(10, 14, 33, 33)];
+            [butonBackCam addTarget:self action:@selector(cameraDismiss:) forControlEvents:UIControlEventTouchUpInside];
+            [butonBackCam setBackgroundImage:[UIImage imageNamed:@"camera_back_button.png"] forState:UIControlStateNormal];
+            [butonBackCam setTintColor:[UIColor clearColor]];
+            [imagePicker.view addSubview:butonBackCam];
+            
+            buttonCapture = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [buttonCapture setFrame:CGRectMake(([[UIScreen mainScreen] bounds].size.width/2 - 40), [[UIScreen mainScreen] bounds].size.height-100, 80, 80)];
+            [buttonCapture addTarget:self action:@selector(capture:) forControlEvents:UIControlEventTouchUpInside];
+            [buttonCapture setBackgroundImage:[UIImage imageNamed:@"capture_button.png"] forState:UIControlStateNormal];
+            [buttonCapture setTintColor:[UIColor clearColor]];
+            [imagePicker.view addSubview:buttonCapture];
+            
+            buttonSwitchCam=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [buttonSwitchCam setFrame:CGRectMake([[UIScreen mainScreen] bounds].size.width-75, 14, 60, 40)];
+            [buttonSwitchCam addTarget:self action:@selector(cameraSwitchMode:) forControlEvents:UIControlEventTouchUpInside];
+            [buttonSwitchCam setBackgroundImage:[UIImage imageNamed:@"camera_switch_mode.png"] forState:UIControlStateNormal];
+            [imagePicker.view addSubview:buttonSwitchCam];
+            
+            buttonFlashCam=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [buttonFlashCam setFrame:CGRectMake(10, [[UIScreen mainScreen] bounds].size.height-70, 33, 33)];
+            [buttonFlashCam addTarget:self action:@selector(cameraFlash:) forControlEvents:UIControlEventTouchUpInside];
+            [buttonFlashCam setBackgroundImage:[UIImage imageNamed:@"auto_flash.png"] forState:UIControlStateNormal];
+            [buttonFlashCam setTintColor:[UIColor clearColor]];
+            [imagePicker.view addSubview:buttonFlashCam];
+            imagePicker.cameraViewTransform=CGAffineTransformScale(imagePicker.cameraViewTransform, CAMERA_TRANSFORM_X, CAMERA_TRANSFORM_Y);
+            
+            labelCount=[[UILabel alloc] init];
+            [labelCount setFrame:CGRectMake(screenWidth/2 -5 , 940, 50, 50)];
+            labelCount.textColor=[UIColor whiteColor];
+            labelCount.backgroundColor=[UIColor clearColor];
+            [labelCount setFont:[UIFont boldSystemFontOfSize:20]];
+            [imagePicker.view addSubview:labelCount];
+            
+            editmodeView=[[UIImageView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width,self.view.frame.size.height+20)];
+            [editmodeView setBackgroundColor:[UIColor clearColor]];
+            [imagePicker.view addSubview:editmodeView];
+            
+            editModeCloseButton=[[UIButton alloc] initWithFrame:CGRectMake(10, 10, 33, 33)];
+            [editModeCloseButton setBackgroundImage:[UIImage imageNamed:@"editclose_icon.png"] forState:UIControlStateNormal];
+            [editModeCloseButton addTarget:self action:@selector(editModeViewSetHidden:) forControlEvents:UIControlEventTouchUpInside];
+            editModeCloseButton.tag=1;
+            
+            if(!video){
+                uploadImageButton =[[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width-70, 500, 40, 40)];
+                [uploadImageButton setBackgroundImage:[UIImage imageNamed:@"EditModesend_icon.png"] forState:UIControlStateNormal];
+                [uploadImageButton addTarget:self action:@selector(editModeViewSetHidden:) forControlEvents:UIControlEventTouchUpInside];
+                uploadImageButton.tag=2;
+            }
         }
         
         [self presentViewController:imagePicker animated:YES completion:nil];
-        
-        
-        
-    } else{
-        
-        butonBackCam=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [butonBackCam setFrame:CGRectMake(10, 14, 33, 33)];
-        [butonBackCam addTarget:self action:@selector(cameraDismiss:) forControlEvents:UIControlEventTouchUpInside];
-        [butonBackCam setBackgroundImage:[UIImage imageNamed:@"camera_back_button.png"] forState:UIControlStateNormal];
-        [butonBackCam setTintColor:[UIColor clearColor]];
-        [imagePicker.view addSubview:butonBackCam];
-        
-        buttonCapture = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [buttonCapture setFrame:CGRectMake(([[UIScreen mainScreen] bounds].size.width/2 - 40), 470, 80, 80)];
-        [buttonCapture addTarget:self action:@selector(capture:) forControlEvents:UIControlEventTouchUpInside];
-        [buttonCapture setBackgroundImage:[UIImage imageNamed:@"capture_button.png"] forState:UIControlStateNormal];
-        [buttonCapture setTintColor:[UIColor clearColor]];
-        [imagePicker.view addSubview:buttonCapture];
-        
-        buttonSwitchCam=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [buttonSwitchCam setFrame:CGRectMake(250, 14, 60, 40)];
-        [buttonSwitchCam addTarget:self action:@selector(cameraSwitchMode:) forControlEvents:UIControlEventTouchUpInside];
-        [buttonSwitchCam setBackgroundImage:[UIImage imageNamed:@"camera_switch_mode.png"] forState:UIControlStateNormal];
-        [imagePicker.view addSubview:buttonSwitchCam];
-        
-        buttonFlashCam=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [buttonFlashCam setFrame:CGRectMake(10, 480, 33, 33)];
-        [buttonFlashCam addTarget:self action:@selector(cameraFlash:) forControlEvents:UIControlEventTouchUpInside];
-        [buttonFlashCam setBackgroundImage:[UIImage imageNamed:@"auto_flash.png"] forState:UIControlStateNormal];
-        [buttonFlashCam setTintColor:[UIColor clearColor]];
-        [imagePicker.view addSubview:buttonFlashCam];
-        
-        if([[[UIDevice currentDevice] systemVersion] intValue] >= 7) {
+    } else {
+        if (imagePicker.sourceType != UIImagePickerControllerSourceTypePhotoLibrary) {
+            butonBackCam = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [butonBackCam setFrame:CGRectMake(10, 14, 33, 33)];
+            [butonBackCam addTarget:self action:@selector(cameraDismiss:) forControlEvents:UIControlEventTouchUpInside];
+            [butonBackCam setBackgroundImage:[UIImage imageNamed:@"camera_back_button.png"] forState:UIControlStateNormal];
+            [butonBackCam setTintColor:[UIColor clearColor]];
+            [imagePicker.view addSubview:butonBackCam];
             
-            imagePicker.cameraViewTransform = CGAffineTransformMakeScale(1.0, 1.670);
-        } else {
-            if ([[UIScreen mainScreen] bounds].size.height == 568) {
-                imagePicker.cameraViewTransform = CGAffineTransformMakeScale(1.0, 1.930);
+            buttonCapture = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [buttonCapture setFrame:CGRectMake(([[UIScreen mainScreen] bounds].size.width/2 - 40), 470, 80, 80)];
+            [buttonCapture addTarget:self action:@selector(capture:) forControlEvents:UIControlEventTouchUpInside];
+            [buttonCapture setBackgroundImage:[UIImage imageNamed:@"capture_button.png"] forState:UIControlStateNormal];
+            [buttonCapture setTintColor:[UIColor clearColor]];
+            [imagePicker.view addSubview:buttonCapture];
+            
+            buttonSwitchCam=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [buttonSwitchCam setFrame:CGRectMake(250, 14, 60, 40)];
+            [buttonSwitchCam addTarget:self action:@selector(cameraSwitchMode:) forControlEvents:UIControlEventTouchUpInside];
+            [buttonSwitchCam setBackgroundImage:[UIImage imageNamed:@"camera_switch_mode.png"] forState:UIControlStateNormal];
+            [imagePicker.view addSubview:buttonSwitchCam];
+            
+            buttonFlashCam=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [buttonFlashCam setFrame:CGRectMake(10, 480, 33, 33)];
+            [buttonFlashCam addTarget:self action:@selector(cameraFlash:) forControlEvents:UIControlEventTouchUpInside];
+            [buttonFlashCam setBackgroundImage:[UIImage imageNamed:@"auto_flash.png"] forState:UIControlStateNormal];
+            [buttonFlashCam setTintColor:[UIColor clearColor]];
+            [imagePicker.view addSubview:buttonFlashCam];
+            
+            if(UIDevice.currentDevice.systemVersion.intValue >= 7) {
+                imagePicker.cameraViewTransform = CGAffineTransformMakeScale(1.0, 1.670);
             } else {
-                imagePicker.cameraViewTransform = CGAffineTransformMakeScale(1.0, 1.260);
+                if (UIScreen.mainScreen.bounds.size.height == 568) {
+                    imagePicker.cameraViewTransform = CGAffineTransformMakeScale(1.0, 1.930);
+                } else {
+                    imagePicker.cameraViewTransform = CGAffineTransformMakeScale(1.0, 1.260);
+                }
             }
-            //            imagePicker.cameraViewTransform=CGAffineTransformScale(imagePicker.cameraViewTransform, CAMERA_TRANSFORM_X, CAMERA_TRANSFORM_Y);
-        }
-        
-        
-        labelCount=[[UILabel alloc] init];
-        [labelCount setFrame:CGRectMake(screenWidth/2 -5 , 484, 50, 50)];
-        labelCount.textColor=[UIColor whiteColor];
-        labelCount.backgroundColor=[UIColor clearColor];
-        [labelCount setFont:[UIFont boldSystemFontOfSize:20]];
-        [imagePicker.view addSubview:labelCount];
-        
-        editmodeView=[[UIImageView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width,self.view.frame.size.height+20)];
-        [editmodeView setBackgroundColor:[UIColor clearColor]];
-        [imagePicker.view addSubview:editmodeView];
-        
-        editModeCloseButton=[[UIButton alloc] initWithFrame:CGRectMake(10, 10, 33, 33)];
-        [editModeCloseButton setBackgroundImage:[UIImage imageNamed:@"editclose_icon.png"] forState:UIControlStateNormal];
-        [editModeCloseButton addTarget:self action:@selector(editModeViewSetHidden:) forControlEvents:UIControlEventTouchUpInside];
-        editModeCloseButton.tag=1;
-        
-        if(!video){
-            uploadImageButton =[[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width-70, 500, 40, 40)];
-            [uploadImageButton setBackgroundImage:[UIImage imageNamed:@"EditModesend_icon.png"] forState:UIControlStateNormal];
-            [uploadImageButton addTarget:self action:@selector(editModeViewSetHidden:) forControlEvents:UIControlEventTouchUpInside];
-            uploadImageButton.tag=2;
+            
+            labelCount=[[UILabel alloc] init];
+            [labelCount setFrame:CGRectMake(screenWidth/2 -5 , 484, 50, 50)];
+            labelCount.textColor=[UIColor whiteColor];
+            labelCount.backgroundColor=[UIColor clearColor];
+            [labelCount setFont:[UIFont boldSystemFontOfSize:20]];
+            [imagePicker.view addSubview:labelCount];
+            
+            editmodeView=[[UIImageView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width,self.view.frame.size.height+20)];
+            [editmodeView setBackgroundColor:[UIColor clearColor]];
+            [imagePicker.view addSubview:editmodeView];
+            
+            editModeCloseButton=[[UIButton alloc] initWithFrame:CGRectMake(10, 10, 33, 33)];
+            [editModeCloseButton setBackgroundImage:[UIImage imageNamed:@"editclose_icon.png"] forState:UIControlStateNormal];
+            [editModeCloseButton addTarget:self action:@selector(editModeViewSetHidden:) forControlEvents:UIControlEventTouchUpInside];
+            editModeCloseButton.tag=1;
+            
+            if(!video){
+                uploadImageButton =[[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width-70, 500, 40, 40)];
+                [uploadImageButton setBackgroundImage:[UIImage imageNamed:@"EditModesend_icon.png"] forState:UIControlStateNormal];
+                [uploadImageButton addTarget:self action:@selector(editModeViewSetHidden:) forControlEvents:UIControlEventTouchUpInside];
+                uploadImageButton.tag=2;
+            }
         }
         
         [self presentViewController:imagePicker animated:YES completion:nil];
     }
-    
 }
 
-
-
-
-
-
-
--(IBAction)swipeLeft:(id)sender{
+-(IBAction)swipeLeft:(id)sender
+{
     NSLog(@"swipeLeft----");
-    
-    
 }
--(IBAction)swipeRight:(id)sender{
+
+-(IBAction)swipeRight:(id)sender
+{
     NSLog(@"swipeRight----");
     [self.navigationController popViewControllerAnimated:YES];
-    
-    
 }
 
 - (ASAppDelegate *)appDelegate
@@ -932,7 +829,7 @@
         remainingSeconds = (chatThread.timeGivenToRespond.integerValue * 1000 - countDifference) ;
         int secondsRemaining = (int) remainingSeconds;
         int timeGivenToRespondLastMsg = (int) chatThread.timeGivenToRespond.integerValue;
-
+        
         NSLog(@"secondsRemaining %d",secondsRemaining/1000);
         NSLog(@"timeGivenToRespondLastMsg %d",timeGivenToRespondLastMsg);
         
@@ -2325,6 +2222,118 @@
     
 }
 
+#pragma mark - Upload methods
+
+- (void)uploadImageFile:(NSData *)imageToUpload :(NSString *)base64ImageString
+{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *url=[NSString stringWithFormat:@"%@%@",BASE_URL,@"mumblerUser/uploadImageToSend.htm"];
+    [manager POST:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        
+        [formData appendPartWithFileData:imageToUpload name:@"image" fileName:@"files.jpeg" mimeType:@"image/jpeg"];
+        
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [SVProgressHUD dismiss];
+        NSLog(@"Response: %@", responseObject);
+        NSString *status=[responseObject valueForKey:@"status"];
+        if([status isEqualToString:@"success"]){
+            
+            NSDictionary *data=[responseObject objectForKey:@"data"];
+            NSString *imageUrl=[data valueForKey:@"image_url"];
+            NSLog(@"image url=== %@",imageUrl);
+            
+            [self sendFile : base64ImageString:imageUrl:@"image"];
+            
+        }
+        else{
+            
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+        
+        NSError *error1 = nil;
+        [[self fetchedResultsController] performFetch:&error1];
+        [chatComposerTableView reloadData];
+        
+        
+        [SVProgressHUD dismiss];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Alert", nil) message:[error localizedDescription] delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"Ok", nil) otherButtonTitles: nil];
+        
+        [alert show];
+        
+    }];
+}
+
+- (void)uploadVideoFile:(NSData *)videoToUpload :(NSString *)videoBase64String
+{
+    NSLog(@"uploadVideoFile");
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *url=[NSString stringWithFormat:@"%@%@",BASE_URL,@"mumblerUser/uploadVideoToSend.htm"];
+    [manager POST:url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        
+        [formData appendPartWithFileData:videoToUpload name:@"video" fileName:@"video" mimeType:@"video/mp4"];
+        
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSLog(@"Response in video upload %@", responseObject);
+        NSString *status=[responseObject valueForKey:@"status"];
+        if([status isEqualToString:@"success"]){
+            NSDictionary *data=[responseObject objectForKey:@"data"];
+            NSString *videoUrlFromServer=[data valueForKey:@"videoName"];
+            NSLog(@"video url=== %@",videoUrlFromServer);
+            
+            // get the thumbnail from movie
+            UIImage * capturedPhoto = [self thumbnailFromVideoAtURL:[NSURL fileURLWithPath:videoBase64String]];
+            
+            // [self sendFile :videoBase64String:videoUrlFromServer:@"video"];
+            [self sendFile :nil:videoUrlFromServer:@"video"];
+            
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"Error: %@", error);
+        [SVProgressHUD dismiss];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert", nil) message:[error localizedDescription] delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"ok", nil) otherButtonTitles: nil];
+        
+        [alert show];
+    }];
+}
+
+- (IBAction)didTapAddAttachmentButton:(id)sender
+{
+    UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:@"Add attachment"
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                         destructiveButtonTitle:nil
+                                              otherButtonTitles:@"Add image", @"Add video", nil];
+    popup.tag = MCAttachmentActionSheet;
+    [popup showInView:[UIApplication sharedApplication].keyWindow];
+}
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)popup clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (popup.tag) {
+        case MCAttachmentActionSheet: {
+            switch (buttonIndex) {
+                case 0:
+                    [self didTapOnImageButton:self];
+                    break;
+                case 1:
+                    [self didTapOnViedioButton:self];
+                    break;
+                default:
+                    break;
+            }
+            break;
+        }
+        default:
+            break;
+    }
+}
 
 - (void)didReceiveMemoryWarning
 {

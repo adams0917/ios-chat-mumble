@@ -431,8 +431,6 @@ typedef enum _MCTooltipTag
                 [appDelegate.friendsToBeAddedToComposeTheMessageDictionary removeObjectForKey:mumblerFriendId];
             }
         }
-        
-//        sendMessageView.hidden = appDelegate.friendsToBeAddedToComposeTheMessageDictionary == 0;
     }
 }
 

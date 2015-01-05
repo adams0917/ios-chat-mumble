@@ -921,6 +921,9 @@
                                                 <state key="normal" image="btn_plus">
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="didTapAddAttachmentButton:" destination="aeN-ME-fW4" eventType="touchUpInside" id="nW9-Tx-4gF"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qo8-6p-Dj7">
                                                 <rect key="frame" x="282" y="7" width="46" height="30"/>
@@ -2121,9 +2124,9 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="6Qw-mc-pnE"/>
-        <segue reference="dQO-s5-hEN"/>
         <segue reference="egh-gZ-0aL"/>
-        <segue reference="VMt-Y0-ixl"/>
+        <segue reference="dQO-s5-hEN"/>
+        <segue reference="6Qw-mc-pnE"/>
+        <segue reference="Spl-ia-VIL"/>
     </inferredMetricsTieBreakers>
 </document>
