@@ -4171,7 +4171,7 @@
 				);
 				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_NAME = MumblerChat;
-				PROVISIONING_PROFILE = "849897bf-2d48-4b76-94b6-0f7f6448fcfb";
+				PROVISIONING_PROFILE = "badbc9fd-a3e8-4b88-aab0-05c3e4097773";
 				USER_HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include/libxml2";
 				WRAPPER_EXTENSION = app;
 			};
