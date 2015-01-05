@@ -87,7 +87,6 @@ typedef enum _MCTooltipTag
     self.fetchedResultsController=nil;
     self.friendsTableView.dataSource=nil;
     self.friendsTableView.delegate=nil;
-    
 }
 
 
@@ -433,7 +432,7 @@ typedef enum _MCTooltipTag
             }
         }
         
-        sendMessageView.hidden = appDelegate.friendsToBeAddedDictionary.count == 0;
+//        sendMessageView.hidden = appDelegate.friendsToBeAddedToComposeTheMessageDictionary == 0;
     }
 }
 
@@ -620,13 +619,15 @@ typedef enum _MCTooltipTag
 
 - (void)friendCellWithUser:(User *)user changedState:(BOOL)selected
 {
-    selectedFriendsCount += selected ? 1 : -1;
-    if (selectedFriendsCount) {
+    NSUInteger recipientsCount = appDelegate.friendsToBeAddedToComposeTheMessageDictionary.count;
+    
+    if (recipientsCount == 1) {
         [sendMessageInfoLabel setText:[NSString stringWithFormat:@"Send the message to %@", user.name]];
-    } else {
+    } else if (recipientsCount > 1) {
         [NSString stringWithFormat:@"Send message to %d friends", selectedFriendsCount];
     }
-    sendMessageView.hidden = selectedFriendsCount == 0;
+    
+    sendMessageView.hidden = recipientsCount == 0;
 }
 
 - (IBAction)sendButtonTapped:(id)sender

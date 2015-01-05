@@ -53,7 +53,7 @@
     
     ASAppDelegate *appDelegate = (ASAppDelegate *) UIApplication.sharedApplication.delegate;
     
-    if(appDelegate.friendsToBeAddedToComposeTheMessageDictionary[_friendUser.userId] == nil) {
+    if (appDelegate.friendsToBeAddedToComposeTheMessageDictionary[_friendUser.userId] == nil) {
         NSLog(@"picked selectedUserId is there %@",_friendUser.userId);
         UIImage *imageIcon = [UIImage imageNamed:@"check_tick"];
         [self.rowButton setBackgroundImage:imageIcon forState:UIControlStateNormal];
