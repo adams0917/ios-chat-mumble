@@ -232,7 +232,7 @@ typedef enum _MCTooltipTag
         }
         match = sectionTitle;
     }
-    return [friends.allKeys indexOfObject:match];
+    return [sortedKeys indexOfObject:match];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -312,13 +312,13 @@ typedef enum _MCTooltipTag
         self.addedFriendsBackgroundView.hidden = false;
         for (id key in appDelegate.friendsToBeAddedDictionary) {
             id value = [appDelegate.friendsToBeAddedDictionary objectForKey:key];
-            NSString *selectedUserName =[NSString stringWithFormat:@"%@",[value valueForKey:@"alias"]];
+            NSString *selectedUserName = [NSString stringWithFormat:@"%@", value[@"alias"]];
             
             if (addedFriendsNames == nil) {
-                addedFriendsNames=selectedUserName;
+                addedFriendsNames = selectedUserName;
                 NSLog(@"addedFriendsNames if %@", addedFriendsNames);
             } else {
-                addedFriendsNames=[NSString stringWithFormat:@"%@%@%@", selectedUserName, @",", addedFriendsNames];
+                addedFriendsNames = [NSString stringWithFormat:@"%@%@%@", selectedUserName, @",", addedFriendsNames];
                 NSLog(@"addedFriendsNames else %@", addedFriendsNames);
             }
             

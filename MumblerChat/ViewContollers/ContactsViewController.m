@@ -57,7 +57,7 @@ typedef enum _MCTooltipTag
     
     NSMutableDictionary *friends;
     NSArray *friendSectionTitle;
-
+    
     CMPopTipView *currentPopTipView;
     BOOL tutorialDone;
     __weak IBOutlet UIImageView *swipeButtonBar;
@@ -305,20 +305,23 @@ typedef enum _MCTooltipTag
           failure:^(AFHTTPRequestOperation *operation, NSError *error) {
               NSLog(@"Error: %@", error);
               [SVProgressHUD dismiss];
-              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert!" message:[error localizedDescription] delegate:self
-                                                    cancelButtonTitle:@"OK" otherButtonTitles: nil];
-              
+              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert!"
+                                                              message:[error localizedDescription]
+                                                             delegate:self
+                                                    cancelButtonTitle:@"OK"
+                                                    otherButtonTitles: nil];
               [alert show];
-              
           }];
     DDLogVerbose(@"%@: %@: END ", THIS_FILE, THIS_METHOD);
-    
 }
 
 - (void)addFriends:(NSArray *)friendsToAdd
 {
     for (NSDictionary *friend in friendsToAdd) {
         NSString *alias = friend[@"alias"];
+        if (alias == nil || alias.length == 0) {
+            continue;
+        }
         NSString *sectionTitle = [[alias substringToIndex:1] uppercaseString];
         if (friends[sectionTitle] == nil) {
             friends[sectionTitle] = [NSMutableArray new];
@@ -425,24 +428,26 @@ typedef enum _MCTooltipTag
                     
                     
                     if (firstName != nil) {
-                        if (lastName==nil) {
-                            contactName=firstName;
+                        if (lastName == nil || lastName.length == 0) {
+                            contactName = firstName;
                         } else {
-                            NSString *fullName=[NSString stringWithFormat:@"%@ %@", firstName, lastName];
-                            contactName=fullName;
+                            contactName = [NSString stringWithFormat:@"%@ %@", firstName, lastName];
                         }
+                    } else if (lastName != nil) {
+                        contactName = lastName;
                     }
                     
                     CFRelease(phoneNumberProperty);
                     
-                    if (phoneString!=nil) {
+                    if (phoneString != nil) {
                         phoneNumber = phoneString;
                     }
                     
-                    NSMutableDictionary *record = [[NSMutableDictionary alloc] init];
-                    [record setValue:contactName forKey:@"alias"];
-                    [record setValue:phoneNumber forKey:@"phoneNumber"];
-                    [record setValue:@NO forKey:@"isMumblerFriend"];
+                    contactName = [contactName stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
+                    
+                    NSDictionary *record = @{@"alias": contactName,
+                                             @"phoneNumber": phoneNumber,
+                                             @"isMumblerFriend": @NO};
                     
                     [phoneContactsArray addObject:record];
                     [phoneNumbers addObject:phoneNumber];
@@ -488,7 +493,7 @@ typedef enum _MCTooltipTag
         }
         match = sectionTitle;
     }
-    return [friends.allKeys indexOfObject:match];
+    return [sortedKeys indexOfObject:match];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
