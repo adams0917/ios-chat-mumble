@@ -1989,15 +1989,11 @@ typedef enum _MCActionSheetId
 
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    
     ChatMessage *chatMessage = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSLog(@"Video essage clicked=== %@",chatMessage.textMessage);
-    
-    NSString * url =@"http://54.198.191.57:8080/MumblerChatWeb/chatVideo/1410344099230.mp4";
-    
+//    NSString * url =@"http://54.198.191.57:8080/MumblerChatWeb/chatVideo/1410344099230.mp4";
+    NSString * url = [NSString stringWithFormat:@"http://54.227.54.114:8080/MumblerChatWeb/chatVideo/%@", chatMessage.textMessage];
     [self openRecievedMovieAndPlay: url];
-    
     
 }
 
