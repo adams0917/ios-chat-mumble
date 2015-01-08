@@ -23,6 +23,7 @@
 #import "DDLog.h"
 #import "DDTTYLogger.h"
 
+#import "Crittercism.h"
 
 #import "ChatMessageDao.h"
 
@@ -98,6 +99,8 @@ NSString * const OptionPassword = @"...";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [Crittercism enableWithAppID: @"54ae271951de5e9f042ec91b"];
+    
     [FBLoginView class];
     [FBProfilePictureView class];
     
