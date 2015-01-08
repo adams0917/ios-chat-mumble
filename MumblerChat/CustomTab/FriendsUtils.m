@@ -46,6 +46,7 @@
                  } else {
                      DDLogVerbose(@"%@: %@: EmptyArray with FBID", THIS_FILE, THIS_METHOD);
                      if(appDelegate.friendsToBeAddedDictionary.count > 0){
+                         NSDictionary *friendsToBeAdded = [appDelegate.friendsToBeAddedDictionary copy];
                          [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
                          [NSUserDefaults.standardUserDefaults synchronize];
                          [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
@@ -55,7 +56,17 @@
                          dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                          dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                              // code to be executed on the main queue after delay
-                             [self updateAddedFriends];
+                             FriendDao *objFriendsDao = [FriendDao new];
+                             [objFriendsDao addFriendships];
+                             for (id key in friendsToBeAdded) {
+                                 id value = friendsToBeAdded[key];
+                                 NSString *selectedUserId = [NSString stringWithFormat:@"%@", value[@"mumblerUserId"]];
+                                 NSString *selectedUseName = [NSString stringWithFormat:@"%@", value[@"alias"]];
+                                 
+                                 selectedUserId = [NSString stringWithFormat:@"%@%@", selectedUserId, MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
+                                 
+                                 [appDelegate addFriendToEjabberedServer:selectedUserId withNickname:selectedUseName];
+                             }
                          });
                      }
                  }
@@ -94,6 +105,7 @@
     
     //Calling Friend Dao
     if (appDelegate.friendsToBeAddedDictionary.count > 0) {
+        NSDictionary *friendsToBeAdded = [appDelegate.friendsToBeAddedDictionary copy];
         [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
         [NSUserDefaults.standardUserDefaults synchronize];
         
@@ -101,37 +113,18 @@
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             // code to be executed on the main queue after delay
-            [self updateAddedFriends];
+            FriendDao *objFriendsDao = [FriendDao new];
+            [objFriendsDao addFriendships];
+            for (id key in friendsToBeAdded) {
+                id value = friendsToBeAdded[key];
+                NSString *selectedUserId = [NSString stringWithFormat:@"%@", value[@"mumblerUserId"]];
+                NSString *selectedUseName = [NSString stringWithFormat:@"%@", value[@"alias"]];
+                
+                selectedUserId = [NSString stringWithFormat:@"%@%@", selectedUserId, MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
+                
+                [appDelegate addFriendToEjabberedServer:selectedUserId withNickname:selectedUseName];
+            }
         });
-    }
-}
-
-+ (void)updateAddedFriends
-{
-    DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
-    FriendDao *objFriendsDao=[[FriendDao alloc]init];
-    [objFriendsDao addFriendships];
-    [self addFriendsToEjabberedServer];
-    DDLogVerbose(@"%@: %@: END ", THIS_FILE, THIS_METHOD);
-    
-}
-
-+ (void)addFriendsToEjabberedServer
-{
-    ASAppDelegate *appDelegate = (ASAppDelegate *) UIApplication.sharedApplication.delegate;
-    DDLogVerbose(@"%@: %@: START ", THIS_FILE, THIS_METHOD);
-    
-    for (id key in appDelegate.friendsToBeAddedDictionary) {
-        id value = [appDelegate.friendsToBeAddedDictionary objectForKey:key];
-        NSString *selectedUserId =[NSString stringWithFormat:@"%@",[value valueForKey:@"mumblerUserId"]];
-        NSString *selectedUseName =[NSString stringWithFormat:@"%@",[value valueForKey:@"alias"]];
-        
-        selectedUserId=[NSString stringWithFormat:@"%@%@",selectedUserId,MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
-        
-        XMPPJID *newBuddy = [XMPPJID jidWithString:selectedUserId];
-        [appDelegate.xmppRoster addUser:newBuddy withNickname:selectedUseName];
-        
-        DDLogVerbose(@"%@: %@: END ", THIS_FILE, THIS_METHOD);
     }
 }
 

@@ -87,5 +87,6 @@
 //Friends..chat composer
 @property(nonatomic,retain) NSMutableDictionary *friendsToBeAddedToComposeTheMessageDictionary;
 
+- (void)addFriendToEjabberedServer:(NSString *)id withNickname:(NSString *)nickname;
 
 @end

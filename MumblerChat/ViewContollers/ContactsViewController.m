@@ -668,6 +668,7 @@ typedef enum _MCTooltipTag
         }];
     } else {
         if (appDelegate.friendsToBeAddedDictionary.count > 0) {
+            NSDictionary *friendsToBeAdded = [appDelegate.friendsToBeAddedDictionary copy];
             DDLogVerbose(@"%@: %@: START appDelegate.friendsToBeAddedDictionary count]>0", THIS_FILE, THIS_METHOD);
             
             [NSUserDefaults.standardUserDefaults setBool:true forKey:IS_FRIENDS_ADDED];
@@ -678,7 +679,17 @@ typedef enum _MCTooltipTag
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 // code to be executed on the main queue after delay
-                [FriendsUtils updateAddedFriends];
+                FriendDao *objFriendsDao = [FriendDao new];
+                [objFriendsDao addFriendships];
+                for (id key in friendsToBeAdded) {
+                    id value = friendsToBeAdded[key];
+                    NSString *selectedUserId = [NSString stringWithFormat:@"%@", value[@"mumblerUserId"]];
+                    NSString *selectedUseName = [NSString stringWithFormat:@"%@", value[@"alias"]];
+                    
+                    selectedUserId = [NSString stringWithFormat:@"%@%@", selectedUserId, MUMBLER_CHAT_EJJABBERD_SERVER_NAME];
+                    
+                    [appDelegate addFriendToEjabberedServer:selectedUserId withNickname:selectedUseName];
+                }
             });
         }
     }

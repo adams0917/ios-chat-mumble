@@ -1324,4 +1324,12 @@ NSString * const OptionPassword = @"...";
     [self.xmppStream sendElement:message];
 }
 
+#pragma mark - Utils
+
+- (void)addFriendToEjabberedServer:(NSString *)id withNickname:(NSString *)nickname
+{
+    XMPPJID *jid = [XMPPJID jidWithString:id];
+    [xmppRoster addUser:jid withNickname:nickname];
+}
+
 @end

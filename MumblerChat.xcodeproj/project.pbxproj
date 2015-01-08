@@ -511,6 +511,8 @@
 		FA8994B61A44891E008ECDA5 /* UIAlertView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8994B51A44891E008ECDA5 /* UIAlertView+Utils.m */; };
 		FAC1756C1A59B011003D104C /* CMPopTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1756B1A59B011003D104C /* CMPopTipView.m */; };
 		FAC1756F1A59C3BB003D104C /* FriendsUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC1756E1A59C3BB003D104C /* FriendsUtils.m */; };
+		FAEC81B81A5E60B7008D1741 /* dsym_upload.sh in Resources */ = {isa = PBXBuildFile; fileRef = FAEC81B61A5E60B7008D1741 /* dsym_upload.sh */; };
+		FAEC81B91A5E60B7008D1741 /* libCrittercism_v5_0_7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEC81B71A5E60B7008D1741 /* libCrittercism_v5_0_7.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -1356,6 +1358,11 @@
 		FAC1756B1A59B011003D104C /* CMPopTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPopTipView.m; sourceTree = "<group>"; };
 		FAC1756D1A59C3BB003D104C /* FriendsUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendsUtils.h; sourceTree = "<group>"; };
 		FAC1756E1A59C3BB003D104C /* FriendsUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendsUtils.m; sourceTree = "<group>"; };
+		FAEC81B31A5E60B7008D1741 /* CRFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRFilter.h; sourceTree = "<group>"; };
+		FAEC81B41A5E60B7008D1741 /* Crittercism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Crittercism.h; sourceTree = "<group>"; };
+		FAEC81B51A5E60B7008D1741 /* CrittercismDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrittercismDelegate.h; sourceTree = "<group>"; };
+		FAEC81B61A5E60B7008D1741 /* dsym_upload.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = dsym_upload.sh; sourceTree = "<group>"; };
+		FAEC81B71A5E60B7008D1741 /* libCrittercism_v5_0_7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCrittercism_v5_0_7.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1363,6 +1370,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				205D9FAF196BB52A00CA77A6 /* SystemConfiguration.framework in Frameworks */,
 				12FF264519D6751900BC3CBE /* libidn.a in Frameworks */,
 				122AAD0A19D5C028001077B9 /* FacebookSDK.framework in Frameworks */,
 				124770AD19D5ACDE00781209 /* libxml2.dylib in Frameworks */,
@@ -1374,8 +1382,8 @@
 				12395347196D092D00827640 /* libz.1.1.3.dylib in Frameworks */,
 				12395348196D092D00827640 /* libz.dylib in Frameworks */,
 				12395344196D08EA00827640 /* libresolv.9.dylib in Frameworks */,
-				205D9FAF196BB52A00CA77A6 /* SystemConfiguration.framework in Frameworks */,
 				205D9FAD196BB4F400CA77A6 /* Security.framework in Frameworks */,
+				FAEC81B91A5E60B7008D1741 /* libCrittercism_v5_0_7.a in Frameworks */,
 				20F7F46C196BAB4600E53EFD /* libresolv.dylib in Frameworks */,
 				1280F54D19619C50006A0958 /* CoreTelephony.framework in Frameworks */,
 				FA8993B61A446E83008ECDA5 /* libidn.a in Frameworks */,
@@ -2508,6 +2516,7 @@
 		F83A271A19336211002E5B63 /* MumblerChat */ = {
 			isa = PBXGroup;
 			children = (
+				FAEC81B21A5E60B7008D1741 /* CrittercismSDK */,
 				FAC175691A59B011003D104C /* CMPopTipView */,
 				FA8994B01A4471C9008ECDA5 /* Categories */,
 				12AE472F19D5B43C00A637B4 /* XMPP */,
@@ -3434,6 +3443,19 @@
 			path = MumblerChat/CMPopTipView;
 			sourceTree = SOURCE_ROOT;
 		};
+		FAEC81B21A5E60B7008D1741 /* CrittercismSDK */ = {
+			isa = PBXGroup;
+			children = (
+				FAEC81B31A5E60B7008D1741 /* CRFilter.h */,
+				FAEC81B41A5E60B7008D1741 /* Crittercism.h */,
+				FAEC81B51A5E60B7008D1741 /* CrittercismDelegate.h */,
+				FAEC81B61A5E60B7008D1741 /* dsym_upload.sh */,
+				FAEC81B71A5E60B7008D1741 /* libCrittercism_v5_0_7.a */,
+			);
+			name = CrittercismSDK;
+			path = ../MumblerChat/CrittercismSDK;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3559,6 +3581,7 @@
 				121DAB5819D5B24B005DAC4B /* 070.png in Resources */,
 				121DAB4419D5B24B005DAC4B /* 060.png in Resources */,
 				121DAB9E19D5B24B005DAC4B /* SimpleTableCell.xib in Resources */,
+				FAEC81B81A5E60B7008D1741 /* dsym_upload.sh in Resources */,
 				121DABC819D5B24B005DAC4B /* Tw_Cen_MT_Regular.TTF in Resources */,
 				121DAA9419D5B24B005DAC4B /* photo_cropper_rect_on@2x.png in Resources */,
 				121DAB7419D5B24B005DAC4B /* 084.png in Resources */,
@@ -4135,6 +4158,8 @@
 					/Users/ransikadesilva/Desktop/Clean/Sir/Keshan,
 					xmpp/XMPP/Vendor/libidn,
 					"/Users/ransikadesilva/Desktop/Clean/Sir/XMPPFramework-master/Vendor/libidn",
+					/Users/alex/Downloads/Crittercism_v5_0_7/CrittercismSDK,
+					"$(PROJECT_DIR)/MumblerChat/CrittercismSDK",
 				);
 				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_NAME = MumblerChat;
@@ -4168,6 +4193,8 @@
 					/Users/ransikadesilva/Desktop/Clean/Sir/Keshan,
 					xmpp/XMPP/Vendor/libidn,
 					"/Users/ransikadesilva/Desktop/Clean/Sir/XMPPFramework-master/Vendor/libidn",
+					/Users/alex/Downloads/Crittercism_v5_0_7/CrittercismSDK,
+					"$(PROJECT_DIR)/MumblerChat/CrittercismSDK",
 				);
 				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_NAME = MumblerChat;
